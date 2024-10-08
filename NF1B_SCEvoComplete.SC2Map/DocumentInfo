@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DocInfo>
+    <ModType>
+        <Value>Interface</Value>
+    </ModType>
+    <Icon>
+        <Value>EditorData\Images\UI_Arcade_IconUltraArchon.tga</Value>
+    </Icon>
+    <Dependencies>
+        <Value>bnet:SC: Evo Complete/0.0/215951</Value>
+        <Value>bnet:NF1B_VoidMulti/0.0/236331</Value>
+    </Dependencies>
+    <PatchNote>
+        <Version>
+            <Value>0.1</Value>
+        </Version>
+        <Date>
+            <Value>1/1/2077</Value>
+        </Date>
+        <Notes>
+            <Value>1</Value>
+        </Notes>
+    </PatchNote>
+</DocInfo>

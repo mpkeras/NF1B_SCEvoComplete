@@ -1,0 +1,3 @@
+﻿Button/Hotkey/DevourerSCBWE=E
+Button/Hotkey/GuardianSCBW2=G
+Button/Hotkey/LurkerSCBWA=A

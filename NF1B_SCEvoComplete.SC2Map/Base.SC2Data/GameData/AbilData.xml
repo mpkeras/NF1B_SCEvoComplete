@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Catalog>
+    <CAbilArmMagazine id="ArmSiloWithNuke">
+        <CalldownEffect value="NukeNF1B"/>
+    </CAbilArmMagazine>
+    <CAbilTransport id="BunkerSCBW@Transport">
+        <TargetFilters value="Biological,Visible;Neutral,Enemy,Dead,Hidden"/>
+    </CAbilTransport>
+    <CAbilTransport id="DropshipSCBW@Transport">
+        <TargetFilters value="Visible;Neutral,Enemy,Buried,UnderConstruction,Dead,Hidden"/>
+    </CAbilTransport>
+    <CAbilTransport id="OverlordSCBW@Transport">
+        <TargetFilters value="Visible;Neutral,Enemy,Buried,UnderConstruction,Dead,Hidden"/>
+    </CAbilTransport>
+    <CAbilTransport id="ShuttleSCBW@Transport">
+        <TargetFilters value="Visible;Neutral,Enemy,Buried,UnderConstruction,Dead,Hidden"/>
+    </CAbilTransport>
+    <CAbilMorph id="DevourerSCBW@Morph">
+        <CmdButtonArray index="Execute" Requirements="DisabledInNF1B"/>
+    </CAbilMorph>
+    <CAbilEffectTarget id="GhostSCBWNuclearStrike">
+        <Effect index="0" value="GhostSCBWNuclearStrike@CalldownSwitch"/>
+        <Cost>
+            <Charge>
+                <CountMax value="99999"/>
+                <CountUse value="1"/>
+                <HideCount value="1"/>
+                <Link value="Abil/GhostSCBWNuclearStrike"/>
+            </Charge>
+            <Cooldown Link="Abil/GhostSCBWNuclearStrike"/>
+        </Cost>
+        <CalldownEffect value="GhostSCBWNuclearStrike@CalldownSwitch"/>
+        <CmdButtonArray index="Execute" Requirements=""/>
+    </CAbilEffectTarget>
+    <CAbilMorph id="GuardianSCBW@Morph">
+        <CmdButtonArray index="Execute" Requirements="DisabledInNF1B"/>
+    </CAbilMorph>
+    <CAbilTrain id="LarvaSCBW@Train">
+        <InfoArray index="Train28" Time="11.5">
+            <Button DefaultButtonFace="DevourerSCBWE" Requirements="DevourerSCBW"/>
+            <Unit value="DevourerSCBW"/>
+        </InfoArray>
+        <InfoArray index="Train29" Time="11.5">
+            <Button DefaultButtonFace="GuardianSCBW" Requirements="GuardianSCBW"/>
+            <Unit value="GuardianSCBW"/>
+        </InfoArray>
+        <InfoArray index="Train30" Time="13.125">
+            <Button DefaultButtonFace="LurkerSCBWA" Requirements="LurkerSCBW"/>
+            <Unit value="LurkerSCBW"/>
+        </InfoArray>
+    </CAbilTrain>
+    <CAbilMorph id="LurkerSCBW@Morph">
+        <CmdButtonArray index="Execute" Requirements="DisabledInNF1B"/>
+    </CAbilMorph>
+    <CAbilArmMagazine id="NukeSCBWArm">
+        <CalldownEffect value="GhostSCBWNuclearStrike@CalldownDummyNF1B"/>
+    </CAbilArmMagazine>
+    <CAbilEffectTarget id="TacNukeStrike">
+        <Effect index="0" value="GhostSCBWNuclearStrike@CalldownSwitch"/>
+        <Cost>
+            <Charge>
+                <CountMax value="452607"/>
+                <CountUse value="1"/>
+                <HideCount value="1"/>
+                <Link value="Abil/TacNukeStrike"/>
+            </Charge>
+            <Cooldown Link="Abil/TacNukeStrike"/>
+        </Cost>
+        <CalldownEffect value=""/>
+        <CmdButtonArray index="Execute" Requirements=""/>
+    </CAbilEffectTarget>
+</Catalog>

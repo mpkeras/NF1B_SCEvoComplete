@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Catalog>
+    <CButton id="DevourerSCBWE">
+        <Name value="Button/Name/DevourerSCBW"/>
+        <Tooltip value="Button/Tooltip/DevourerSCBW"/>
+        <Icon value="Assets\Textures\btn-unit-zerg-devourerex3.dds"/>
+        <AlertName value="Button/Name/DevourerSCBW"/>
+        <AlertTooltip value="Button/Tooltip/DevourerSCBW"/>
+        <AlertIcon value="Assets\Textures\btn-unit-zerg-devourerex3.dds"/>
+        <EditorCategories value="Race:Zerg"/>
+        <DefaultButtonLayout Row="2" Column="1"/>
+    </CButton>
+    <CButton id="LurkerSCBWA">
+        <Name value="Button/Name/LurkerSCBW"/>
+        <Tooltip value="Button/Tooltip/LurkerSCBW"/>
+        <Icon value="Assets\Textures\btn-unit-zerg-lurker.dds"/>
+        <AlertName value="Button/Name/LurkerSCBW"/>
+        <AlertTooltip value="Button/Tooltip/LurkerSCBW"/>
+        <AlertIcon value="Assets\Textures\btn-unit-zerg-lurker.dds"/>
+        <EditorCategories value="Race:Zerg"/>
+        <DefaultButtonLayout Row="2"/>
+    </CButton>
+</Catalog>

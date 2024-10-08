@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Catalog>
+    <CEffectCreatePersistent id="GhostSCBWNuclearStrike@CP">
+        <FinalEffect value=""/>
+    </CEffectCreatePersistent>
+    <CEffectCreatePersistent id="GhostSCBWNuclearStrike@CPNF1B">
+        <EditorCategories value="Race:Terran"/>
+        <Alert value="CalldownLaunchObserver"/>
+        <Flags index="Channeled" value="1"/>
+        <InitialDelay value="8.75"/>
+        <ExpireEffect value="GhostSCBWNuclearStrike@CPDetonate"/>
+        <PeriodCount value="50"/>
+        <PeriodicPeriodArray value="0.2"/>
+        <AINotifyEffect value="NukeDamage"/>
+    </CEffectCreatePersistent>
+    <CEffectUseCalldown id="GhostSCBWNuclearStrike@CalldownDummyNF1B">
+        <EditorCategories value="Race:Terran"/>
+        <WhichLocation Value="TargetPoint"/>
+        <CalldownCount value="1"/>
+        <CalldownEffect value="GhostSCBWNuclearStrike@CalldownSwitchNF1B"/>
+    </CEffectUseCalldown>
+    <CEffectUseCalldown id="GhostSCBWNuclearStrike@CalldownNF1B">
+        <EditorCategories value="Race:Terran"/>
+        <WhichLocation Value="TargetPoint"/>
+        <CalldownCount value="1"/>
+        <CalldownEffect value="GhostSCBWNuclearStrike@CPNF1B"/>
+    </CEffectUseCalldown>
+    <CEffectSwitch id="GhostSCBWNuclearStrike@CalldownSwitchNF1B">
+        <EditorCategories value="Race:Terran"/>
+        <CaseArray Validator="CasterIsGhostSCBW" Effect="GhostSCBWNuclearStrike@CPNF1B"/>
+        <CaseArray Validator="CasterIsGhost" Effect="NukeNF1BPersistent"/>
+        <CaseDefault value="GhostSCBWNuclearStrike@CPNF1B"/>
+        <TargetLocationType value="Point"/>
+    </CEffectSwitch>
+    <CEffectUseCalldown id="NukeNF1B">
+        <EditorCategories value="Race:Terran"/>
+        <WhichLocation Value="TargetPoint"/>
+        <CalldownCount value="1"/>
+        <CalldownEffect value="NukeNF1BPersistent"/>
+    </CEffectUseCalldown>
+    <CEffectCreatePersistent id="NukePersistent">
+        <FinalEffect value=""/>
+    </CEffectCreatePersistent>
+    <CEffectCreatePersistent id="NukeNF1BPersistent">
+        <EditorCategories value="Race:Terran"/>
+        <Alert value="CalldownLaunchObserver"/>
+        <Flags index="Channeled" value="1"/>
+        <InitialDelay value="8.75"/>
+        <ExpireEffect value="NukeDetonate"/>
+        <PeriodCount value="50"/>
+        <PeriodicPeriodArray value="0.2"/>
+        <AINotifyEffect value="NukeDamage"/>
+    </CEffectCreatePersistent>
+</Catalog>

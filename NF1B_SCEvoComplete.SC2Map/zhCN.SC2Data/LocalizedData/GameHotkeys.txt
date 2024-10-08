@@ -1,0 +1,2 @@
+﻿Button/Hotkey/DevourerSCBWE=E
+Button/Hotkey/LurkerSCBWA=A

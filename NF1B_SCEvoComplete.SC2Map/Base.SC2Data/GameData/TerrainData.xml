@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Catalog>
+    <CTerrain id="HybridLabXelNaga">
+        <BlendTextures index="0" value="Slayn1"/>
+        <BlendTextures index="1" value="Slayn2"/>
+        <BlendTextures index="2" value="Slayn3"/>
+        <BlendTextures index="3" value="Slayn5"/>
+        <BlendTextures index="4" value="Slayn6"/>
+        <BlendTextures index="5" value="Slayn7"/>
+        <BlendTextures index="6" value="Char2_3"/>
+        <BlendTextures index="7" value="CharDunes_2"/>
+        <CliffSets index="0" value="SlaynCliff1"/>
+        <CliffSets index="1" value="SlaynCliff0"/>
+        <EditorCategories value="Climate:Wasteland"/>
+        <Lighting value="Elsecaro"/>
+        <LoadingScreen value="Assets\Textures\ui_void_loading_taldarim01.dds"/>
+        <FogColor value="255,174,92,205"/>
+        <FogDensity value="0.190000"/>
+        <FogFalloff value="0.230000"/>
+        <FogStartingHeight value="0.000000"/>
+        <FogDistanceFalloff value="0.230000"/>
+    </CTerrain>
+</Catalog>

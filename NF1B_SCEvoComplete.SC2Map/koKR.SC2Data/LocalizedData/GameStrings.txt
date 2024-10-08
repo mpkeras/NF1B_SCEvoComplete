@@ -1,0 +1,83 @@
+﻿Attribute001/Desc=스타2 또는 스타1 종족 간에 전환 가능
+Attribute001/Name=종족 기반
+Attribute001/Value001/Desc=종족 기반을 스타1으로 바꿉니다.
+Attribute001/Value001/Name=스타1
+Attribute001/Value002/Desc=종족 기반을 스타2로 바꿉니다.
+Attribute001/Value002/Name=스타2
+Attribute001/Value003/Desc=종족 기반을 스타1과 스타2 중 무작위로 고릅니다.
+Attribute001/Value003/Name=무작위
+Attribute002/Desc=빌더와 파이터 간 전환
+Attribute002/Name=역할
+Attribute002/Value001/Name=빌더
+Attribute002/Value002/Name=파이터
+Button/Name/DevourerSCBW=Morph To Devourer
+Button/Name/LurkerSCBW=Morph to Lurker
+Button/Tooltip/DevourerSCBW=Anti-air flyer. Can use <s val="TooltipHighlightSCBW">Acid Spores</s>.<n/><n/><c val="#ColorAttackInfo">Can attack air units.</c>
+Button/Tooltip/GuardianSCBW2=Long-range anti-ground flyer. <n/><n/><c val="ffff8a">Can attack ground units.</c>
+Button/Tooltip/LurkerSCBW=Area-damage ambusher. Must burrow to attack. <n/><n/><c val="ffff8a">Can attack ground units.</c>
+DocInfo/DescLong=아콘 모드와 SC: Evo Complete 모드에서 영감을 받은 맵입니다. 이 맵의 코드 트리거는 완전히 재작성되었으며 다른 유사한 맵의 코드를 사용하지 않았습니다.<n/><n/>수고해주신 SC: Evo Complete 모드 제작자분들께 감사드립니다.
+DocInfo/DescShort=12
+DocInfo/HowToPlayBasic00=모든 플레이어는 두 팀으로 나뉘며, 각 팀은 한 명의 빌더와 여러 명의 전투원으로 구성됩니다.
+DocInfo/HowToPlayBasic01=건설자라면 전투기를 위한 유닛을 훈련하세요.
+DocInfo/HowToPlayBasic02=전투기라면 유닛을 조종하여 전장에서 적을 물리치세요.
+DocInfo/HowToPlayWinning00=모든 적 구조물 파괴
+DocInfo/Name=N 싸움 1 빌드 (SC: Evo Complete)
+DocInfo/PatchNote001=v0.1
+DocInfo/Website=https://github.com/mpkeras/NF1B_SCEvoComplete
+Effect/Name/GhostSCBWNuclearStrike@CPNF1B=CP NF1B
+Effect/Name/GhostSCBWNuclearStrike@CalldownDummyNF1B=Calldown Dummy NF1B
+Effect/Name/GhostSCBWNuclearStrike@CalldownNF1B=Calldown NF1B
+Effect/Name/GhostSCBWNuclearStrike@CalldownSwitchNF1B=Calldown Switch NF1B
+Effect/Name/NukeNF1B=Nuke NF1B
+Effect/Name/NukeNF1BPersistent=Nuke NF1B
+LoadingScreen/TextBody=아콘 모드와 SC: Evo Complete 모드에서 영감을 받은 맵입니다. 이 맵의 코드 트리거는 완전히 재작성되었으며 다른 유사한 맵의 코드를 사용하지 않았습니다.<n/><n/>수고해주신 SC: Evo Complete 모드 제작자분들께 감사드립니다.
+LoadingScreen/Title=N 싸움 1 빌드 (SC: Evo Complete)
+MapInfo/Player00/Name=Neutral
+MapInfo/Player01/Name=Player 1
+MapInfo/Player02/Name=Player 2
+MapInfo/Player03/Name=Player 3
+MapInfo/Player04/Name=Player 4
+MapInfo/Player05/Name=Player 5
+MapInfo/Player06/Name=Player 6
+MapInfo/Player07/Name=Player 7
+MapInfo/Player08/Name=Player 8
+MapInfo/Player09/Name=Player 9
+MapInfo/Player10/Name=Player 10
+MapInfo/Player11/Name=Player 11
+MapInfo/Player12/Name=Player 12
+MapInfo/Player13/Name=Player 13
+MapInfo/Player14/Name=Player 14
+MapInfo/Player15/Name=Hostile
+MapInfo/Team00/Name=1v1 top
+MapInfo/Team01/Name=1v1 bot
+MapInfo/Team02/Name=exp1v1 top
+MapInfo/Team03/Name=exp1v1 bot
+MapInfo/Team04/Name=2v2 Bottom
+MapInfo/Team05/Name=2v2 top
+Param/Value/047E93E7=팁: 종족이 SC2 Zerg 인 경우, 두 번째 단계 돌연변이가 필요한 유닛을 선택하려면 빌더가 S 버튼(기본값은 S)을 두 번 눌러야 합니다.
+Param/Value/2AB137AB=당신의 역할은 전장에서 유닛을 조종하여 적을 물리치는 <c val=“ffff8a”>전사</c>입니다.
+Param/Value/3C5BF2EE=당신의 역할은 <c val=“ffff8a”>빌더</c>로, 전투기를 훈련시키는 것입니다.
+Param/Value/3D947A37=The MIT License (MIT)<n/><n/>Copyright (c) 2016 Abraham Yunes<n/><n/>Permission is hereby granted, free of charge, to any person obtaining a copy<n/>of this software and associated documentation files (the "Software"), to deal<n/>in the Software without restriction, including without limitation the rights<n/>to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<n/>copies of the Software, and to permit persons to whom the Software is<n/>furnished to do so, subject to the following conditions:<n/><n/>The above copyright notice and this permission notice shall be included in all<n/>copies or substantial portions of the Software.<n/><n/>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<n/>IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<n/>FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<n/>AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<n/>LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<n/>OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<n/>SOFTWARE.
+Param/Value/5698279A=팁: 공급 한도는 400개입니다.
+Param/Value/5ED931F6=명령
+Param/Value/6FD47613=1팀에 남은 플레이어가 한 명뿐입니다. 팀 2 승리.
+Param/Value/738A54F4=2팀에 남은 플레이어가 한 명뿐입니다. 팀 1 승리.
+Param/Value/7998EB08=팁: <c val=“ffff8a”>센서 타워</c>에는 <c val=“ffff8a”>스캐너 스윕</c> 능력이 있으며, 전투기가 직접 제어할 수 있습니다.
+Param/Value/7BA683E0=당신의 역할은 <c val=“ffff8a”>빌더</c>로, 전투기를 훈련시키는 것입니다.
+Param/Value/7C2BA5DC=팀 1의 빌더가 항복했습니다. 2팀이 승리합니다.
+Param/Value/9F90689B=팁: 전투기는 자신의 손에 있는 유닛을 돌연변이할 수 없습니다. 두 번째 단계 돌연변이가 필요한 모든 유닛은 건설자가 직접 훈련시켜야 합니다.
+Param/Value/A283F7C2=팀 2의 빌더가 항복했습니다. 1팀이 승리합니다.
+Param/Value/A34A344A=팁: 종족이 SC2 Zerg 인 경우, 두 번째 단계 돌연변이가 필요한 유닛을 선택하려면 빌더가 S 버튼(기본값은 S)을 두 번 눌러야 합니다.
+Param/Value/AEE0382B=팁: 왼쪽 상단에서 레이스에 대한 정보를 확인하세요.
+Param/Value/B902116F=당신의 역할은 전장에서 유닛을 조종하여 적을 물리치는 <c val=“ffff8a”>전사</c>입니다.
+Param/Value/B9FAD2E2=팁: 전투기는 자신의 손에 있는 유닛을 돌연변이할 수 없습니다. 두 번째 단계 돌연변이가 필요한 모든 유닛은 건설자가 직접 훈련시켜야 합니다.
+Param/Value/BA4EC2BF=LICENSE for SC: Evo Complete
+Param/Value/BC76442D=팁: <c val=“ffff8a”>센서 타워</c>에는 <c val=“ffff8a”>스캐너 스윕</c> 능력이 있으며, 전투기가 직접 제어할 수 있습니다.
+Param/Value/C0AF10B1=0
+Param/Value/CA3F7518=팁: 패배가 확실시되면 <c val=“ffff8a”>빌더</c>는 게임을 종료하거나 “-gg”를 입력하여 항복할 수 있습니다.
+Param/Value/CEF41543=0
+Param/Value/E33F8417=0
+Param/Value/E539788E=0
+Param/Value/F4D1DCD3=<c val=“ffff8a”>-r/-R</c>: 유닛 해제(빌더는 SCBW 대군주만 해제 가능)<n/><n/><c val=“ffff8a”>-gg/-GG</c>: 항복(빌더만 사용 가능)
+Variant001/ModeDesc=아콘 모드에서 영감을 받은 모드입니다.
+Variant001/ModeName=N 싸움 1 빌드

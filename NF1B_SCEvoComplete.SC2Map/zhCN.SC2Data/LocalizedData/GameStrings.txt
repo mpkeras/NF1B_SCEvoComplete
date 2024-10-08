@@ -1,0 +1,77 @@
+﻿Attribute001/Desc=在星际争霸2和星际争霸1：母巢之战两个版本间选择种族
+Attribute001/Name=游戏种族
+Attribute001/Value001/Desc=将游戏种族变更为星际争霸1：母巢之战
+Attribute001/Value001/Name=星际1
+Attribute001/Value002/Desc=将游戏种族变更为星际争霸2
+Attribute001/Value002/Name=星际2
+Attribute001/Value003/Desc=在星际争霸2和星际争霸1：母巢之战两个版本间随机选择种族
+Attribute001/Value003/Name=随机
+Attribute002/Desc=在运营和控兵之间选择角色
+Attribute002/Name=角色
+Attribute002/Value001/Name=运营
+Attribute002/Value002/Name=控兵
+DocInfo/DescLong=受执政官模式和 SC: Evo Complete 模组启发的地图。本地图的触发器代码经过完全重写，没有使用类似地图的代码。<n/><n/>感谢 SC: Evo Complete 模组作者的辛勤付出。
+DocInfo/DescShort=12
+DocInfo/HowToPlayBasic00=所有玩家分为两个队伍，每个队伍有一个运营和多个控兵
+DocInfo/HowToPlayBasic01=如果你是运营，为控兵训练单位
+DocInfo/HowToPlayBasic02=如果你是控兵，控制单位在战场上打赢敌人
+DocInfo/HowToPlayWinning00=摧毁敌人的所有建筑
+DocInfo/Name=N打1造 (SC: Evo Complete)
+DocInfo/PatchNote001=v0.1
+DocInfo/Website=https://github.com/mpkeras/NF1B_SCEvoComplete
+Effect/Name/GhostSCBWNuclearStrike@CPNF1B=CP NF1B
+Effect/Name/GhostSCBWNuclearStrike@CalldownDummyNF1B=Calldown Dummy NF1B
+Effect/Name/GhostSCBWNuclearStrike@CalldownNF1B=Calldown NF1B
+Effect/Name/GhostSCBWNuclearStrike@CalldownSwitchNF1B=Calldown Switch NF1B
+Effect/Name/NukeNF1B=Nuke NF1B
+Effect/Name/NukeNF1BPersistent=Nuke NF1B
+LoadingScreen/TextBody=受执政官模式和 SC: Evo Complete 模组启发的地图。本地图的触发器代码经过完全重写，没有使用类似地图的代码。<n/><n/>感谢 SC: Evo Complete 模组作者的辛勤付出。
+LoadingScreen/Title=N打1造 (SC: Evo Complete)
+MapInfo/Player00/Name=Neutral
+MapInfo/Player01/Name=Player 1
+MapInfo/Player02/Name=Player 2
+MapInfo/Player03/Name=Player 3
+MapInfo/Player04/Name=Player 4
+MapInfo/Player05/Name=Player 5
+MapInfo/Player06/Name=Player 6
+MapInfo/Player07/Name=Player 7
+MapInfo/Player08/Name=Player 8
+MapInfo/Player09/Name=Player 9
+MapInfo/Player10/Name=Player 10
+MapInfo/Player11/Name=Player 11
+MapInfo/Player12/Name=Player 12
+MapInfo/Player13/Name=Player 13
+MapInfo/Player14/Name=Player 14
+MapInfo/Player15/Name=Hostile
+MapInfo/Team00/Name=1v1 top
+MapInfo/Team01/Name=1v1 bot
+MapInfo/Team02/Name=exp1v1 top
+MapInfo/Team03/Name=exp1v1 bot
+MapInfo/Team04/Name=2v2 Bottom
+MapInfo/Team05/Name=2v2 top
+Param/Value/047E93E7=提示: 如果你的种族是星际2虫族，运营需要按两次S键（默认为S）来选择需要二阶段变异的单位。
+Param/Value/2AB137AB=你的角色是<c val="ffff8a">控兵</c>，控制单位在战场上打赢敌人。
+Param/Value/3C5BF2EE=你的角色是<c val="ffff8a">运营</c>，为控兵训练单位。
+Param/Value/3D947A37=The MIT License (MIT)<n/><n/>Copyright (c) 2016 Abraham Yunes<n/><n/>Permission is hereby granted, free of charge, to any person obtaining a copy<n/>of this software and associated documentation files (the "Software"), to deal<n/>in the Software without restriction, including without limitation the rights<n/>to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<n/>copies of the Software, and to permit persons to whom the Software is<n/>furnished to do so, subject to the following conditions:<n/><n/>The above copyright notice and this permission notice shall be included in all<n/>copies or substantial portions of the Software.<n/><n/>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<n/>IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<n/>FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<n/>AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<n/>LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<n/>OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<n/>SOFTWARE.
+Param/Value/5698279A=提示: 补给上限为400。
+Param/Value/5ED931F6=命令
+Param/Value/6FD47613=队伍1只剩下一名玩家。队伍2获胜。
+Param/Value/738A54F4=队伍2只剩下一名玩家。队伍1获胜。
+Param/Value/7998EB08=提示: <c val="ffff8a">感应塔</c>拥有<c val="ffff8a">扫描</c>技能且能被控兵直接控制。
+Param/Value/7BA683E0=你的角色是<c val="ffff8a">运营</c>，为控兵训练单位。
+Param/Value/7C2BA5DC=队伍1的运营投降。队伍2获胜。
+Param/Value/9F90689B=提示: 控兵不能变异手中的单位。所有需要二阶段变异的单位需要运营直接训练。
+Param/Value/A283F7C2=队伍2的运营投降。队伍1获胜。
+Param/Value/A34A344A=提示: 如果你的种族是星际2虫族，运营需要按两次S键（默认为S）来选择需要二阶段变异的单位。
+Param/Value/AEE0382B=提示: 查看左上角以获得种族信息。
+Param/Value/B902116F=你的角色是<c val="ffff8a">控兵</c>，控制单位在战场上打赢敌人。
+Param/Value/B9FAD2E2=提示: 控兵不能变异手中的单位。所有需要二阶段变异的单位需要运营直接训练。
+Param/Value/BC76442D=提示: <c val="ffff8a">感应塔</c>拥有<c val="ffff8a">扫描</c>技能且能被控兵直接控制。
+Param/Value/C0AF10B1=0
+Param/Value/CA3F7518=提示: 如果败局已定，运营可以通过直接退出游戏或输入“-gg”来投降。
+Param/Value/CEF41543=0
+Param/Value/E33F8417=0
+Param/Value/E539788E=0
+Param/Value/F4D1DCD3=<c val="ffff8a">-r/-R</c>: 释放单位（运营只能释放星际1王虫）<n/><n/><c val="ffff8a">-gg/-GG</c>: 投降（仅限运营使用）
+Variant001/ModeDesc=受执政官模式启发的模式
+Variant001/ModeName=N打1造

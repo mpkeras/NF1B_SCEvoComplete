@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BankList>
+    <Bank Name="HelloTest" Player="1"/>
+    <Bank Name="SCEvoCore" Player="1"/>
+    <Bank Name="SCEvoCore" Player="2"/>
+    <Bank Name="SCEvoCore" Player="3"/>
+    <Bank Name="SCEvoCore" Player="4"/>
+    <Bank Name="SCEvoCore" Player="5"/>
+    <Bank Name="SCEvoCore" Player="6"/>
+    <Bank Name="SCEvoCore" Player="7"/>
+    <Bank Name="SCEvoCore" Player="8"/>
+    <Bank Name="SCEvoCore" Player="9"/>
+    <Bank Name="SCEvoCore" Player="10"/>
+    <Bank Name="SCEvoCore" Player="11"/>
+    <Bank Name="SCEvoCore" Player="12"/>
+    <Bank Name="SCEvoMeleeStats" Player="1"/>
+    <Bank Name="SCEvoMeleeStats" Player="2"/>
+    <Bank Name="SCEvoMeleeStats" Player="3"/>
+    <Bank Name="SCEvoMeleeStats" Player="4"/>
+    <Bank Name="SCEvoMeleeStats" Player="5"/>
+    <Bank Name="SCEvoMeleeStats" Player="6"/>
+    <Bank Name="SCEvoMeleeStats" Player="7"/>
+    <Bank Name="SCEvoMeleeStats" Player="8"/>
+    <Bank Name="SCEvoMeleeStats" Player="9"/>
+    <Bank Name="SCEvoMeleeStats" Player="10"/>
+    <Bank Name="SCEvoMeleeStats" Player="11"/>
+    <Bank Name="SCEvoMeleeStats" Player="12"/>
+</BankList>

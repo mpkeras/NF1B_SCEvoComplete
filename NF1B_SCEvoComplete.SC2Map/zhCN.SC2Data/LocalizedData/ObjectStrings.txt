@@ -1,0 +1,12 @@
+﻿Actor/Name/GhostNukeLaunchNF1B=Ghost Nuke Launch NF1B
+Actor/Name/GhostSCBWNuclearStrike@LaunchNF1B=Launch NF1B
+Button/EditorPrefix/DevourerSCBW2=SCBW -
+Button/EditorPrefix/DevourerSCBWE=SCBW -
+Button/EditorPrefix/LurkerSCBWA=SCBW -
+Button/EditorSuffix/DevourerSCBW2=(E)
+Button/EditorSuffix/DevourerSCBWE=(E)
+Button/EditorSuffix/LurkerSCBWA=(A)
+Effect/EditorPrefix/NukeNF1B=Ghost -
+Effect/EditorPrefix/NukeNF1BPersistent=Ghost -
+Effect/EditorSuffix/NukeNF1B=(Calldown)
+Effect/EditorSuffix/NukeNF1BPersistent=(Persistent)
