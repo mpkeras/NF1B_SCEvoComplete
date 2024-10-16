@@ -11,6 +11,11 @@ DocInfo/HowToPlayBasic02=If you are a fighter, control the units to defeat the e
 DocInfo/HowToPlayWinning00=Destroy all enemy structures
 DocInfo/Name=N Fight 1 Builds (SC: Evo Complete)
 DocInfo/PatchNote001=v0.1
+DocInfo/PatchNote002=Fixed an issue where mind control abilities may cause supply count error
+DocInfo/PatchNote003=Fixed an issue where resource panel may show the other team's resources
+DocInfo/PatchNote004=Fixed an issue where carrier and reaver without player control can not construct interceptors and scarabs
+DocInfo/PatchNote005=Fixed an issue where fighter can not return resources correctly to builder when canceling the construction of interceptors and scarabs
+DocInfo/PatchNote006=Fixed an issue where the race icons in the upper left corner are not the same size
 DocInfo/Website=https://github.com/mpkeras/NF1B_SCEvoComplete
 Effect/Name/GhostSCBWNuclearStrike@CPNF1B=CP NF1B
 Effect/Name/GhostSCBWNuclearStrike@CalldownDummyNF1B=Calldown Dummy NF1B
@@ -43,27 +48,25 @@ MapInfo/Team03/Name=exp1v1 bot
 MapInfo/Team04/Name=2v2 Bottom
 MapInfo/Team05/Name=2v2 top
 Param/Value/047E93E7=Tip: If your race is SC2 Zerg, the builder need press the S button (default is S) twice to choose units which require a second phase mutation.
-Param/Value/2AB137AB=Your role is <c val="ffff8a">Fighter</c>, control the soldiers to defeat the enemy on the battlefield.
-Param/Value/3C5BF2EE=Your role is <c val="ffff8a">Builder</c>, train soldiers for the fighters.
-Param/Value/3D947A37=The MIT License (MIT)<n/><n/>Copyright (c) 2016 Abraham Yunes<n/><n/>Permission is hereby granted, free of charge, to any person obtaining a copy<n/>of this software and associated documentation files (the "Software"), to deal<n/>in the Software without restriction, including without limitation the rights<n/>to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<n/>copies of the Software, and to permit persons to whom the Software is<n/>furnished to do so, subject to the following conditions:<n/><n/>The above copyright notice and this permission notice shall be included in all<n/>copies or substantial portions of the Software.<n/><n/>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<n/>IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<n/>FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<n/>AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<n/>LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<n/>OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<n/>SOFTWARE.
+Param/Value/10816450=Your role is <c val="ffff8a">Fighter</c>, control the soldiers to defeat the enemy on the battlefield.
 Param/Value/5698279A=Tip: The Supply Limit is 400.
 Param/Value/5ED931F6=Commands
+Param/Value/6AE9E7D6=Your role is <c val="ffff8a">Fighter</c>, control the soldiers to defeat the enemy on the battlefield.
 Param/Value/6FD47613=There's only one player left in team 1. Team 2 win.
 Param/Value/738A54F4=There's only one player left in team 2. Team 1 win.
 Param/Value/7998EB08=Tip: <c val="ffff8a">Sensor towers</c> have <c val="ffff8a">Scanner Sweep</c> Abilities and can be controlled directly by the fighter.
-Param/Value/7BA683E0=Your role is <c val="ffff8a">Builder</c>, train soldiers for the fighters.
 Param/Value/7C2BA5DC=Team 1's builder surrendered. Team 2 win.
 Param/Value/9F90689B=Tip: The fighters' units cannot mutate units in their hand. All units that require a second phase mutation need to be trained by builders directly.
 Param/Value/A283F7C2=Team 2's builder surrendered. Team 1 win.
 Param/Value/A34A344A=Tip: If your race is SC2 Zerg, the builder need press the S button (default is S) twice to choose units which require a second phase mutation.
 Param/Value/AEE0382B=Tip: Check the top left corner for information of Races.
-Param/Value/B902116F=Your role is <c val="ffff8a">Fighter</c>, control the soldiers to defeat the enemy on the battlefield.
 Param/Value/B9FAD2E2=Tip: The fighters' units cannot mutate units in their hand. All units that require a second phase mutation need to be trained by builders directly.
-Param/Value/BA4EC2BF=LICENSE for SC: Evo Complete
 Param/Value/BC76442D=Tip: <c val="ffff8a">Sensor towers</c> have <c val="ffff8a">Scanner Sweep</c> Abilities and can be controlled directly by the fighter.
 Param/Value/C0AF10B1=0
 Param/Value/CA3F7518=Tip: If defeat is assured, the <c val="ffff8a">Builder</c> can surrender by simply exiting the game or entering "-gg".
+Param/Value/CAE6A306=Your role is <c val="ffff8a">Builder</c>, train soldiers for the fighters.
 Param/Value/CEF41543=0
+Param/Value/CF2DDDB5=Your role is <c val="ffff8a">Builder</c>, train soldiers for the fighters.
 Param/Value/E33F8417=0
 Param/Value/E539788E=0
 Param/Value/F4D1DCD3=<c val="ffff8a">-r/-R</c>: Release units (Builders can only release SCBW overlords)<n/><n/><c val="ffff8a">-gg/-GG</c>: Surrender (For builders use only)

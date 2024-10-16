@@ -7,18 +7,20 @@
         <Value>EditorData\Images\UI_Arcade_IconUltraArchon.tga</Value>
     </Icon>
     <Dependencies>
-        <Value>bnet:SC: Evo Complete/0.0/215951</Value>
-        <Value>bnet:NF1B_VoidMulti/0.0/236331</Value>
+        <Value>bnet:NF1B_SCEvoMulti/0.0/236353</Value>
     </Dependencies>
     <PatchNote>
         <Version>
             <Value>0.1</Value>
+            <Value>0.2</Value>
         </Version>
         <Date>
             <Value>1/1/2077</Value>
+            <Value>1/2/2077</Value>
         </Date>
         <Notes>
             <Value>1</Value>
+            <Value>2,3,4,5,6</Value>
         </Notes>
     </PatchNote>
 </DocInfo>

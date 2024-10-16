@@ -34,25 +34,28 @@ struct gs_teamInfo {
     int lv_playerNum;
     int lv_builder;
     playergroup lv_fighterGroup;
-    int lv_neutral;
     string lv_race;
     int lv_playerColor;
     color lv_color;
     point lv_startLocation;
     fixed lv_supplyMade;
     fixed lv_supplyUsed;
+    int lv_mineralText;
+    int lv_vespeneText;
     unitgroup lv_ghostGroup;
     unitgroup lv_nexusGroup;
+};
+
+struct gs_playerGroupInfo {
+    playergroup lv_users;
+    playergroup lv_players;
+    playergroup lv_fightersWithNeutral;
 };
 
 //--------------------------------------------------------------------------------------------------
 // Global Variables
 //--------------------------------------------------------------------------------------------------
 int gv_debug;
-int gv_mineral1;
-int gv_vespene1;
-int gv_mineral2;
-int gv_vespene2;
 bool gv_ggFlag;
 bool gv_tipSensorTowerFlag1;
 bool gv_tipSensorTowerFlag2;
@@ -60,38 +63,30 @@ gs_sharedUnit gv_sharedUnit1;
 gs_sharedUnit gv_sharedUnit2;
 gs_teamInfo gv_teamInfo1;
 gs_teamInfo gv_teamInfo2;
-playergroup gv_playerGroup1;
-playergroup gv_playerGroup2;
-playergroup gv_playerGroupAll1;
-playergroup gv_playerGroupAll2;
-playergroup gv_fighterGroup1;
-playergroup gv_fighterGroup2;
-playergroup gv_fighterGroupAll1;
-playergroup gv_fighterGroupAll2;
+gs_playerGroupInfo gv_playerGroupInfo1;
+gs_playerGroupInfo gv_playerGroupInfo2;
 int gv_pv_releaseToChangeOwner;
 
 void InitGlobals () {
     gv_debug = 1;
-    gv_mineral1 = c_invalidDialogControlId;
-    gv_vespene1 = c_invalidDialogControlId;
-    gv_mineral2 = c_invalidDialogControlId;
-    gv_vespene2 = c_invalidDialogControlId;
     gv_teamInfo1.lv_fighterGroup = PlayerGroupEmpty();
     gv_teamInfo1.lv_color = Color(100,100,100);
+    gv_teamInfo1.lv_mineralText = c_invalidDialogControlId;
+    gv_teamInfo1.lv_vespeneText = c_invalidDialogControlId;
     gv_teamInfo1.lv_ghostGroup = UnitGroupEmpty();
     gv_teamInfo1.lv_nexusGroup = UnitGroupEmpty();
     gv_teamInfo2.lv_fighterGroup = PlayerGroupEmpty();
     gv_teamInfo2.lv_color = Color(100,100,100);
+    gv_teamInfo2.lv_mineralText = c_invalidDialogControlId;
+    gv_teamInfo2.lv_vespeneText = c_invalidDialogControlId;
     gv_teamInfo2.lv_ghostGroup = UnitGroupEmpty();
     gv_teamInfo2.lv_nexusGroup = UnitGroupEmpty();
-    gv_playerGroup1 = PlayerGroupEmpty();
-    gv_playerGroup2 = PlayerGroupEmpty();
-    gv_playerGroupAll1 = PlayerGroupEmpty();
-    gv_playerGroupAll2 = PlayerGroupEmpty();
-    gv_fighterGroup1 = PlayerGroupEmpty();
-    gv_fighterGroup2 = PlayerGroupEmpty();
-    gv_fighterGroupAll1 = PlayerGroupEmpty();
-    gv_fighterGroupAll2 = PlayerGroupEmpty();
+    gv_playerGroupInfo1.lv_users = PlayerGroupEmpty();
+    gv_playerGroupInfo1.lv_players = PlayerGroupEmpty();
+    gv_playerGroupInfo1.lv_fightersWithNeutral = PlayerGroupEmpty();
+    gv_playerGroupInfo2.lv_users = PlayerGroupEmpty();
+    gv_playerGroupInfo2.lv_players = PlayerGroupEmpty();
+    gv_playerGroupInfo2.lv_fightersWithNeutral = PlayerGroupEmpty();
     gv_pv_releaseToChangeOwner = 1;
 }
 
@@ -100,8 +95,13 @@ void InitGlobals () {
 //--------------------------------------------------------------------------------------------------
 void gf_SetPlayerRaceToBW (int lp_player);
 void gf_SetPlayerRaceToSC2 (int lp_player);
+unit gf_ReturnTownBuildingUnitType (int lp_player);
 void gf_wait (int lp_s);
 void gf_signal (int lp_s);
+void gf_openSupplyShareTrigger1 ();
+void gf_openSupplyShareTrigger2 ();
+void gf_closeSupplyShareTrigger1 ();
+void gf_closeSupplyShareTrigger2 ();
 
 //--------------------------------------------------------------------------------------------------
 // Trigger Variables
@@ -118,6 +118,7 @@ trigger gt_playerGroup;
 trigger gt_startLocation;
 trigger gt_roleSelection1;
 trigger gt_roleSelection2;
+trigger gt_figherGroup;
 trigger gt_meleeSettings1;
 trigger gt_meleeSettings2;
 trigger gt_nexusGroupInit;
@@ -126,8 +127,8 @@ trigger gt_resource;
 trigger gt_supplySettings;
 trigger gt_allianceSettings;
 trigger gt_supplyLimit;
+trigger gt_tipRole;
 trigger gt_tipCommands;
-trigger gt_tipLICENSE;
 trigger gt_tipGG;
 trigger gt_tipSensorTower;
 trigger gt_tipSupplyLimit;
@@ -138,18 +139,23 @@ trigger gt_fighterQuit;
 trigger gt_builderInfoDisplay;
 trigger gt_resourceDisplay1;
 trigger gt_resourceDisplay2;
-trigger gt_resourceUpdate1;
-trigger gt_resourceUpdate2;
-trigger gt_addBySupplyDrop;
-trigger gt_addByConstructComplete;
-trigger gt_addByTrainComplete;
-trigger gt_addByWarpStart;
-trigger gt_decByConstructStarted;
-trigger gt_addByTrainStart;
-trigger gt_decByTrainCancel;
+trigger gt_builderMineralUpdate1;
+trigger gt_builderVespeneUpdate1;
+trigger gt_fighterMineralUpdate1;
+trigger gt_fighterVespeneUpdate1;
+trigger gt_builderMineralUpdate2;
+trigger gt_builderVespeneUpdate2;
+trigger gt_fighterMineralUpdate2;
+trigger gt_fighterVespeneUpdate2;
 trigger gt_unchangeByChangeOwner;
-trigger gt_decByFighterDie;
-trigger gt_decByBuilderDie;
+trigger gt_builderMadeChange1;
+trigger gt_builderUsedChange1;
+trigger gt_fighterMadeChange1;
+trigger gt_fighterUsedChange1;
+trigger gt_builderMadeChange2;
+trigger gt_builderUsedChange2;
+trigger gt_fighterMadeChange2;
+trigger gt_fighterUsedChange2;
 trigger gt_structureShare;
 trigger gt_upgrade;
 trigger gt_armoryAdd;
@@ -225,6 +231,53 @@ void gf_SetPlayerRaceToSC2 (int lp_player) {
     }
 }
 
+unit gf_ReturnTownBuildingUnitType (int lp_player) {
+    // Variable Declarations
+    string lv_townBuildingType;
+    unit lv_townUnit;
+
+    // Automatic Variable Declarations
+    string auto26A44178_val;
+    unitgroup auto9AD84FEF_g;
+    int auto9AD84FEF_u;
+    unit auto9AD84FEF_var;
+
+    // Variable Initialization
+
+    // Implementation
+    Wait(0.005, c_timeGame);
+    auto26A44178_val = PlayerRace(lp_player);
+    if (auto26A44178_val == "Prot") {
+        lv_townBuildingType = "Nexus";
+    }
+    else if (auto26A44178_val == "Terr") {
+        lv_townBuildingType = "CommandCenter";
+    }
+    else if (auto26A44178_val == "Zerg") {
+        lv_townBuildingType = "Hatchery";
+    }
+    else if (auto26A44178_val == "BWPr") {
+        lv_townBuildingType = "NexusSCBW";
+    }
+    else if (auto26A44178_val == "BWTe") {
+        lv_townBuildingType = "CommandCenterSCBW";
+    }
+    else if (auto26A44178_val == "BWZe") {
+        lv_townBuildingType = "HatcherySCBW";
+    }
+    else {
+        return null;
+    }
+    auto9AD84FEF_g = UnitGroup(null, lp_player, RegionEntireMap(), UnitFilter((1 << c_targetFilterStructure), 0, (1 << c_targetFilterMissile), (1 << (c_targetFilterDead - 32)) | (1 << (c_targetFilterHidden - 32))), 1);
+    auto9AD84FEF_u = UnitGroupCount(auto9AD84FEF_g, c_unitCountAll);
+    for (;; auto9AD84FEF_u -= 1) {
+        auto9AD84FEF_var = UnitGroupUnitFromEnd(auto9AD84FEF_g, auto9AD84FEF_u);
+        if (auto9AD84FEF_var == null) { break; }
+        lv_townUnit = auto9AD84FEF_var;
+    }
+    return lv_townUnit;
+}
+
 void gf_wait (int lp_s) {
     // Automatic Variable Declarations
     // Implementation
@@ -239,6 +292,42 @@ void gf_signal (int lp_s) {
         TriggerExecute(gt_unlock_pv_releaseToChangeOwner, true, false);
     }
 
+}
+
+void gf_openSupplyShareTrigger1 () {
+    // Automatic Variable Declarations
+    // Implementation
+    TriggerEnable(gt_builderUsedChange1, true);
+    TriggerEnable(gt_builderMadeChange1, true);
+    TriggerEnable(gt_fighterUsedChange1, true);
+    TriggerEnable(gt_fighterMadeChange1, true);
+}
+
+void gf_openSupplyShareTrigger2 () {
+    // Automatic Variable Declarations
+    // Implementation
+    TriggerEnable(gt_builderUsedChange2, true);
+    TriggerEnable(gt_builderMadeChange2, true);
+    TriggerEnable(gt_fighterUsedChange2, true);
+    TriggerEnable(gt_fighterMadeChange2, true);
+}
+
+void gf_closeSupplyShareTrigger1 () {
+    // Automatic Variable Declarations
+    // Implementation
+    TriggerEnable(gt_builderUsedChange1, false);
+    TriggerEnable(gt_builderMadeChange1, false);
+    TriggerEnable(gt_fighterUsedChange1, false);
+    TriggerEnable(gt_fighterMadeChange1, false);
+}
+
+void gf_closeSupplyShareTrigger2 () {
+    // Automatic Variable Declarations
+    // Implementation
+    TriggerEnable(gt_builderUsedChange2, false);
+    TriggerEnable(gt_builderMadeChange2, false);
+    TriggerEnable(gt_fighterUsedChange2, false);
+    TriggerEnable(gt_fighterMadeChange2, false);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -271,12 +360,12 @@ bool gt_controlon_Func (bool testConds, bool runActions) {
         return true;
     }
 
-    if ((PlayerGroupHasPlayer(gv_playerGroup1, EventPlayer()) == true)) {
-        libNtve_gf_SetPlayerGroupAlliance(gv_playerGroup1, libNtve_ge_AllianceSetting_AllyWithSharedVisionControlAndSpending);
+    if ((PlayerGroupHasPlayer(gv_playerGroupInfo1.lv_users, EventPlayer()) == true)) {
+        libNtve_gf_SetPlayerGroupAlliance(gv_playerGroupInfo1.lv_users, libNtve_ge_AllianceSetting_AllyWithSharedVisionControlAndSpending);
     }
 
-    if ((PlayerGroupHasPlayer(gv_playerGroup2, EventPlayer()) == true)) {
-        libNtve_gf_SetPlayerGroupAlliance(gv_playerGroup2, libNtve_ge_AllianceSetting_AllyWithSharedVisionControlAndSpending);
+    if ((PlayerGroupHasPlayer(gv_playerGroupInfo2.lv_users, EventPlayer()) == true)) {
+        libNtve_gf_SetPlayerGroupAlliance(gv_playerGroupInfo2.lv_users, libNtve_ge_AllianceSetting_AllyWithSharedVisionControlAndSpending);
     }
 
     return true;
@@ -305,12 +394,12 @@ bool gt_controloff_Func (bool testConds, bool runActions) {
         return true;
     }
 
-    if ((PlayerGroupHasPlayer(gv_playerGroup1, EventPlayer()) == true)) {
-        libNtve_gf_SetPlayerGroupAlliance(gv_playerGroup1, libNtve_ge_AllianceSetting_AllyWithSharedVision);
+    if ((PlayerGroupHasPlayer(gv_playerGroupInfo1.lv_users, EventPlayer()) == true)) {
+        libNtve_gf_SetPlayerGroupAlliance(gv_playerGroupInfo1.lv_users, libNtve_ge_AllianceSetting_AllyWithSharedVision);
     }
 
-    if ((PlayerGroupHasPlayer(gv_playerGroup2, EventPlayer()) == true)) {
-        libNtve_gf_SetPlayerGroupAlliance(gv_playerGroup2, libNtve_ge_AllianceSetting_AllyWithSharedVision);
+    if ((PlayerGroupHasPlayer(gv_playerGroupInfo2.lv_users, EventPlayer()) == true)) {
+        libNtve_gf_SetPlayerGroupAlliance(gv_playerGroupInfo2.lv_users, libNtve_ge_AllianceSetting_AllyWithSharedVision);
     }
 
     return true;
@@ -341,9 +430,11 @@ bool gt_cheat_Func (bool testConds, bool runActions) {
 
     ConsoleCommand("CatFoodForPrawnGuns", true, true);
     ConsoleCommand("Bunker55AliveInside", true, true);
-    ConsoleCommand("WhoRunBartertown", true, true);
-    ConsoleCommand("WhoRunBartertown", true, true);
     ConsoleCommand("TookTheRedPill", true, true);
+    PlayerModifyPropertyFixed(gv_teamInfo1.lv_builder, c_playerPropMinerals, c_playerPropOperSetTo, 10000.0);
+    PlayerModifyPropertyFixed(gv_teamInfo1.lv_builder, c_playerPropVespene, c_playerPropOperSetTo, 10000.0);
+    PlayerModifyPropertyFixed(gv_teamInfo2.lv_builder, c_playerPropMinerals, c_playerPropOperSetTo, 10000.0);
+    PlayerModifyPropertyFixed(gv_teamInfo2.lv_builder, c_playerPropVespene, c_playerPropOperSetTo, 10000.0);
     return true;
 }
 
@@ -484,6 +575,7 @@ bool gt_initialization_Func (bool testConds, bool runActions) {
     TriggerExecute(gt_startLocation, true, true);
     TriggerExecute(gt_roleSelection1, true, true);
     TriggerExecute(gt_roleSelection2, true, true);
+    TriggerExecute(gt_figherGroup, true, true);
     TriggerExecute(gt_meleeSettings1, true, false);
     TriggerExecute(gt_meleeSettings2, true, false);
     TriggerExecute(gt_nexusGroupInit, true, false);
@@ -511,27 +603,19 @@ bool gt_playerGroup_Func (bool testConds, bool runActions) {
     }
 
     if ((gv_debug == 1)) {
-        PlayerGroupAdd(gv_playerGroup1, 1);
-        PlayerGroupAdd(gv_playerGroup1, 2);
-        PlayerGroupAdd(gv_playerGroup1, 3);
-        PlayerGroupAdd(gv_playerGroup1, 4);
-        PlayerGroupAdd(gv_playerGroup1, 5);
-        PlayerGroupAdd(gv_playerGroup1, 6);
-        PlayerGroupAdd(gv_playerGroup2, 7);
-        PlayerGroupAdd(gv_playerGroup2, 8);
-        PlayerGroupAdd(gv_playerGroup2, 9);
-        PlayerGroupAdd(gv_playerGroup2, 10);
-        PlayerGroupAdd(gv_playerGroup2, 11);
-        PlayerGroupAdd(gv_playerGroup2, 12);
+        PlayerGroupAdd(gv_playerGroupInfo1.lv_users, 1);
+        PlayerGroupAdd(gv_playerGroupInfo1.lv_users, 2);
+        PlayerGroupAdd(gv_playerGroupInfo2.lv_users, 3);
+        PlayerGroupAdd(gv_playerGroupInfo2.lv_users, 4);
     }
     else {
-        libNtve_gf_AddPlayerGroupToPlayerGroup(GameAttributePlayersForTeam(1), gv_playerGroup1);
-        libNtve_gf_AddPlayerGroupToPlayerGroup(GameAttributePlayersForTeam(2), gv_playerGroup2);
+        libNtve_gf_AddPlayerGroupToPlayerGroup(GameAttributePlayersForTeam(1), gv_playerGroupInfo1.lv_users);
+        libNtve_gf_AddPlayerGroupToPlayerGroup(GameAttributePlayersForTeam(2), gv_playerGroupInfo2.lv_users);
     }
-    libNtve_gf_AddPlayerGroupToPlayerGroup(gv_playerGroup1, gv_playerGroupAll1);
-    PlayerGroupAdd(gv_playerGroupAll1, 13);
-    libNtve_gf_AddPlayerGroupToPlayerGroup(gv_playerGroup2, gv_playerGroupAll2);
-    PlayerGroupAdd(gv_playerGroupAll2, 14);
+    libNtve_gf_AddPlayerGroupToPlayerGroup(gv_playerGroupInfo1.lv_users, gv_playerGroupInfo1.lv_players);
+    PlayerGroupAdd(gv_playerGroupInfo1.lv_players, 13);
+    libNtve_gf_AddPlayerGroupToPlayerGroup(gv_playerGroupInfo2.lv_users, gv_playerGroupInfo2.lv_players);
+    PlayerGroupAdd(gv_playerGroupInfo2.lv_players, 14);
     return true;
 }
 
@@ -601,8 +685,8 @@ bool gt_roleSelection1_Func (bool testConds, bool runActions) {
         return true;
     }
 
-    gv_teamInfo1.lv_playerNum = PlayerGroupCount(gv_playerGroup1);
-    auto6E279BA0_g = gv_playerGroup1;
+    gv_teamInfo1.lv_playerNum = PlayerGroupCount(gv_playerGroupInfo1.lv_users);
+    auto6E279BA0_g = gv_playerGroupInfo1.lv_users;
     auto6E279BA0_var = -1;
     while (true) {
         auto6E279BA0_var = PlayerGroupNextPlayer(auto6E279BA0_g, auto6E279BA0_var);
@@ -617,7 +701,7 @@ bool gt_roleSelection1_Func (bool testConds, bool runActions) {
     }
     if ((lv__builderNum == 0)) {
         lv__random = RandomInt(1, gv_teamInfo1.lv_playerNum);
-        autoFA0E8ECD_g = gv_playerGroup1;
+        autoFA0E8ECD_g = gv_playerGroupInfo1.lv_users;
         autoFA0E8ECD_var = -1;
         while (true) {
             autoFA0E8ECD_var = PlayerGroupNextPlayer(autoFA0E8ECD_g, autoFA0E8ECD_var);
@@ -693,8 +777,8 @@ bool gt_roleSelection2_Func (bool testConds, bool runActions) {
         return true;
     }
 
-    gv_teamInfo2.lv_playerNum = PlayerGroupCount(gv_playerGroup2);
-    auto917A7A0B_g = gv_playerGroup2;
+    gv_teamInfo2.lv_playerNum = PlayerGroupCount(gv_playerGroupInfo2.lv_users);
+    auto917A7A0B_g = gv_playerGroupInfo2.lv_users;
     auto917A7A0B_var = -1;
     while (true) {
         auto917A7A0B_var = PlayerGroupNextPlayer(auto917A7A0B_g, auto917A7A0B_var);
@@ -709,7 +793,7 @@ bool gt_roleSelection2_Func (bool testConds, bool runActions) {
     }
     if ((lv__builderNum == 0)) {
         lv__random = RandomInt(1, gv_teamInfo2.lv_playerNum);
-        autoE2E4353C_g = gv_playerGroup2;
+        autoE2E4353C_g = gv_playerGroupInfo2.lv_users;
         autoE2E4353C_var = -1;
         while (true) {
             autoE2E4353C_var = PlayerGroupNextPlayer(autoE2E4353C_g, autoE2E4353C_var);
@@ -757,26 +841,48 @@ void gt_roleSelection2_Init () {
 }
 
 //--------------------------------------------------------------------------------------------------
+// Trigger: figherGroup
+//--------------------------------------------------------------------------------------------------
+bool gt_figherGroup_Func (bool testConds, bool runActions) {
+    // Automatic Variable Declarations
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    libNtve_gf_AddPlayerGroupToPlayerGroup(gv_teamInfo1.lv_fighterGroup, gv_playerGroupInfo1.lv_fightersWithNeutral);
+    PlayerGroupAdd(gv_playerGroupInfo1.lv_fightersWithNeutral, 13);
+    libNtve_gf_AddPlayerGroupToPlayerGroup(gv_teamInfo2.lv_fighterGroup, gv_playerGroupInfo2.lv_fightersWithNeutral);
+    PlayerGroupAdd(gv_playerGroupInfo2.lv_fightersWithNeutral, 14);
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void gt_figherGroup_Init () {
+    gt_figherGroup = TriggerCreate("gt_figherGroup_Func");
+}
+
+//--------------------------------------------------------------------------------------------------
 // Trigger: meleeSettings1
 //--------------------------------------------------------------------------------------------------
 bool gt_meleeSettings1_Func (bool testConds, bool runActions) {
     // Automatic Variable Declarations
     playergroup auto0904068D_g;
     int auto0904068D_var;
+    playergroup auto35B5B55F_g;
+    int auto35B5B55F_var;
 
     // Actions
     if (!runActions) {
         return true;
     }
 
-    UIDisplayMessage(PlayerGroupSingle(gv_teamInfo1.lv_builder), c_messageAreaSubtitle, StringExternal("Param/Value/7BA683E0"));
-    UIDisplayMessage(gv_teamInfo1.lv_fighterGroup, c_messageAreaSubtitle, StringExternal("Param/Value/2AB137AB"));
     gv_teamInfo1.lv_race = PlayerRace(gv_teamInfo1.lv_builder);
     gv_teamInfo1.lv_playerColor = PlayerGetColorIndex(gv_teamInfo1.lv_builder, false);
     gv_teamInfo1.lv_color = libNtve_gf_ConvertPlayerColorToColor(PlayerGetColorIndex(gv_teamInfo1.lv_builder, false));
     MeleeInitResourcesForPlayer(gv_teamInfo1.lv_builder, gv_teamInfo1.lv_race);
     MeleeInitUnitsForPlayer(gv_teamInfo1.lv_builder, gv_teamInfo1.lv_race, gv_teamInfo1.lv_startLocation);
-    auto0904068D_g = gv_teamInfo1.lv_fighterGroup;
+    auto0904068D_g = gv_playerGroupInfo1.lv_fightersWithNeutral;
     auto0904068D_var = -1;
     while (true) {
         auto0904068D_var = PlayerGroupNextPlayer(auto0904068D_g, auto0904068D_var);
@@ -785,11 +891,16 @@ bool gt_meleeSettings1_Func (bool testConds, bool runActions) {
         PlayerSetColorIndex(auto0904068D_var, gv_teamInfo1.lv_playerColor, true);
         CameraPan(auto0904068D_var, gv_teamInfo1.lv_startLocation, 0.0, -1, 10.0, false);
     }
-    PlayerSetRace(13, gv_teamInfo1.lv_race);
-    PlayerSetColorIndex(13, gv_teamInfo1.lv_playerColor, true);
     MeleeSetOption(gv_teamInfo1.lv_builder, c_meleeOptionVictory, true);
     MeleeSetOption(gv_teamInfo1.lv_builder, c_meleeOptionDefeat, true);
     MeleeSetOption(gv_teamInfo1.lv_builder, c_meleeOptionReveal, true);
+    auto35B5B55F_g = gv_teamInfo1.lv_fighterGroup;
+    auto35B5B55F_var = -1;
+    while (true) {
+        auto35B5B55F_var = PlayerGroupNextPlayer(auto35B5B55F_g, auto35B5B55F_var);
+        if (auto35B5B55F_var < 0) { break; }
+        MeleeSetOption(auto35B5B55F_var, c_meleeOptionVictory, true);
+    }
     return true;
 }
 
@@ -805,20 +916,20 @@ bool gt_meleeSettings2_Func (bool testConds, bool runActions) {
     // Automatic Variable Declarations
     playergroup auto869F0C92_g;
     int auto869F0C92_var;
+    playergroup autoE8E602D4_g;
+    int autoE8E602D4_var;
 
     // Actions
     if (!runActions) {
         return true;
     }
 
-    UIDisplayMessage(PlayerGroupSingle(gv_teamInfo2.lv_builder), c_messageAreaSubtitle, StringExternal("Param/Value/3C5BF2EE"));
-    UIDisplayMessage(gv_teamInfo2.lv_fighterGroup, c_messageAreaSubtitle, StringExternal("Param/Value/B902116F"));
     gv_teamInfo2.lv_race = PlayerRace(gv_teamInfo2.lv_builder);
     gv_teamInfo2.lv_playerColor = PlayerGetColorIndex(gv_teamInfo2.lv_builder, false);
     gv_teamInfo2.lv_color = libNtve_gf_ConvertPlayerColorToColor(PlayerGetColorIndex(gv_teamInfo2.lv_builder, false));
     MeleeInitResourcesForPlayer(gv_teamInfo2.lv_builder, gv_teamInfo2.lv_race);
     MeleeInitUnitsForPlayer(gv_teamInfo2.lv_builder, gv_teamInfo2.lv_race, gv_teamInfo2.lv_startLocation);
-    auto869F0C92_g = gv_teamInfo2.lv_fighterGroup;
+    auto869F0C92_g = gv_playerGroupInfo2.lv_fightersWithNeutral;
     auto869F0C92_var = -1;
     while (true) {
         auto869F0C92_var = PlayerGroupNextPlayer(auto869F0C92_g, auto869F0C92_var);
@@ -827,11 +938,16 @@ bool gt_meleeSettings2_Func (bool testConds, bool runActions) {
         PlayerSetColorIndex(auto869F0C92_var, gv_teamInfo2.lv_playerColor, true);
         CameraPan(auto869F0C92_var, gv_teamInfo2.lv_startLocation, 0.0, -1, 10.0, false);
     }
-    PlayerSetRace(14, gv_teamInfo1.lv_race);
-    PlayerSetColorIndex(14, gv_teamInfo2.lv_playerColor, true);
     MeleeSetOption(gv_teamInfo2.lv_builder, c_meleeOptionVictory, true);
     MeleeSetOption(gv_teamInfo2.lv_builder, c_meleeOptionDefeat, true);
     MeleeSetOption(gv_teamInfo2.lv_builder, c_meleeOptionReveal, true);
+    autoE8E602D4_g = gv_teamInfo2.lv_fighterGroup;
+    autoE8E602D4_var = -1;
+    while (true) {
+        autoE8E602D4_var = PlayerGroupNextPlayer(autoE8E602D4_g, autoE8E602D4_var);
+        if (autoE8E602D4_var < 0) { break; }
+        MeleeSetOption(autoE8E602D4_var, c_meleeOptionVictory, true);
+    }
     return true;
 }
 
@@ -886,7 +1002,11 @@ bool gt_singleMode_Func (bool testConds, bool runActions) {
     // Automatic Variable Declarations
     // Conditions
     if (testConds) {
-        if (!((((PlayerGroupCount(gv_playerGroup1) != 0) && (PlayerGroupCount(gv_playerGroup2) == 0)) || ((PlayerGroupCount(gv_playerGroup2) != 0) && (PlayerGroupCount(gv_playerGroup1) == 0))))) {
+        if (!((gv_debug == 0))) {
+            return false;
+        }
+
+        if (!((((PlayerGroupCount(gv_playerGroupInfo1.lv_users) != 0) && (PlayerGroupCount(gv_playerGroupInfo2.lv_users) == 0)) || ((PlayerGroupCount(gv_playerGroupInfo1.lv_users) == 0) && (PlayerGroupCount(gv_playerGroupInfo2.lv_users) != 0))))) {
             return false;
         }
     }
@@ -988,28 +1108,28 @@ bool gt_allianceSettings_Func (bool testConds, bool runActions) {
         return true;
     }
 
-    libNtve_gf_SetPlayerGroupAlliance(gv_playerGroupAll1, libNtve_ge_AllianceSetting_AllyWithSharedVision);
-    libNtve_gf_SetAllianceAspectForPlayerGroup(gv_playerGroupAll1, c_allianceIdPower, true);
-    libNtve_gf_SetAllianceAspectForPlayerGroup(gv_playerGroupAll1, c_allianceIdSpend, true);
-    autoA43E557F_g = gv_playerGroup1;
+    libNtve_gf_SetPlayerGroupAlliance(gv_playerGroupInfo1.lv_players, libNtve_ge_AllianceSetting_AllyWithSharedVision);
+    libNtve_gf_SetAllianceAspectForPlayerGroup(gv_playerGroupInfo1.lv_players, c_allianceIdPower, true);
+    libNtve_gf_SetAllianceAspectForPlayerGroup(gv_playerGroupInfo1.lv_players, c_allianceIdSpend, true);
+    autoA43E557F_g = gv_playerGroupInfo1.lv_users;
     autoA43E557F_var = -1;
     while (true) {
         autoA43E557F_var = PlayerGroupNextPlayer(autoA43E557F_g, autoA43E557F_var);
         if (autoA43E557F_var < 0) { break; }
-        libNtve_gf_SetAlliance(autoA43E557F_var, 13, libNtve_ge_AllianceSetting_AllyWithSharedVisionAndControl);
+        PlayerSetAlliance(13, c_allianceIdControl, autoA43E557F_var, true);
     }
-    libNtve_gf_SetPlayerGroupAlliance(gv_playerGroupAll2, libNtve_ge_AllianceSetting_AllyWithSharedVision);
-    libNtve_gf_SetAllianceAspectForPlayerGroup(gv_playerGroupAll2, c_allianceIdPower, true);
-    libNtve_gf_SetAllianceAspectForPlayerGroup(gv_playerGroupAll2, c_allianceIdSpend, true);
-    auto3245329C_g = gv_playerGroup2;
+    libNtve_gf_SetPlayerGroupAlliance(gv_playerGroupInfo2.lv_players, libNtve_ge_AllianceSetting_AllyWithSharedVision);
+    libNtve_gf_SetAllianceAspectForPlayerGroup(gv_playerGroupInfo2.lv_players, c_allianceIdPower, true);
+    libNtve_gf_SetAllianceAspectForPlayerGroup(gv_playerGroupInfo2.lv_players, c_allianceIdSpend, true);
+    auto3245329C_g = gv_playerGroupInfo2.lv_users;
     auto3245329C_var = -1;
     while (true) {
         auto3245329C_var = PlayerGroupNextPlayer(auto3245329C_g, auto3245329C_var);
         if (auto3245329C_var < 0) { break; }
-        libNtve_gf_SetAlliance(auto3245329C_var, 14, libNtve_ge_AllianceSetting_AllyWithSharedVisionAndControl);
+        PlayerSetAlliance(14, c_allianceIdControl, auto3245329C_var, true);
     }
-    libNtve_gf_SetAllianceBetweenTwoPlayerGroups(gv_playerGroupAll1, gv_playerGroupAll2, libNtve_ge_AllianceSetting_Enemy);
-    libNtve_gf_SetAllianceBetweenTwoPlayerGroups(gv_playerGroupAll2, gv_playerGroupAll1, libNtve_ge_AllianceSetting_Enemy);
+    libNtve_gf_SetAllianceBetweenTwoPlayerGroups(gv_playerGroupInfo1.lv_players, gv_playerGroupInfo2.lv_players, libNtve_ge_AllianceSetting_Enemy);
+    libNtve_gf_SetAllianceBetweenTwoPlayerGroups(gv_playerGroupInfo2.lv_players, gv_playerGroupInfo1.lv_players, libNtve_ge_AllianceSetting_Enemy);
     return true;
 }
 
@@ -1048,6 +1168,29 @@ void gt_supplyLimit_Init () {
 }
 
 //--------------------------------------------------------------------------------------------------
+// Trigger: tipRole
+//--------------------------------------------------------------------------------------------------
+bool gt_tipRole_Func (bool testConds, bool runActions) {
+    // Automatic Variable Declarations
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    UIDisplayMessage(PlayerGroupSingle(gv_teamInfo1.lv_builder), c_messageAreaSubtitle, StringExternal("Param/Value/CF2DDDB5"));
+    UIDisplayMessage(gv_teamInfo1.lv_fighterGroup, c_messageAreaSubtitle, StringExternal("Param/Value/6AE9E7D6"));
+    UIDisplayMessage(PlayerGroupSingle(gv_teamInfo2.lv_builder), c_messageAreaSubtitle, StringExternal("Param/Value/CAE6A306"));
+    UIDisplayMessage(gv_teamInfo2.lv_fighterGroup, c_messageAreaSubtitle, StringExternal("Param/Value/10816450"));
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void gt_tipRole_Init () {
+    gt_tipRole = TriggerCreate("gt_tipRole_Func");
+    TriggerAddEventTimeElapsed(gt_tipRole, 0.0, c_timeReal);
+}
+
+//--------------------------------------------------------------------------------------------------
 // Trigger: tipCommands
 //--------------------------------------------------------------------------------------------------
 bool gt_tipCommands_Func (bool testConds, bool runActions) {
@@ -1057,7 +1200,7 @@ bool gt_tipCommands_Func (bool testConds, bool runActions) {
         return true;
     }
 
-    HelpPanelAddTip(PlayerGroupAll(), libNtve_gf_FormatTipTitle(StringExternal("Param/Value/5ED931F6"), libNtve_ge_TipType_NormalTip), StringExternal("Param/Value/F4D1DCD3"), StringToText(""), "Assets\\Textures\\ui_tip_questionmark.dds");
+    HelpPanelAddTip(PlayerGroupActive(), libNtve_gf_FormatTipTitle(StringExternal("Param/Value/5ED931F6"), libNtve_ge_TipType_NormalTip), StringExternal("Param/Value/F4D1DCD3"), StringToText(""), "Assets\\Textures\\ui_tip_questionmark.dds");
     return true;
 }
 
@@ -1065,26 +1208,6 @@ bool gt_tipCommands_Func (bool testConds, bool runActions) {
 void gt_tipCommands_Init () {
     gt_tipCommands = TriggerCreate("gt_tipCommands_Func");
     TriggerAddEventTimeElapsed(gt_tipCommands, 1.0, c_timeReal);
-}
-
-//--------------------------------------------------------------------------------------------------
-// Trigger: tipLICENSE
-//--------------------------------------------------------------------------------------------------
-bool gt_tipLICENSE_Func (bool testConds, bool runActions) {
-    // Automatic Variable Declarations
-    // Actions
-    if (!runActions) {
-        return true;
-    }
-
-    HelpPanelAddTip(PlayerGroupAll(), libNtve_gf_FormatTipTitle(StringExternal("Param/Value/BA4EC2BF"), libNtve_ge_TipType_NormalTip), StringExternal("Param/Value/3D947A37"), StringToText(""), "Assets\\Textures\\ui_tip_questionmark.dds");
-    return true;
-}
-
-//--------------------------------------------------------------------------------------------------
-void gt_tipLICENSE_Init () {
-    gt_tipLICENSE = TriggerCreate("gt_tipLICENSE_Func");
-    TriggerAddEventTimeElapsed(gt_tipLICENSE, 1.0, c_timeReal);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1097,7 +1220,7 @@ bool gt_tipGG_Func (bool testConds, bool runActions) {
         return true;
     }
 
-    UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, StringExternal("Param/Value/CA3F7518"));
+    UIDisplayMessage(PlayerGroupActive(), c_messageAreaSubtitle, StringExternal("Param/Value/CA3F7518"));
     return true;
 }
 
@@ -1130,11 +1253,11 @@ bool gt_tipSensorTower_Func (bool testConds, bool runActions) {
 
     if ((UnitGetOwner(EventUnitProgressUnit()) == gv_teamInfo1.lv_builder) && (gv_tipSensorTowerFlag1 == false)) {
         gv_tipSensorTowerFlag1 = true;
-        UIDisplayMessage(gv_playerGroup1, c_messageAreaSubtitle, StringExternal("Param/Value/7998EB08"));
+        UIDisplayMessage(gv_playerGroupInfo1.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/7998EB08"));
     }
     else {
         gv_tipSensorTowerFlag2 = true;
-        UIDisplayMessage(gv_playerGroup2, c_messageAreaSubtitle, StringExternal("Param/Value/BC76442D"));
+        UIDisplayMessage(gv_playerGroupInfo2.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/BC76442D"));
     }
     return true;
 }
@@ -1155,7 +1278,7 @@ bool gt_tipSupplyLimit_Func (bool testConds, bool runActions) {
         return true;
     }
 
-    UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, StringExternal("Param/Value/5698279A"));
+    UIDisplayMessage(PlayerGroupActive(), c_messageAreaSubtitle, StringExternal("Param/Value/5698279A"));
     return true;
 }
 
@@ -1175,7 +1298,7 @@ bool gt_tipRace_Func (bool testConds, bool runActions) {
         return true;
     }
 
-    UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, StringExternal("Param/Value/AEE0382B"));
+    UIDisplayMessage(PlayerGroupActive(), c_messageAreaSubtitle, StringExternal("Param/Value/AEE0382B"));
     return true;
 }
 
@@ -1200,17 +1323,17 @@ bool gt_tipZerg_Func (bool testConds, bool runActions) {
 
     auto3ADEE49C_val = gv_teamInfo1.lv_race;
     if (auto3ADEE49C_val == "Zerg") {
-        UIDisplayMessage(gv_playerGroup1, c_messageAreaSubtitle, StringExternal("Param/Value/9F90689B"));
+        UIDisplayMessage(gv_playerGroupInfo1.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/9F90689B"));
         Wait(10.0, c_timeReal);
-        UIDisplayMessage(gv_playerGroup1, c_messageAreaSubtitle, StringExternal("Param/Value/A34A344A"));
+        UIDisplayMessage(gv_playerGroupInfo1.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/A34A344A"));
     }
     else {
     }
     autoC64654B9_val = gv_teamInfo2.lv_race;
     if (autoC64654B9_val == "Zerg") {
-        UIDisplayMessage(gv_playerGroup2, c_messageAreaSubtitle, StringExternal("Param/Value/B9FAD2E2"));
+        UIDisplayMessage(gv_playerGroupInfo2.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/B9FAD2E2"));
         Wait(10.0, c_timeReal);
-        UIDisplayMessage(gv_playerGroup2, c_messageAreaSubtitle, StringExternal("Param/Value/047E93E7"));
+        UIDisplayMessage(gv_playerGroupInfo2.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/047E93E7"));
     }
     else {
     }
@@ -1230,12 +1353,8 @@ bool gt_builderGG_Func (bool testConds, bool runActions) {
     // Automatic Variable Declarations
     playergroup autoF6B95237_g;
     int autoF6B95237_var;
-    playergroup auto6996AC70_g;
-    int auto6996AC70_var;
     playergroup autoD9F94AB0_g;
     int autoD9F94AB0_var;
-    playergroup auto877079F3_g;
-    int auto877079F3_var;
 
     // Conditions
     if (testConds) {
@@ -1255,39 +1374,25 @@ bool gt_builderGG_Func (bool testConds, bool runActions) {
 
     gv_ggFlag = true;
     if ((EventPlayer() == gv_teamInfo1.lv_builder)) {
-        UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, StringExternal("Param/Value/7C2BA5DC"));
+        UIDisplayMessage(PlayerGroupActive(), c_messageAreaSubtitle, StringExternal("Param/Value/7C2BA5DC"));
         Wait(2.0, c_timeGame);
-        autoD9F94AB0_g = gv_playerGroup1;
+        autoD9F94AB0_g = gv_playerGroupInfo1.lv_users;
         autoD9F94AB0_var = -1;
         while (true) {
             autoD9F94AB0_var = PlayerGroupNextPlayer(autoD9F94AB0_g, autoD9F94AB0_var);
             if (autoD9F94AB0_var < 0) { break; }
             GameOver(autoD9F94AB0_var, c_gameOverDefeat, true, true);
         }
-        auto877079F3_g = gv_playerGroup2;
-        auto877079F3_var = -1;
-        while (true) {
-            auto877079F3_var = PlayerGroupNextPlayer(auto877079F3_g, auto877079F3_var);
-            if (auto877079F3_var < 0) { break; }
-            GameOver(auto877079F3_var, c_gameOverVictory, true, true);
-        }
     }
     else {
-        UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, StringExternal("Param/Value/A283F7C2"));
+        UIDisplayMessage(PlayerGroupActive(), c_messageAreaSubtitle, StringExternal("Param/Value/A283F7C2"));
         Wait(2.0, c_timeGame);
-        autoF6B95237_g = gv_playerGroup2;
+        autoF6B95237_g = gv_playerGroupInfo2.lv_users;
         autoF6B95237_var = -1;
         while (true) {
             autoF6B95237_var = PlayerGroupNextPlayer(autoF6B95237_g, autoF6B95237_var);
             if (autoF6B95237_var < 0) { break; }
             GameOver(autoF6B95237_var, c_gameOverDefeat, true, true);
-        }
-        auto6996AC70_g = gv_playerGroup1;
-        auto6996AC70_var = -1;
-        while (true) {
-            auto6996AC70_var = PlayerGroupNextPlayer(auto6996AC70_g, auto6996AC70_var);
-            if (auto6996AC70_var < 0) { break; }
-            GameOver(auto6996AC70_var, c_gameOverVictory, true, true);
         }
     }
     return true;
@@ -1296,7 +1401,7 @@ bool gt_builderGG_Func (bool testConds, bool runActions) {
 //--------------------------------------------------------------------------------------------------
 void gt_builderGG_Init () {
     gt_builderGG = TriggerCreate("gt_builderGG_Func");
-    TriggerAddEventPlayerLeft(gt_builderGG, c_playerAny, c_gameResultUndecided);
+    TriggerAddEventPlayerLeft(gt_builderGG, c_playerAny, c_gameResultDefeat);
     TriggerAddEventChatMessage(gt_builderGG, c_playerAny, ("-gg"), true);
     TriggerAddEventChatMessage(gt_builderGG, c_playerAny, ("-GG"), true);
 }
@@ -1308,12 +1413,8 @@ bool gt_fighterQuit_Func (bool testConds, bool runActions) {
     // Automatic Variable Declarations
     playergroup auto8948B628_g;
     int auto8948B628_var;
-    playergroup auto849380D1_g;
-    int auto849380D1_var;
     playergroup auto3FB7E512_g;
     int auto3FB7E512_var;
-    playergroup auto2ED5170F_g;
-    int auto2ED5170F_var;
 
     // Conditions
     if (testConds) {
@@ -1335,52 +1436,40 @@ bool gt_fighterQuit_Func (bool testConds, bool runActions) {
         return true;
     }
 
-    if ((PlayerGroupHasPlayer(gv_playerGroup1, EventPlayer()) == true)) {
-        PlayerGroupRemove(gv_playerGroup1, EventPlayer());
+    if ((PlayerGroupHasPlayer(gv_playerGroupInfo1.lv_users, EventPlayer()) == true)) {
+        PlayerGroupRemove(gv_playerGroupInfo1.lv_users, EventPlayer());
+        PlayerGroupRemove(gv_playerGroupInfo1.lv_fightersWithNeutral, EventPlayer());
         PlayerGroupRemove(gv_teamInfo1.lv_fighterGroup, EventPlayer());
         gv_teamInfo1.lv_playerNum -= 1;
         if ((gv_teamInfo1.lv_playerNum == 1)) {
             gv_ggFlag = true;
-            UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, StringExternal("Param/Value/6FD47613"));
+            UIDisplayMessage(PlayerGroupActive(), c_messageAreaSubtitle, StringExternal("Param/Value/6FD47613"));
             Wait(2.0, c_timeGame);
-            auto3FB7E512_g = gv_playerGroup1;
+            auto3FB7E512_g = gv_playerGroupInfo1.lv_users;
             auto3FB7E512_var = -1;
             while (true) {
                 auto3FB7E512_var = PlayerGroupNextPlayer(auto3FB7E512_g, auto3FB7E512_var);
                 if (auto3FB7E512_var < 0) { break; }
                 GameOver(auto3FB7E512_var, c_gameOverDefeat, true, true);
             }
-            auto2ED5170F_g = gv_playerGroup2;
-            auto2ED5170F_var = -1;
-            while (true) {
-                auto2ED5170F_var = PlayerGroupNextPlayer(auto2ED5170F_g, auto2ED5170F_var);
-                if (auto2ED5170F_var < 0) { break; }
-                GameOver(auto2ED5170F_var, c_gameOverVictory, true, true);
-            }
         }
 
     }
     else {
-        PlayerGroupRemove(gv_playerGroup2, EventPlayer());
+        PlayerGroupRemove(gv_playerGroupInfo2.lv_users, EventPlayer());
+        PlayerGroupRemove(gv_playerGroupInfo2.lv_fightersWithNeutral, EventPlayer());
         PlayerGroupRemove(gv_teamInfo2.lv_fighterGroup, EventPlayer());
         gv_teamInfo2.lv_playerNum -= 1;
         if ((gv_teamInfo2.lv_playerNum == 1)) {
             gv_ggFlag = true;
-            UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, StringExternal("Param/Value/738A54F4"));
+            UIDisplayMessage(PlayerGroupActive(), c_messageAreaSubtitle, StringExternal("Param/Value/738A54F4"));
             Wait(2.0, c_timeGame);
-            auto8948B628_g = gv_playerGroup2;
+            auto8948B628_g = gv_playerGroupInfo2.lv_users;
             auto8948B628_var = -1;
             while (true) {
                 auto8948B628_var = PlayerGroupNextPlayer(auto8948B628_g, auto8948B628_var);
                 if (auto8948B628_var < 0) { break; }
                 GameOver(auto8948B628_var, c_gameOverDefeat, true, true);
-            }
-            auto849380D1_g = gv_playerGroup1;
-            auto849380D1_var = -1;
-            while (true) {
-                auto849380D1_var = PlayerGroupNextPlayer(auto849380D1_g, auto849380D1_var);
-                if (auto849380D1_var < 0) { break; }
-                GameOver(auto849380D1_var, c_gameOverVictory, true, true);
             }
         }
 
@@ -1391,7 +1480,7 @@ bool gt_fighterQuit_Func (bool testConds, bool runActions) {
 //--------------------------------------------------------------------------------------------------
 void gt_fighterQuit_Init () {
     gt_fighterQuit = TriggerCreate("gt_fighterQuit_Func");
-    TriggerAddEventPlayerLeft(gt_fighterQuit, c_playerAny, c_gameResultUndecided);
+    TriggerAddEventPlayerLeft(gt_fighterQuit, c_playerAny, c_gameResultDefeat);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1412,19 +1501,19 @@ bool gt_builderInfoDisplay_Func (bool testConds, bool runActions) {
     DialogSetVisible(DialogLastCreated(), PlayerGroupAll(), true);
     autoD5E56F5B_val = gv_teamInfo1.lv_race;
     if (autoD5E56F5B_val == "Terr") {
-        libNtve_gf_CreateDialogItemImage(DialogLastCreated(), 40, 40, c_anchorTopLeft, 0, 0, StringToText(""), "Assets\\Textures\\sc2_ui_loadingscreen_extended_raceindicator_terran.dds", c_triggerImageTypeNormal, true, gv_teamInfo1.lv_color, c_triggerBlendModeNormal);
+        libNtve_gf_CreateDialogItemImage(DialogLastCreated(), 48, 52, c_anchorTopLeft, 0, 0, StringToText(""), "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_terran.dds", c_triggerImageTypeNormal, true, gv_teamInfo1.lv_color, c_triggerBlendModeNormal);
     }
     else if (autoD5E56F5B_val == "BWTe") {
         libNtve_gf_CreateDialogItemImage(DialogLastCreated(), 48, 52, c_anchorTopLeft, 0, 0, StringToText(""), "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWterran.dds", c_triggerImageTypeNormal, true, gv_teamInfo1.lv_color, c_triggerBlendModeNormal);
     }
     else if (autoD5E56F5B_val == "Zerg") {
-        libNtve_gf_CreateDialogItemImage(DialogLastCreated(), 40, 40, c_anchorTopLeft, 0, 0, StringToText(""), "Assets\\Textures\\sc2_ui_loadingscreen_extended_raceindicator_zerg.dds", c_triggerImageTypeNormal, true, gv_teamInfo1.lv_color, c_triggerBlendModeNormal);
+        libNtve_gf_CreateDialogItemImage(DialogLastCreated(), 48, 52, c_anchorTopLeft, 0, 0, StringToText(""), "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_zerg.dds", c_triggerImageTypeNormal, true, gv_teamInfo1.lv_color, c_triggerBlendModeNormal);
     }
     else if (autoD5E56F5B_val == "BWZe") {
         libNtve_gf_CreateDialogItemImage(DialogLastCreated(), 48, 52, c_anchorTopLeft, 0, 0, StringToText(""), "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWzerg.dds", c_triggerImageTypeNormal, true, gv_teamInfo1.lv_color, c_triggerBlendModeNormal);
     }
     else if (autoD5E56F5B_val == "Prot") {
-        libNtve_gf_CreateDialogItemImage(DialogLastCreated(), 40, 40, c_anchorTopLeft, 0, 0, StringToText(""), "Assets\\Textures\\sc2_ui_loadingscreen_extended_raceindicator_protoss.dds", c_triggerImageTypeNormal, true, gv_teamInfo1.lv_color, c_triggerBlendModeNormal);
+        libNtve_gf_CreateDialogItemImage(DialogLastCreated(), 48, 52, c_anchorTopLeft, 0, 0, StringToText(""), "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_protoss.dds", c_triggerImageTypeNormal, true, gv_teamInfo1.lv_color, c_triggerBlendModeNormal);
     }
     else if (autoD5E56F5B_val == "BWPr") {
         libNtve_gf_CreateDialogItemImage(DialogLastCreated(), 48, 52, c_anchorTopLeft, 0, 0, StringToText(""), "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWprotoss.dds", c_triggerImageTypeNormal, true, gv_teamInfo1.lv_color, c_triggerBlendModeNormal);
@@ -1434,19 +1523,19 @@ bool gt_builderInfoDisplay_Func (bool testConds, bool runActions) {
     libNtve_gf_CreateDialogItemLabel(DialogLastCreated(), 200, 50, c_anchorTopLeft, 60, 13, PlayerName(gv_teamInfo1.lv_builder), gv_teamInfo1.lv_color, false, 2.0);
     autoEB33B166_val = gv_teamInfo2.lv_race;
     if (autoEB33B166_val == "Terr") {
-        libNtve_gf_CreateDialogItemImage(DialogLastCreated(), 40, 40, c_anchorTopLeft, 0, 50, StringToText(""), "Assets\\Textures\\sc2_ui_loadingscreen_extended_raceindicator_terran.dds", c_triggerImageTypeNormal, true, gv_teamInfo2.lv_color, c_triggerBlendModeNormal);
+        libNtve_gf_CreateDialogItemImage(DialogLastCreated(), 48, 52, c_anchorTopLeft, 0, 50, StringToText(""), "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_terran.dds", c_triggerImageTypeNormal, true, gv_teamInfo2.lv_color, c_triggerBlendModeNormal);
     }
     else if (autoEB33B166_val == "BWTe") {
-        libNtve_gf_CreateDialogItemImage(DialogLastCreated(), 48, 52, c_anchorTopLeft, 0, 50, StringToText(""), "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWterran.dds", c_triggerImageTypeNormal, true, gv_teamInfo1.lv_color, c_triggerBlendModeNormal);
+        libNtve_gf_CreateDialogItemImage(DialogLastCreated(), 48, 52, c_anchorTopLeft, 0, 50, StringToText(""), "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWterran.dds", c_triggerImageTypeNormal, true, gv_teamInfo2.lv_color, c_triggerBlendModeNormal);
     }
     else if (autoEB33B166_val == "Zerg") {
-        libNtve_gf_CreateDialogItemImage(DialogLastCreated(), 40, 40, c_anchorTopLeft, 0, 50, StringToText(""), "Assets\\Textures\\sc2_ui_loadingscreen_extended_raceindicator_zerg.dds", c_triggerImageTypeNormal, true, gv_teamInfo2.lv_color, c_triggerBlendModeNormal);
+        libNtve_gf_CreateDialogItemImage(DialogLastCreated(), 48, 52, c_anchorTopLeft, 0, 50, StringToText(""), "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_zerg.dds", c_triggerImageTypeNormal, true, gv_teamInfo2.lv_color, c_triggerBlendModeNormal);
     }
     else if (autoEB33B166_val == "BWZe") {
-        libNtve_gf_CreateDialogItemImage(DialogLastCreated(), 48, 52, c_anchorTopLeft, 0, 50, StringToText(""), "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWzerg.dds", c_triggerImageTypeNormal, true, gv_teamInfo1.lv_color, c_triggerBlendModeNormal);
+        libNtve_gf_CreateDialogItemImage(DialogLastCreated(), 48, 52, c_anchorTopLeft, 0, 50, StringToText(""), "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWzerg.dds", c_triggerImageTypeNormal, true, gv_teamInfo2.lv_color, c_triggerBlendModeNormal);
     }
     else if (autoEB33B166_val == "Prot") {
-        libNtve_gf_CreateDialogItemImage(DialogLastCreated(), 40, 40, c_anchorTopLeft, 0, 50, StringToText(""), "Assets\\Textures\\sc2_ui_loadingscreen_extended_raceindicator_protoss.dds", c_triggerImageTypeNormal, true, gv_teamInfo2.lv_color, c_triggerBlendModeNormal);
+        libNtve_gf_CreateDialogItemImage(DialogLastCreated(), 48, 52, c_anchorTopLeft, 0, 50, StringToText(""), "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_protoss.dds", c_triggerImageTypeNormal, true, gv_teamInfo2.lv_color, c_triggerBlendModeNormal);
     }
     else if (autoEB33B166_val == "BWPr") {
         libNtve_gf_CreateDialogItemImage(DialogLastCreated(), 48, 52, c_anchorTopLeft, 0, 50, StringToText(""), "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWprotoss.dds", c_triggerImageTypeNormal, true, gv_teamInfo2.lv_color, c_triggerBlendModeNormal);
@@ -1478,10 +1567,10 @@ bool gt_resourceDisplay1_Func (bool testConds, bool runActions) {
     DialogSetVisible(DialogLastCreated(), gv_teamInfo1.lv_fighterGroup, true);
     libNtve_gf_CreateDialogItemImage(DialogLastCreated(), 30, 30, c_anchorTopLeft, 0, 15, StringToText(""), "Assets\\Textures\\ui_emoticons_minerals.dds", c_triggerImageTypeNormal, true, Color(100,100,100), c_triggerBlendModeNormal);
     libNtve_gf_CreateDialogItemLabel(DialogLastCreated(), 200, 50, c_anchorTopLeft, 35, 23, StringExternal("Param/Value/CEF41543"), ColorWithAlpha(0,0,0,0), false, 0.0);
-    gv_mineral1 = DialogControlLastCreated();
+    gv_teamInfo1.lv_mineralText = DialogControlLastCreated();
     libNtve_gf_CreateDialogItemImage(DialogLastCreated(), 30, 30, c_anchorTopLeft, 150, 15, StringToText(""), "Assets\\Textures\\ui_emoticons_gas.dds", c_triggerImageTypeNormal, true, Color(100,100,100), c_triggerBlendModeNormal);
     libNtve_gf_CreateDialogItemLabel(DialogLastCreated(), 200, 50, c_anchorTopLeft, 185, 23, StringExternal("Param/Value/E33F8417"), ColorWithAlpha(0,0,0,0), false, 0.0);
-    gv_vespene1 = DialogControlLastCreated();
+    gv_teamInfo1.lv_vespeneText = DialogControlLastCreated();
     return true;
 }
 
@@ -1506,10 +1595,10 @@ bool gt_resourceDisplay2_Func (bool testConds, bool runActions) {
     DialogSetVisible(DialogLastCreated(), gv_teamInfo2.lv_fighterGroup, true);
     libNtve_gf_CreateDialogItemImage(DialogLastCreated(), 30, 30, c_anchorTopLeft, 25, 15, StringToText(""), "Assets\\Textures\\ui_emoticons_minerals.dds", c_triggerImageTypeNormal, true, Color(100,100,100), c_triggerBlendModeNormal);
     libNtve_gf_CreateDialogItemLabel(DialogLastCreated(), 200, 50, c_anchorTopLeft, 60, 23, StringExternal("Param/Value/C0AF10B1"), ColorWithAlpha(0,0,0,0), false, 0.0);
-    gv_mineral2 = DialogControlLastCreated();
+    gv_teamInfo2.lv_mineralText = DialogControlLastCreated();
     libNtve_gf_CreateDialogItemImage(DialogLastCreated(), 30, 30, c_anchorTopLeft, 150, 15, StringToText(""), "Assets\\Textures\\ui_emoticons_gas.dds", c_triggerImageTypeNormal, true, Color(100,100,100), c_triggerBlendModeNormal);
     libNtve_gf_CreateDialogItemLabel(DialogLastCreated(), 200, 50, c_anchorTopLeft, 185, 23, StringExternal("Param/Value/E539788E"), ColorWithAlpha(0,0,0,0), false, 0.0);
-    gv_vespene2 = DialogControlLastCreated();
+    gv_teamInfo2.lv_vespeneText = DialogControlLastCreated();
     return true;
 }
 
@@ -1520,126 +1609,13 @@ void gt_resourceDisplay2_Init () {
 }
 
 //--------------------------------------------------------------------------------------------------
-// Trigger: resourceUpdate1
+// Trigger: builderMineralUpdate1
 //--------------------------------------------------------------------------------------------------
-bool gt_resourceUpdate1_Func (bool testConds, bool runActions) {
+bool gt_builderMineralUpdate1_Func (bool testConds, bool runActions) {
     // Automatic Variable Declarations
-    // Actions
-    if (!runActions) {
-        return true;
-    }
-
-    libNtve_gf_SetDialogItemText(gv_mineral1, IntToText(PlayerGetPropertyInt(gv_teamInfo1.lv_builder, c_playerPropMinerals)), gv_teamInfo1.lv_fighterGroup);
-    libNtve_gf_SetDialogItemText(gv_vespene1, IntToText(PlayerGetPropertyInt(gv_teamInfo1.lv_builder, c_playerPropVespene)), gv_teamInfo1.lv_fighterGroup);
-    return true;
-}
-
-//--------------------------------------------------------------------------------------------------
-void gt_resourceUpdate1_Init () {
-    gt_resourceUpdate1 = TriggerCreate("gt_resourceUpdate1_Func");
-    TriggerAddEventPlayerPropChange(gt_resourceUpdate1, 1, c_playerPropMinerals);
-    TriggerAddEventPlayerPropChange(gt_resourceUpdate1, 1, c_playerPropVespene);
-    TriggerAddEventPlayerPropChange(gt_resourceUpdate1, 2, c_playerPropMinerals);
-    TriggerAddEventPlayerPropChange(gt_resourceUpdate1, 2, c_playerPropVespene);
-    TriggerAddEventPlayerPropChange(gt_resourceUpdate1, 3, c_playerPropMinerals);
-    TriggerAddEventPlayerPropChange(gt_resourceUpdate1, 3, c_playerPropVespene);
-    TriggerAddEventPlayerPropChange(gt_resourceUpdate1, 4, c_playerPropMinerals);
-    TriggerAddEventPlayerPropChange(gt_resourceUpdate1, 4, c_playerPropVespene);
-    TriggerAddEventPlayerPropChange(gt_resourceUpdate1, 5, c_playerPropMinerals);
-    TriggerAddEventPlayerPropChange(gt_resourceUpdate1, 5, c_playerPropVespene);
-    TriggerAddEventPlayerPropChange(gt_resourceUpdate1, 6, c_playerPropMinerals);
-    TriggerAddEventPlayerPropChange(gt_resourceUpdate1, 6, c_playerPropVespene);
-}
-
-//--------------------------------------------------------------------------------------------------
-// Trigger: resourceUpdate2
-//--------------------------------------------------------------------------------------------------
-bool gt_resourceUpdate2_Func (bool testConds, bool runActions) {
-    // Automatic Variable Declarations
-    // Actions
-    if (!runActions) {
-        return true;
-    }
-
-    libNtve_gf_SetDialogItemText(gv_mineral2, IntToText(PlayerGetPropertyInt(gv_teamInfo2.lv_builder, c_playerPropMinerals)), gv_teamInfo2.lv_fighterGroup);
-    libNtve_gf_SetDialogItemText(gv_vespene2, IntToText(PlayerGetPropertyInt(gv_teamInfo2.lv_builder, c_playerPropVespene)), gv_teamInfo2.lv_fighterGroup);
-    return true;
-}
-
-//--------------------------------------------------------------------------------------------------
-void gt_resourceUpdate2_Init () {
-    gt_resourceUpdate2 = TriggerCreate("gt_resourceUpdate2_Func");
-    TriggerAddEventPlayerPropChange(gt_resourceUpdate2, 7, c_playerPropMinerals);
-    TriggerAddEventPlayerPropChange(gt_resourceUpdate2, 7, c_playerPropVespene);
-    TriggerAddEventPlayerPropChange(gt_resourceUpdate2, 8, c_playerPropMinerals);
-    TriggerAddEventPlayerPropChange(gt_resourceUpdate2, 8, c_playerPropVespene);
-    TriggerAddEventPlayerPropChange(gt_resourceUpdate2, 9, c_playerPropMinerals);
-    TriggerAddEventPlayerPropChange(gt_resourceUpdate2, 9, c_playerPropVespene);
-    TriggerAddEventPlayerPropChange(gt_resourceUpdate2, 10, c_playerPropMinerals);
-    TriggerAddEventPlayerPropChange(gt_resourceUpdate2, 10, c_playerPropVespene);
-    TriggerAddEventPlayerPropChange(gt_resourceUpdate2, 11, c_playerPropMinerals);
-    TriggerAddEventPlayerPropChange(gt_resourceUpdate2, 11, c_playerPropVespene);
-    TriggerAddEventPlayerPropChange(gt_resourceUpdate2, 12, c_playerPropMinerals);
-    TriggerAddEventPlayerPropChange(gt_resourceUpdate2, 12, c_playerPropVespene);
-}
-
-//--------------------------------------------------------------------------------------------------
-// Trigger: addBySupplyDrop
-//--------------------------------------------------------------------------------------------------
-bool gt_addBySupplyDrop_Func (bool testConds, bool runActions) {
-    // Automatic Variable Declarations
-    playergroup autoB32CC3A3_g;
-    int autoB32CC3A3_var;
-    playergroup autoEBF5CA06_g;
-    int autoEBF5CA06_var;
-
-    // Actions
-    if (!runActions) {
-        return true;
-    }
-
-    if ((UnitGetOwner(EventUnit()) == gv_teamInfo1.lv_builder)) {
-        gv_teamInfo1.lv_supplyMade = PlayerGetPropertyFixed(gv_teamInfo1.lv_builder, c_playerPropSuppliesMade);
-        autoEBF5CA06_g = gv_teamInfo1.lv_fighterGroup;
-        autoEBF5CA06_var = -1;
-        while (true) {
-            autoEBF5CA06_var = PlayerGroupNextPlayer(autoEBF5CA06_g, autoEBF5CA06_var);
-            if (autoEBF5CA06_var < 0) { break; }
-            PlayerModifyPropertyFixed(autoEBF5CA06_var, c_playerPropSuppliesMade, c_playerPropOperSetTo, gv_teamInfo1.lv_supplyMade);
-        }
-    }
-    else {
-        gv_teamInfo2.lv_supplyMade = PlayerGetPropertyFixed(gv_teamInfo2.lv_builder, c_playerPropSuppliesMade);
-        autoB32CC3A3_g = gv_teamInfo2.lv_fighterGroup;
-        autoB32CC3A3_var = -1;
-        while (true) {
-            autoB32CC3A3_var = PlayerGroupNextPlayer(autoB32CC3A3_g, autoB32CC3A3_var);
-            if (autoB32CC3A3_var < 0) { break; }
-            PlayerModifyPropertyFixed(autoB32CC3A3_var, c_playerPropSuppliesMade, c_playerPropOperSetTo, gv_teamInfo2.lv_supplyMade);
-        }
-    }
-    return true;
-}
-
-//--------------------------------------------------------------------------------------------------
-void gt_addBySupplyDrop_Init () {
-    gt_addBySupplyDrop = TriggerCreate("gt_addBySupplyDrop_Func");
-    TriggerAddEventUnitBehaviorChange(gt_addBySupplyDrop, null, "SupplyDrop", c_unitBehaviorChangeIncrease);
-}
-
-//--------------------------------------------------------------------------------------------------
-// Trigger: addByConstructComplete
-//--------------------------------------------------------------------------------------------------
-bool gt_addByConstructComplete_Func (bool testConds, bool runActions) {
-    // Automatic Variable Declarations
-    playergroup auto659593AE_g;
-    int auto659593AE_var;
-    playergroup auto84848FDF_g;
-    int auto84848FDF_var;
-
     // Conditions
     if (testConds) {
-        if (!(((libNtve_gf_TriggeringProgressUnitType() == "SupplyDepot") || (libNtve_gf_TriggeringProgressUnitType() == "SupplyDepotSCBW") || (libNtve_gf_TriggeringProgressUnitType() == "CommandCenter") || (libNtve_gf_TriggeringProgressUnitType() == "CommandCenterSCBW") || (libNtve_gf_TriggeringProgressUnitType() == "Hatchery") || (libNtve_gf_TriggeringProgressUnitType() == "HatcherySCBW") || (libNtve_gf_TriggeringProgressUnitType() == "Pylon") || (libNtve_gf_TriggeringProgressUnitType() == "PylonSCBW") || (libNtve_gf_TriggeringProgressUnitType() == "Nexus") || (libNtve_gf_TriggeringProgressUnitType() == "NexusSCBW")))) {
+        if (!((EventPlayer() == gv_teamInfo1.lv_builder))) {
             return false;
         }
     }
@@ -1649,48 +1625,37 @@ bool gt_addByConstructComplete_Func (bool testConds, bool runActions) {
         return true;
     }
 
-    if ((UnitGetOwner(EventUnitProgressUnit()) == gv_teamInfo1.lv_builder)) {
-        gv_teamInfo1.lv_supplyMade = PlayerGetPropertyFixed(gv_teamInfo1.lv_builder, c_playerPropSuppliesMade);
-        auto84848FDF_g = gv_teamInfo1.lv_fighterGroup;
-        auto84848FDF_var = -1;
-        while (true) {
-            auto84848FDF_var = PlayerGroupNextPlayer(auto84848FDF_g, auto84848FDF_var);
-            if (auto84848FDF_var < 0) { break; }
-            PlayerModifyPropertyFixed(auto84848FDF_var, c_playerPropSuppliesMade, c_playerPropOperSetTo, gv_teamInfo1.lv_supplyMade);
-        }
-    }
-    else {
-        gv_teamInfo2.lv_supplyMade = PlayerGetPropertyFixed(gv_teamInfo2.lv_builder, c_playerPropSuppliesMade);
-        auto659593AE_g = gv_teamInfo2.lv_fighterGroup;
-        auto659593AE_var = -1;
-        while (true) {
-            auto659593AE_var = PlayerGroupNextPlayer(auto659593AE_g, auto659593AE_var);
-            if (auto659593AE_var < 0) { break; }
-            PlayerModifyPropertyFixed(auto659593AE_var, c_playerPropSuppliesMade, c_playerPropOperSetTo, gv_teamInfo2.lv_supplyMade);
-        }
-    }
+    libNtve_gf_SetDialogItemText(gv_teamInfo1.lv_mineralText, IntToText(PlayerGetPropertyInt(gv_teamInfo1.lv_builder, c_playerPropMinerals)), gv_teamInfo1.lv_fighterGroup);
     return true;
 }
 
 //--------------------------------------------------------------------------------------------------
-void gt_addByConstructComplete_Init () {
-    gt_addByConstructComplete = TriggerCreate("gt_addByConstructComplete_Func");
-    TriggerAddEventUnitConstructProgress(gt_addByConstructComplete, null, c_unitProgressStageComplete);
+void gt_builderMineralUpdate1_Init () {
+    gt_builderMineralUpdate1 = TriggerCreate("gt_builderMineralUpdate1_Func");
+    TriggerAddEventPlayerPropChange(gt_builderMineralUpdate1, 1, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_builderMineralUpdate1, 2, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_builderMineralUpdate1, 3, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_builderMineralUpdate1, 4, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_builderMineralUpdate1, 5, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_builderMineralUpdate1, 6, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_builderMineralUpdate1, 7, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_builderMineralUpdate1, 8, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_builderMineralUpdate1, 9, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_builderMineralUpdate1, 10, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_builderMineralUpdate1, 11, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_builderMineralUpdate1, 12, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_builderMineralUpdate1, 13, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_builderMineralUpdate1, 14, c_playerPropMinerals);
 }
 
 //--------------------------------------------------------------------------------------------------
-// Trigger: addByTrainComplete
+// Trigger: builderVespeneUpdate1
 //--------------------------------------------------------------------------------------------------
-bool gt_addByTrainComplete_Func (bool testConds, bool runActions) {
+bool gt_builderVespeneUpdate1_Func (bool testConds, bool runActions) {
     // Automatic Variable Declarations
-    playergroup auto9717CF9C_g;
-    int auto9717CF9C_var;
-    playergroup auto11778619_g;
-    int auto11778619_var;
-
     // Conditions
     if (testConds) {
-        if (!(((libNtve_gf_TriggeringProgressUnitType() == "Overlord") || (libNtve_gf_TriggeringProgressUnitType() == "OverlordSCBW") || (libNtve_gf_TriggeringProgressUnitType() == "Overseer") || (libNtve_gf_TriggeringProgressUnitType() == "OverlordTransport")))) {
+        if (!((EventPlayer() == gv_teamInfo1.lv_builder))) {
             return false;
         }
     }
@@ -1700,56 +1665,37 @@ bool gt_addByTrainComplete_Func (bool testConds, bool runActions) {
         return true;
     }
 
-    if ((UnitGetOwner(EventUnit()) == gv_teamInfo1.lv_builder)) {
-        gv_teamInfo1.lv_supplyMade = PlayerGetPropertyFixed(EventPlayer(), c_playerPropSuppliesMade);
-        auto11778619_g = gv_teamInfo1.lv_fighterGroup;
-        auto11778619_var = -1;
-        while (true) {
-            auto11778619_var = PlayerGroupNextPlayer(auto11778619_g, auto11778619_var);
-            if (auto11778619_var < 0) { break; }
-            PlayerModifyPropertyFixed(auto11778619_var, c_playerPropSuppliesMade, c_playerPropOperSetTo, gv_teamInfo1.lv_supplyMade);
-        }
-    }
-    else {
-        gv_teamInfo2.lv_supplyMade = PlayerGetPropertyFixed(EventPlayer(), c_playerPropSuppliesMade);
-        auto9717CF9C_g = gv_teamInfo2.lv_fighterGroup;
-        auto9717CF9C_var = -1;
-        while (true) {
-            auto9717CF9C_var = PlayerGroupNextPlayer(auto9717CF9C_g, auto9717CF9C_var);
-            if (auto9717CF9C_var < 0) { break; }
-            PlayerModifyPropertyFixed(auto9717CF9C_var, c_playerPropSuppliesMade, c_playerPropOperSetTo, gv_teamInfo2.lv_supplyMade);
-        }
-    }
+    libNtve_gf_SetDialogItemText(gv_teamInfo1.lv_vespeneText, IntToText(PlayerGetPropertyInt(gv_teamInfo1.lv_builder, c_playerPropVespene)), gv_teamInfo1.lv_fighterGroup);
     return true;
 }
 
 //--------------------------------------------------------------------------------------------------
-void gt_addByTrainComplete_Init () {
-    gt_addByTrainComplete = TriggerCreate("gt_addByTrainComplete_Func");
-    TriggerAddEventUnitTrainProgress(gt_addByTrainComplete, null, c_unitProgressStageComplete);
+void gt_builderVespeneUpdate1_Init () {
+    gt_builderVespeneUpdate1 = TriggerCreate("gt_builderVespeneUpdate1_Func");
+    TriggerAddEventPlayerPropChange(gt_builderVespeneUpdate1, 1, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_builderVespeneUpdate1, 2, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_builderVespeneUpdate1, 3, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_builderVespeneUpdate1, 4, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_builderVespeneUpdate1, 5, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_builderVespeneUpdate1, 6, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_builderVespeneUpdate1, 7, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_builderVespeneUpdate1, 8, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_builderVespeneUpdate1, 9, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_builderVespeneUpdate1, 10, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_builderVespeneUpdate1, 11, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_builderVespeneUpdate1, 12, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_builderVespeneUpdate1, 13, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_builderVespeneUpdate1, 14, c_playerPropVespene);
 }
 
 //--------------------------------------------------------------------------------------------------
-// Trigger: addByWarpStart
+// Trigger: fighterMineralUpdate1
 //--------------------------------------------------------------------------------------------------
-bool gt_addByWarpStart_Func (bool testConds, bool runActions) {
+bool gt_fighterMineralUpdate1_Func (bool testConds, bool runActions) {
     // Automatic Variable Declarations
-    playergroup auto3CC615D2_g;
-    int auto3CC615D2_var;
-    playergroup autoA36E0483_g;
-    int autoA36E0483_var;
-
     // Conditions
     if (testConds) {
-        if (!(((UnitGetOwner(EventUnitProgressUnit()) == gv_teamInfo1.lv_builder) || (UnitGetOwner(EventUnitProgressUnit()) == gv_teamInfo2.lv_builder)))) {
-            return false;
-        }
-
-        if (!((UnitTypeTestAttribute(libNtve_gf_TriggeringProgressUnitType(), c_unitAttributeStructure) == false))) {
-            return false;
-        }
-
-        if (!(((PlayerRace(UnitGetOwner(EventUnitProgressUnit())) == "Prot") || (PlayerRace(UnitGetOwner(EventUnitProgressUnit())) == "BWPr")))) {
+        if (!((PlayerGroupHasPlayer(gv_playerGroupInfo1.lv_fightersWithNeutral, EventPlayer()) == true))) {
             return false;
         }
     }
@@ -1759,48 +1705,41 @@ bool gt_addByWarpStart_Func (bool testConds, bool runActions) {
         return true;
     }
 
-    if ((UnitGetOwner(EventUnitProgressUnit()) == gv_teamInfo1.lv_builder)) {
-        gv_teamInfo1.lv_supplyUsed = PlayerGetPropertyFixed(gv_teamInfo1.lv_builder, c_playerPropSuppliesUsed);
-        autoA36E0483_g = gv_teamInfo1.lv_fighterGroup;
-        autoA36E0483_var = -1;
-        while (true) {
-            autoA36E0483_var = PlayerGroupNextPlayer(autoA36E0483_g, autoA36E0483_var);
-            if (autoA36E0483_var < 0) { break; }
-            PlayerModifyPropertyFixed(autoA36E0483_var, c_playerPropSuppliesUsed, c_playerPropOperSetTo, gv_teamInfo1.lv_supplyUsed);
-        }
-    }
-    else {
-        gv_teamInfo2.lv_supplyUsed = PlayerGetPropertyFixed(gv_teamInfo2.lv_builder, c_playerPropSuppliesUsed);
-        auto3CC615D2_g = gv_teamInfo2.lv_fighterGroup;
-        auto3CC615D2_var = -1;
-        while (true) {
-            auto3CC615D2_var = PlayerGroupNextPlayer(auto3CC615D2_g, auto3CC615D2_var);
-            if (auto3CC615D2_var < 0) { break; }
-            PlayerModifyPropertyFixed(auto3CC615D2_var, c_playerPropSuppliesUsed, c_playerPropOperSetTo, gv_teamInfo2.lv_supplyUsed);
-        }
-    }
+    PlayerModifyPropertyFixed(gv_teamInfo1.lv_builder, c_playerPropMinerals, c_playerPropOperAdd, PlayerGetPropertyFixed(EventPlayer(), c_playerPropMinerals));
+    TriggerEnable(TriggerGetCurrent(), false);
+    PlayerModifyPropertyFixed(EventPlayer(), c_playerPropMinerals, c_playerPropOperSetTo, 0.0);
+    TriggerEnable(TriggerGetCurrent(), true);
+    libNtve_gf_SetDialogItemText(gv_teamInfo1.lv_mineralText, IntToText(PlayerGetPropertyInt(gv_teamInfo1.lv_builder, c_playerPropMinerals)), gv_teamInfo1.lv_fighterGroup);
     return true;
 }
 
 //--------------------------------------------------------------------------------------------------
-void gt_addByWarpStart_Init () {
-    gt_addByWarpStart = TriggerCreate("gt_addByWarpStart_Func");
-    TriggerAddEventUnitConstructProgress(gt_addByWarpStart, null, c_unitProgressStageStart);
+void gt_fighterMineralUpdate1_Init () {
+    gt_fighterMineralUpdate1 = TriggerCreate("gt_fighterMineralUpdate1_Func");
+    TriggerAddEventPlayerPropChange(gt_fighterMineralUpdate1, 1, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_fighterMineralUpdate1, 2, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_fighterMineralUpdate1, 3, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_fighterMineralUpdate1, 4, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_fighterMineralUpdate1, 5, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_fighterMineralUpdate1, 6, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_fighterMineralUpdate1, 7, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_fighterMineralUpdate1, 8, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_fighterMineralUpdate1, 9, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_fighterMineralUpdate1, 10, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_fighterMineralUpdate1, 11, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_fighterMineralUpdate1, 12, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_fighterMineralUpdate1, 13, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_fighterMineralUpdate1, 14, c_playerPropMinerals);
 }
 
 //--------------------------------------------------------------------------------------------------
-// Trigger: decByConstructStarted
+// Trigger: fighterVespeneUpdate1
 //--------------------------------------------------------------------------------------------------
-bool gt_decByConstructStarted_Func (bool testConds, bool runActions) {
+bool gt_fighterVespeneUpdate1_Func (bool testConds, bool runActions) {
     // Automatic Variable Declarations
-    playergroup auto0ECE50C4_g;
-    int auto0ECE50C4_var;
-    playergroup auto832D598D_g;
-    int auto832D598D_var;
-
     // Conditions
     if (testConds) {
-        if (!(((PlayerRace(UnitGetOwner(EventUnitProgressUnit())) == "Zerg") || (PlayerRace(UnitGetOwner(EventUnitProgressUnit())) == "BWZe")))) {
+        if (!((PlayerGroupHasPlayer(gv_playerGroupInfo1.lv_fightersWithNeutral, EventPlayer()) == true))) {
             return false;
         }
     }
@@ -1810,60 +1749,41 @@ bool gt_decByConstructStarted_Func (bool testConds, bool runActions) {
         return true;
     }
 
-    if ((UnitGetOwner(EventUnitProgressUnit()) == gv_teamInfo1.lv_builder)) {
-        gv_teamInfo1.lv_supplyUsed = PlayerGetPropertyFixed(EventPlayer(), c_playerPropSuppliesUsed);
-        auto832D598D_g = gv_teamInfo1.lv_fighterGroup;
-        auto832D598D_var = -1;
-        while (true) {
-            auto832D598D_var = PlayerGroupNextPlayer(auto832D598D_g, auto832D598D_var);
-            if (auto832D598D_var < 0) { break; }
-            PlayerModifyPropertyFixed(auto832D598D_var, c_playerPropSuppliesUsed, c_playerPropOperSetTo, gv_teamInfo1.lv_supplyUsed);
-        }
-    }
-    else {
-        gv_teamInfo2.lv_supplyUsed = PlayerGetPropertyFixed(EventPlayer(), c_playerPropSuppliesUsed);
-        auto0ECE50C4_g = gv_teamInfo2.lv_fighterGroup;
-        auto0ECE50C4_var = -1;
-        while (true) {
-            auto0ECE50C4_var = PlayerGroupNextPlayer(auto0ECE50C4_g, auto0ECE50C4_var);
-            if (auto0ECE50C4_var < 0) { break; }
-            PlayerModifyPropertyFixed(auto0ECE50C4_var, c_playerPropSuppliesUsed, c_playerPropOperSetTo, gv_teamInfo2.lv_supplyUsed);
-        }
-    }
+    PlayerModifyPropertyFixed(gv_teamInfo1.lv_builder, c_playerPropVespene, c_playerPropOperAdd, PlayerGetPropertyFixed(EventPlayer(), c_playerPropVespene));
+    TriggerEnable(TriggerGetCurrent(), false);
+    PlayerModifyPropertyFixed(EventPlayer(), c_playerPropVespene, c_playerPropOperSetTo, 0.0);
+    TriggerEnable(TriggerGetCurrent(), true);
+    libNtve_gf_SetDialogItemText(gv_teamInfo1.lv_vespeneText, IntToText(PlayerGetPropertyInt(gv_teamInfo1.lv_builder, c_playerPropVespene)), gv_teamInfo1.lv_fighterGroup);
     return true;
 }
 
 //--------------------------------------------------------------------------------------------------
-void gt_decByConstructStarted_Init () {
-    gt_decByConstructStarted = TriggerCreate("gt_decByConstructStarted_Func");
-    TriggerAddEventUnitConstructProgress(gt_decByConstructStarted, null, c_unitProgressStageStart);
+void gt_fighterVespeneUpdate1_Init () {
+    gt_fighterVespeneUpdate1 = TriggerCreate("gt_fighterVespeneUpdate1_Func");
+    TriggerAddEventPlayerPropChange(gt_fighterVespeneUpdate1, 1, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_fighterVespeneUpdate1, 2, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_fighterVespeneUpdate1, 3, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_fighterVespeneUpdate1, 4, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_fighterVespeneUpdate1, 5, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_fighterVespeneUpdate1, 6, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_fighterVespeneUpdate1, 7, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_fighterVespeneUpdate1, 8, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_fighterVespeneUpdate1, 9, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_fighterVespeneUpdate1, 10, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_fighterVespeneUpdate1, 11, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_fighterVespeneUpdate1, 12, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_fighterVespeneUpdate1, 13, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_fighterVespeneUpdate1, 14, c_playerPropVespene);
 }
 
 //--------------------------------------------------------------------------------------------------
-// Trigger: addByTrainStart
+// Trigger: builderMineralUpdate2
 //--------------------------------------------------------------------------------------------------
-bool gt_addByTrainStart_Func (bool testConds, bool runActions) {
+bool gt_builderMineralUpdate2_Func (bool testConds, bool runActions) {
     // Automatic Variable Declarations
-    playergroup auto1275C76A_g;
-    int auto1275C76A_var;
-    playergroup autoF0DF13BB_g;
-    int autoF0DF13BB_var;
-
     // Conditions
     if (testConds) {
-        if (!((libNtve_gf_TriggeringProgressUnitType() != "Overlord"))) {
-            return false;
-        }
-
-        if (!((libNtve_gf_TriggeringProgressUnitType() != "OverlordSCBW"))) {
-            return false;
-        }
-
-        if (!((libNtve_gf_TriggeringProgressUnitType() != "Overseer"))) {
-            return false;
-        }
-
-        if (!((libNtve_gf_TriggeringProgressUnitType() != "OverlordTransport"))) {
+        if (!((EventPlayer() == gv_teamInfo2.lv_builder))) {
             return false;
         }
     }
@@ -1873,60 +1793,37 @@ bool gt_addByTrainStart_Func (bool testConds, bool runActions) {
         return true;
     }
 
-    if ((UnitGetOwner(EventUnit()) == gv_teamInfo1.lv_builder)) {
-        gv_teamInfo1.lv_supplyUsed += UnitTypeGetProperty(libNtve_gf_TriggeringProgressUnitType(), c_unitPropSuppliesUsed);
-        autoF0DF13BB_g = gv_teamInfo1.lv_fighterGroup;
-        autoF0DF13BB_var = -1;
-        while (true) {
-            autoF0DF13BB_var = PlayerGroupNextPlayer(autoF0DF13BB_g, autoF0DF13BB_var);
-            if (autoF0DF13BB_var < 0) { break; }
-            PlayerModifyPropertyFixed(autoF0DF13BB_var, c_playerPropSuppliesUsed, c_playerPropOperSetTo, gv_teamInfo1.lv_supplyUsed);
-        }
-    }
-    else {
-        gv_teamInfo2.lv_supplyUsed += UnitTypeGetProperty(libNtve_gf_TriggeringProgressUnitType(), c_unitPropSuppliesUsed);
-        auto1275C76A_g = gv_teamInfo2.lv_fighterGroup;
-        auto1275C76A_var = -1;
-        while (true) {
-            auto1275C76A_var = PlayerGroupNextPlayer(auto1275C76A_g, auto1275C76A_var);
-            if (auto1275C76A_var < 0) { break; }
-            PlayerModifyPropertyFixed(auto1275C76A_var, c_playerPropSuppliesUsed, c_playerPropOperSetTo, gv_teamInfo2.lv_supplyUsed);
-        }
-    }
+    libNtve_gf_SetDialogItemText(gv_teamInfo2.lv_mineralText, IntToText(PlayerGetPropertyInt(gv_teamInfo2.lv_builder, c_playerPropMinerals)), gv_teamInfo2.lv_fighterGroup);
     return true;
 }
 
 //--------------------------------------------------------------------------------------------------
-void gt_addByTrainStart_Init () {
-    gt_addByTrainStart = TriggerCreate("gt_addByTrainStart_Func");
-    TriggerAddEventUnitTrainProgress(gt_addByTrainStart, null, c_unitProgressStageStart);
+void gt_builderMineralUpdate2_Init () {
+    gt_builderMineralUpdate2 = TriggerCreate("gt_builderMineralUpdate2_Func");
+    TriggerAddEventPlayerPropChange(gt_builderMineralUpdate2, 1, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_builderMineralUpdate2, 2, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_builderMineralUpdate2, 3, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_builderMineralUpdate2, 4, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_builderMineralUpdate2, 5, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_builderMineralUpdate2, 6, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_builderMineralUpdate2, 7, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_builderMineralUpdate2, 8, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_builderMineralUpdate2, 9, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_builderMineralUpdate2, 10, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_builderMineralUpdate2, 11, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_builderMineralUpdate2, 12, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_builderMineralUpdate2, 13, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_builderMineralUpdate2, 14, c_playerPropMinerals);
 }
 
 //--------------------------------------------------------------------------------------------------
-// Trigger: decByTrainCancel
+// Trigger: builderVespeneUpdate2
 //--------------------------------------------------------------------------------------------------
-bool gt_decByTrainCancel_Func (bool testConds, bool runActions) {
+bool gt_builderVespeneUpdate2_Func (bool testConds, bool runActions) {
     // Automatic Variable Declarations
-    playergroup auto3EE78085_g;
-    int auto3EE78085_var;
-    playergroup autoED9E4EF4_g;
-    int autoED9E4EF4_var;
-
     // Conditions
     if (testConds) {
-        if (!((libNtve_gf_TriggeringProgressUnitType() != "Overlord"))) {
-            return false;
-        }
-
-        if (!((libNtve_gf_TriggeringProgressUnitType() != "OverlordSCBW"))) {
-            return false;
-        }
-
-        if (!((libNtve_gf_TriggeringProgressUnitType() != "Overseer"))) {
-            return false;
-        }
-
-        if (!((libNtve_gf_TriggeringProgressUnitType() != "OverlordTransport"))) {
+        if (!((EventPlayer() == gv_teamInfo2.lv_builder))) {
             return false;
         }
     }
@@ -1936,33 +1833,115 @@ bool gt_decByTrainCancel_Func (bool testConds, bool runActions) {
         return true;
     }
 
-    if ((UnitGetOwner(EventUnit()) == gv_teamInfo1.lv_builder)) {
-        gv_teamInfo1.lv_supplyUsed = PlayerGetPropertyFixed(EventPlayer(), c_playerPropSuppliesUsed);
-        autoED9E4EF4_g = gv_teamInfo1.lv_fighterGroup;
-        autoED9E4EF4_var = -1;
-        while (true) {
-            autoED9E4EF4_var = PlayerGroupNextPlayer(autoED9E4EF4_g, autoED9E4EF4_var);
-            if (autoED9E4EF4_var < 0) { break; }
-            PlayerModifyPropertyFixed(autoED9E4EF4_var, c_playerPropSuppliesUsed, c_playerPropOperSetTo, gv_teamInfo1.lv_supplyUsed);
-        }
-    }
-    else {
-        gv_teamInfo2.lv_supplyUsed = PlayerGetPropertyFixed(EventPlayer(), c_playerPropSuppliesUsed);
-        auto3EE78085_g = gv_teamInfo2.lv_fighterGroup;
-        auto3EE78085_var = -1;
-        while (true) {
-            auto3EE78085_var = PlayerGroupNextPlayer(auto3EE78085_g, auto3EE78085_var);
-            if (auto3EE78085_var < 0) { break; }
-            PlayerModifyPropertyFixed(auto3EE78085_var, c_playerPropSuppliesUsed, c_playerPropOperSetTo, gv_teamInfo2.lv_supplyUsed);
-        }
-    }
+    libNtve_gf_SetDialogItemText(gv_teamInfo2.lv_vespeneText, IntToText(PlayerGetPropertyInt(gv_teamInfo2.lv_builder, c_playerPropVespene)), gv_teamInfo2.lv_fighterGroup);
     return true;
 }
 
 //--------------------------------------------------------------------------------------------------
-void gt_decByTrainCancel_Init () {
-    gt_decByTrainCancel = TriggerCreate("gt_decByTrainCancel_Func");
-    TriggerAddEventUnitTrainProgress(gt_decByTrainCancel, null, c_unitProgressStageCancel);
+void gt_builderVespeneUpdate2_Init () {
+    gt_builderVespeneUpdate2 = TriggerCreate("gt_builderVespeneUpdate2_Func");
+    TriggerAddEventPlayerPropChange(gt_builderVespeneUpdate2, 1, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_builderVespeneUpdate2, 2, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_builderVespeneUpdate2, 3, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_builderVespeneUpdate2, 4, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_builderVespeneUpdate2, 5, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_builderVespeneUpdate2, 6, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_builderVespeneUpdate2, 7, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_builderVespeneUpdate2, 8, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_builderVespeneUpdate2, 9, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_builderVespeneUpdate2, 10, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_builderVespeneUpdate2, 11, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_builderVespeneUpdate2, 12, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_builderVespeneUpdate2, 13, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_builderVespeneUpdate2, 14, c_playerPropVespene);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Trigger: fighterMineralUpdate2
+//--------------------------------------------------------------------------------------------------
+bool gt_fighterMineralUpdate2_Func (bool testConds, bool runActions) {
+    // Automatic Variable Declarations
+    // Conditions
+    if (testConds) {
+        if (!((PlayerGroupHasPlayer(gv_playerGroupInfo2.lv_fightersWithNeutral, EventPlayer()) == true))) {
+            return false;
+        }
+    }
+
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    PlayerModifyPropertyFixed(gv_teamInfo2.lv_builder, c_playerPropMinerals, c_playerPropOperAdd, PlayerGetPropertyFixed(EventPlayer(), c_playerPropMinerals));
+    TriggerEnable(TriggerGetCurrent(), false);
+    PlayerModifyPropertyFixed(EventPlayer(), c_playerPropMinerals, c_playerPropOperSetTo, 0.0);
+    TriggerEnable(TriggerGetCurrent(), true);
+    libNtve_gf_SetDialogItemText(gv_teamInfo2.lv_mineralText, IntToText(PlayerGetPropertyInt(gv_teamInfo2.lv_builder, c_playerPropMinerals)), gv_teamInfo2.lv_fighterGroup);
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void gt_fighterMineralUpdate2_Init () {
+    gt_fighterMineralUpdate2 = TriggerCreate("gt_fighterMineralUpdate2_Func");
+    TriggerAddEventPlayerPropChange(gt_fighterMineralUpdate2, 1, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_fighterMineralUpdate2, 2, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_fighterMineralUpdate2, 3, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_fighterMineralUpdate2, 4, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_fighterMineralUpdate2, 5, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_fighterMineralUpdate2, 6, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_fighterMineralUpdate2, 7, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_fighterMineralUpdate2, 8, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_fighterMineralUpdate2, 9, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_fighterMineralUpdate2, 10, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_fighterMineralUpdate2, 11, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_fighterMineralUpdate2, 12, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_fighterMineralUpdate2, 13, c_playerPropMinerals);
+    TriggerAddEventPlayerPropChange(gt_fighterMineralUpdate2, 14, c_playerPropMinerals);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Trigger: fighterVespeneUpdate2
+//--------------------------------------------------------------------------------------------------
+bool gt_fighterVespeneUpdate2_Func (bool testConds, bool runActions) {
+    // Automatic Variable Declarations
+    // Conditions
+    if (testConds) {
+        if (!((PlayerGroupHasPlayer(gv_playerGroupInfo2.lv_fightersWithNeutral, EventPlayer()) == true))) {
+            return false;
+        }
+    }
+
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    PlayerModifyPropertyFixed(gv_teamInfo2.lv_builder, c_playerPropVespene, c_playerPropOperAdd, PlayerGetPropertyFixed(EventPlayer(), c_playerPropVespene));
+    TriggerEnable(TriggerGetCurrent(), false);
+    PlayerModifyPropertyFixed(EventPlayer(), c_playerPropVespene, c_playerPropOperSetTo, 0.0);
+    TriggerEnable(TriggerGetCurrent(), true);
+    libNtve_gf_SetDialogItemText(gv_teamInfo2.lv_vespeneText, IntToText(PlayerGetPropertyInt(gv_teamInfo2.lv_builder, c_playerPropVespene)), gv_teamInfo2.lv_fighterGroup);
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void gt_fighterVespeneUpdate2_Init () {
+    gt_fighterVespeneUpdate2 = TriggerCreate("gt_fighterVespeneUpdate2_Func");
+    TriggerAddEventPlayerPropChange(gt_fighterVespeneUpdate2, 1, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_fighterVespeneUpdate2, 2, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_fighterVespeneUpdate2, 3, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_fighterVespeneUpdate2, 4, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_fighterVespeneUpdate2, 5, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_fighterVespeneUpdate2, 6, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_fighterVespeneUpdate2, 7, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_fighterVespeneUpdate2, 8, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_fighterVespeneUpdate2, 9, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_fighterVespeneUpdate2, 10, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_fighterVespeneUpdate2, 11, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_fighterVespeneUpdate2, 12, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_fighterVespeneUpdate2, 13, c_playerPropVespene);
+    TriggerAddEventPlayerPropChange(gt_fighterVespeneUpdate2, 14, c_playerPropVespene);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1970,35 +1949,24 @@ void gt_decByTrainCancel_Init () {
 //--------------------------------------------------------------------------------------------------
 bool gt_unchangeByChangeOwner_Func (bool testConds, bool runActions) {
     // Automatic Variable Declarations
-    playergroup auto456637FD_g;
-    int auto456637FD_var;
-    playergroup autoD369709A_g;
-    int autoD369709A_var;
-
     // Actions
     if (!runActions) {
         return true;
     }
 
-    if ((PlayerGroupHasPlayer(gv_playerGroupAll1, EventUnitOwnerNew()) == true)) {
-        autoD369709A_g = gv_playerGroup1;
-        autoD369709A_var = -1;
-        while (true) {
-            autoD369709A_var = PlayerGroupNextPlayer(autoD369709A_g, autoD369709A_var);
-            if (autoD369709A_var < 0) { break; }
-            PlayerModifyPropertyFixed(autoD369709A_var, c_playerPropSuppliesMade, c_playerPropOperSetTo, gv_teamInfo1.lv_supplyMade);
-            PlayerModifyPropertyFixed(autoD369709A_var, c_playerPropSuppliesUsed, c_playerPropOperSetTo, gv_teamInfo1.lv_supplyUsed);
-        }
+    if ((PlayerGroupHasPlayer(gv_playerGroupInfo1.lv_players, EventUnitOwnerNew()) == true) && (PlayerGroupHasPlayer(gv_playerGroupInfo1.lv_players, EventUnitOwnerOld()) == true)) {
+        PlayerModifyPropertyFixed(EventUnitOwnerNew(), c_playerPropSuppliesMade, c_playerPropOperSetTo, gv_teamInfo1.lv_supplyMade);
+        PlayerModifyPropertyFixed(EventUnitOwnerNew(), c_playerPropSuppliesUsed, c_playerPropOperSetTo, gv_teamInfo1.lv_supplyUsed);
+        PlayerModifyPropertyFixed(EventUnitOwnerOld(), c_playerPropSuppliesMade, c_playerPropOperSetTo, gv_teamInfo1.lv_supplyMade);
+        PlayerModifyPropertyFixed(EventUnitOwnerOld(), c_playerPropSuppliesUsed, c_playerPropOperSetTo, gv_teamInfo1.lv_supplyUsed);
+        gf_openSupplyShareTrigger1();
     }
-    else {
-        auto456637FD_g = gv_playerGroup2;
-        auto456637FD_var = -1;
-        while (true) {
-            auto456637FD_var = PlayerGroupNextPlayer(auto456637FD_g, auto456637FD_var);
-            if (auto456637FD_var < 0) { break; }
-            PlayerModifyPropertyFixed(auto456637FD_var, c_playerPropSuppliesMade, c_playerPropOperSetTo, gv_teamInfo2.lv_supplyMade);
-            PlayerModifyPropertyFixed(auto456637FD_var, c_playerPropSuppliesUsed, c_playerPropOperSetTo, gv_teamInfo2.lv_supplyUsed);
-        }
+    else if ((PlayerGroupHasPlayer(gv_playerGroupInfo2.lv_players, EventUnitOwnerNew()) == true) && (PlayerGroupHasPlayer(gv_playerGroupInfo2.lv_players, EventUnitOwnerOld()) == true)) {
+        PlayerModifyPropertyFixed(EventUnitOwnerNew(), c_playerPropSuppliesMade, c_playerPropOperSetTo, gv_teamInfo2.lv_supplyMade);
+        PlayerModifyPropertyFixed(EventUnitOwnerNew(), c_playerPropSuppliesUsed, c_playerPropOperSetTo, gv_teamInfo2.lv_supplyUsed);
+        PlayerModifyPropertyFixed(EventUnitOwnerOld(), c_playerPropSuppliesMade, c_playerPropOperSetTo, gv_teamInfo2.lv_supplyMade);
+        PlayerModifyPropertyFixed(EventUnitOwnerOld(), c_playerPropSuppliesUsed, c_playerPropOperSetTo, gv_teamInfo2.lv_supplyUsed);
+        gf_openSupplyShareTrigger2();
     }
     return true;
 }
@@ -2010,22 +1978,16 @@ void gt_unchangeByChangeOwner_Init () {
 }
 
 //--------------------------------------------------------------------------------------------------
-// Trigger: decByFighterDie
+// Trigger: builderMadeChange1
 //--------------------------------------------------------------------------------------------------
-bool gt_decByFighterDie_Func (bool testConds, bool runActions) {
+bool gt_builderMadeChange1_Func (bool testConds, bool runActions) {
     // Automatic Variable Declarations
-    playergroup autoCA80DC9F_g;
-    int autoCA80DC9F_var;
-    playergroup autoC6EF574D_g;
-    int autoC6EF574D_var;
+    playergroup auto087069CC_g;
+    int auto087069CC_var;
 
     // Conditions
     if (testConds) {
-        if (!((UnitGetOwner(EventUnit()) != gv_teamInfo1.lv_builder))) {
-            return false;
-        }
-
-        if (!((UnitGetOwner(EventUnit()) != gv_teamInfo2.lv_builder))) {
+        if (!((EventPlayer() == gv_teamInfo1.lv_builder))) {
             return false;
         }
     }
@@ -2035,60 +1997,49 @@ bool gt_decByFighterDie_Func (bool testConds, bool runActions) {
         return true;
     }
 
-    if (((PlayerGroupHasPlayer(gv_teamInfo1.lv_fighterGroup, UnitGetOwner(EventUnit())) == true) || (UnitGetOwner(EventUnit()) == 13))) {
-        gv_teamInfo1.lv_supplyMade -= UnitTypeGetProperty(UnitGetType(EventUnit()), c_unitPropSuppliesMade);
-        gv_teamInfo1.lv_supplyUsed -= UnitTypeGetProperty(UnitGetType(EventUnit()), c_unitPropSuppliesUsed);
-        autoC6EF574D_g = gv_playerGroup1;
-        autoC6EF574D_var = -1;
-        while (true) {
-            autoC6EF574D_var = PlayerGroupNextPlayer(autoC6EF574D_g, autoC6EF574D_var);
-            if (autoC6EF574D_var < 0) { break; }
-            PlayerModifyPropertyFixed(autoC6EF574D_var, c_playerPropSuppliesMade, c_playerPropOperSetTo, gv_teamInfo1.lv_supplyMade);
-            PlayerModifyPropertyFixed(autoC6EF574D_var, c_playerPropSuppliesUsed, c_playerPropOperSetTo, gv_teamInfo1.lv_supplyUsed);
-        }
+    gv_teamInfo1.lv_supplyMade = PlayerGetPropertyFixed(EventPlayer(), c_playerPropSuppliesMade);
+    TriggerEnable(gt_fighterMadeChange1, false);
+    auto087069CC_g = gv_playerGroupInfo1.lv_fightersWithNeutral;
+    auto087069CC_var = -1;
+    while (true) {
+        auto087069CC_var = PlayerGroupNextPlayer(auto087069CC_g, auto087069CC_var);
+        if (auto087069CC_var < 0) { break; }
+        PlayerModifyPropertyFixed(auto087069CC_var, c_playerPropSuppliesMade, c_playerPropOperSetTo, gv_teamInfo1.lv_supplyMade);
     }
-    else {
-        gv_teamInfo2.lv_supplyMade -= UnitTypeGetProperty(UnitGetType(EventUnit()), c_unitPropSuppliesMade);
-        gv_teamInfo2.lv_supplyUsed -= UnitTypeGetProperty(UnitGetType(EventUnit()), c_unitPropSuppliesUsed);
-        autoCA80DC9F_g = gv_playerGroup2;
-        autoCA80DC9F_var = -1;
-        while (true) {
-            autoCA80DC9F_var = PlayerGroupNextPlayer(autoCA80DC9F_g, autoCA80DC9F_var);
-            if (autoCA80DC9F_var < 0) { break; }
-            PlayerModifyPropertyFixed(autoCA80DC9F_var, c_playerPropSuppliesMade, c_playerPropOperSetTo, gv_teamInfo2.lv_supplyMade);
-            PlayerModifyPropertyFixed(autoCA80DC9F_var, c_playerPropSuppliesUsed, c_playerPropOperSetTo, gv_teamInfo2.lv_supplyUsed);
-        }
-    }
+    TriggerEnable(gt_fighterMadeChange1, true);
     return true;
 }
 
 //--------------------------------------------------------------------------------------------------
-void gt_decByFighterDie_Init () {
-    gt_decByFighterDie = TriggerCreate("gt_decByFighterDie_Func");
-    TriggerAddEventUnitDied(gt_decByFighterDie, null);
+void gt_builderMadeChange1_Init () {
+    gt_builderMadeChange1 = TriggerCreate("gt_builderMadeChange1_Func");
+    TriggerAddEventPlayerPropChange(gt_builderMadeChange1, 1, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_builderMadeChange1, 2, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_builderMadeChange1, 3, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_builderMadeChange1, 4, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_builderMadeChange1, 5, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_builderMadeChange1, 6, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_builderMadeChange1, 7, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_builderMadeChange1, 8, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_builderMadeChange1, 9, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_builderMadeChange1, 10, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_builderMadeChange1, 11, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_builderMadeChange1, 12, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_builderMadeChange1, 13, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_builderMadeChange1, 14, c_playerPropSuppliesMade);
 }
 
 //--------------------------------------------------------------------------------------------------
-// Trigger: decByBuilderDie
+// Trigger: builderUsedChange1
 //--------------------------------------------------------------------------------------------------
-bool gt_decByBuilderDie_Func (bool testConds, bool runActions) {
+bool gt_builderUsedChange1_Func (bool testConds, bool runActions) {
     // Automatic Variable Declarations
-    playergroup auto9890E7DA_g;
-    int auto9890E7DA_var;
-    playergroup auto6091036C_g;
-    int auto6091036C_var;
+    playergroup auto9A2DBAF3_g;
+    int auto9A2DBAF3_var;
 
     // Conditions
     if (testConds) {
-        if (!(((UnitGetOwner(EventUnit()) == gv_teamInfo1.lv_builder) || (UnitGetOwner(EventUnit()) == gv_teamInfo2.lv_builder)))) {
-            return false;
-        }
-
-        if (!((UnitGetType(EventUnit()) != "Larva"))) {
-            return false;
-        }
-
-        if (!((UnitGetType(EventUnit()) != "LarvaSCBW"))) {
+        if (!((EventPlayer() == gv_teamInfo1.lv_builder))) {
             return false;
         }
     }
@@ -2098,37 +2049,356 @@ bool gt_decByBuilderDie_Func (bool testConds, bool runActions) {
         return true;
     }
 
-    if ((UnitGetOwner(EventUnit()) == gv_teamInfo1.lv_builder)) {
-        gv_teamInfo1.lv_supplyMade = PlayerGetPropertyFixed(EventPlayer(), c_playerPropSuppliesMade);
-        gv_teamInfo1.lv_supplyUsed = PlayerGetPropertyFixed(EventPlayer(), c_playerPropSuppliesUsed);
-        auto6091036C_g = gv_teamInfo1.lv_fighterGroup;
-        auto6091036C_var = -1;
-        while (true) {
-            auto6091036C_var = PlayerGroupNextPlayer(auto6091036C_g, auto6091036C_var);
-            if (auto6091036C_var < 0) { break; }
-            PlayerModifyPropertyFixed(auto6091036C_var, c_playerPropSuppliesMade, c_playerPropOperSetTo, gv_teamInfo1.lv_supplyMade);
-            PlayerModifyPropertyFixed(auto6091036C_var, c_playerPropSuppliesUsed, c_playerPropOperSetTo, gv_teamInfo1.lv_supplyUsed);
-        }
+    gv_teamInfo1.lv_supplyUsed = PlayerGetPropertyFixed(EventPlayer(), c_playerPropSuppliesUsed);
+    TriggerEnable(gt_fighterUsedChange1, false);
+    auto9A2DBAF3_g = gv_playerGroupInfo1.lv_fightersWithNeutral;
+    auto9A2DBAF3_var = -1;
+    while (true) {
+        auto9A2DBAF3_var = PlayerGroupNextPlayer(auto9A2DBAF3_g, auto9A2DBAF3_var);
+        if (auto9A2DBAF3_var < 0) { break; }
+        PlayerModifyPropertyFixed(auto9A2DBAF3_var, c_playerPropSuppliesUsed, c_playerPropOperSetTo, gv_teamInfo1.lv_supplyUsed);
     }
-    else {
-        gv_teamInfo2.lv_supplyMade = PlayerGetPropertyFixed(EventPlayer(), c_playerPropSuppliesMade);
-        gv_teamInfo2.lv_supplyUsed = PlayerGetPropertyFixed(EventPlayer(), c_playerPropSuppliesUsed);
-        auto9890E7DA_g = gv_teamInfo2.lv_fighterGroup;
-        auto9890E7DA_var = -1;
-        while (true) {
-            auto9890E7DA_var = PlayerGroupNextPlayer(auto9890E7DA_g, auto9890E7DA_var);
-            if (auto9890E7DA_var < 0) { break; }
-            PlayerModifyPropertyFixed(auto9890E7DA_var, c_playerPropSuppliesMade, c_playerPropOperSetTo, gv_teamInfo2.lv_supplyMade);
-            PlayerModifyPropertyFixed(auto9890E7DA_var, c_playerPropSuppliesUsed, c_playerPropOperSetTo, gv_teamInfo2.lv_supplyUsed);
-        }
-    }
+    TriggerEnable(gt_fighterUsedChange1, true);
     return true;
 }
 
 //--------------------------------------------------------------------------------------------------
-void gt_decByBuilderDie_Init () {
-    gt_decByBuilderDie = TriggerCreate("gt_decByBuilderDie_Func");
-    TriggerAddEventUnitDied(gt_decByBuilderDie, null);
+void gt_builderUsedChange1_Init () {
+    gt_builderUsedChange1 = TriggerCreate("gt_builderUsedChange1_Func");
+    TriggerAddEventPlayerPropChange(gt_builderUsedChange1, 1, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_builderUsedChange1, 2, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_builderUsedChange1, 3, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_builderUsedChange1, 4, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_builderUsedChange1, 5, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_builderUsedChange1, 6, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_builderUsedChange1, 7, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_builderUsedChange1, 8, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_builderUsedChange1, 9, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_builderUsedChange1, 10, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_builderUsedChange1, 11, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_builderUsedChange1, 12, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_builderUsedChange1, 13, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_builderUsedChange1, 14, c_playerPropSuppliesUsed);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Trigger: fighterMadeChange1
+//--------------------------------------------------------------------------------------------------
+bool gt_fighterMadeChange1_Func (bool testConds, bool runActions) {
+    // Automatic Variable Declarations
+    playergroup auto47B6A1A0_g;
+    int auto47B6A1A0_var;
+
+    // Conditions
+    if (testConds) {
+        if (!((PlayerGroupHasPlayer(gv_playerGroupInfo1.lv_fightersWithNeutral, EventPlayer()) == true))) {
+            return false;
+        }
+    }
+
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    gv_teamInfo1.lv_supplyMade = PlayerGetPropertyFixed(EventPlayer(), c_playerPropSuppliesMade);
+    TriggerEnable(gt_builderMadeChange1, false);
+    TriggerEnable(gt_fighterMadeChange1, false);
+    auto47B6A1A0_g = gv_playerGroupInfo1.lv_players;
+    auto47B6A1A0_var = -1;
+    while (true) {
+        auto47B6A1A0_var = PlayerGroupNextPlayer(auto47B6A1A0_g, auto47B6A1A0_var);
+        if (auto47B6A1A0_var < 0) { break; }
+        PlayerModifyPropertyFixed(auto47B6A1A0_var, c_playerPropSuppliesMade, c_playerPropOperSetTo, gv_teamInfo1.lv_supplyMade);
+    }
+    TriggerEnable(gt_builderMadeChange1, true);
+    TriggerEnable(gt_fighterMadeChange1, true);
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void gt_fighterMadeChange1_Init () {
+    gt_fighterMadeChange1 = TriggerCreate("gt_fighterMadeChange1_Func");
+    TriggerAddEventPlayerPropChange(gt_fighterMadeChange1, 1, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_fighterMadeChange1, 2, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_fighterMadeChange1, 3, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_fighterMadeChange1, 4, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_fighterMadeChange1, 5, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_fighterMadeChange1, 6, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_fighterMadeChange1, 7, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_fighterMadeChange1, 8, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_fighterMadeChange1, 9, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_fighterMadeChange1, 10, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_fighterMadeChange1, 11, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_fighterMadeChange1, 12, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_fighterMadeChange1, 13, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_fighterMadeChange1, 14, c_playerPropSuppliesMade);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Trigger: fighterUsedChange1
+//--------------------------------------------------------------------------------------------------
+bool gt_fighterUsedChange1_Func (bool testConds, bool runActions) {
+    // Automatic Variable Declarations
+    playergroup auto3A62394B_g;
+    int auto3A62394B_var;
+
+    // Conditions
+    if (testConds) {
+        if (!((PlayerGroupHasPlayer(gv_playerGroupInfo1.lv_fightersWithNeutral, EventPlayer()) == true))) {
+            return false;
+        }
+    }
+
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    gv_teamInfo1.lv_supplyUsed = PlayerGetPropertyFixed(EventPlayer(), c_playerPropSuppliesUsed);
+    TriggerEnable(gt_builderUsedChange1, false);
+    TriggerEnable(gt_fighterUsedChange1, false);
+    auto3A62394B_g = gv_playerGroupInfo1.lv_players;
+    auto3A62394B_var = -1;
+    while (true) {
+        auto3A62394B_var = PlayerGroupNextPlayer(auto3A62394B_g, auto3A62394B_var);
+        if (auto3A62394B_var < 0) { break; }
+        PlayerModifyPropertyFixed(auto3A62394B_var, c_playerPropSuppliesUsed, c_playerPropOperSetTo, gv_teamInfo1.lv_supplyUsed);
+    }
+    TriggerEnable(gt_builderUsedChange1, true);
+    TriggerEnable(gt_fighterUsedChange1, true);
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void gt_fighterUsedChange1_Init () {
+    gt_fighterUsedChange1 = TriggerCreate("gt_fighterUsedChange1_Func");
+    TriggerAddEventPlayerPropChange(gt_fighterUsedChange1, 1, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_fighterUsedChange1, 2, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_fighterUsedChange1, 3, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_fighterUsedChange1, 4, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_fighterUsedChange1, 5, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_fighterUsedChange1, 6, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_fighterUsedChange1, 7, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_fighterUsedChange1, 8, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_fighterUsedChange1, 9, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_fighterUsedChange1, 10, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_fighterUsedChange1, 11, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_fighterUsedChange1, 12, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_fighterUsedChange1, 13, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_fighterUsedChange1, 14, c_playerPropSuppliesUsed);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Trigger: builderMadeChange2
+//--------------------------------------------------------------------------------------------------
+bool gt_builderMadeChange2_Func (bool testConds, bool runActions) {
+    // Automatic Variable Declarations
+    playergroup auto6FF94E53_g;
+    int auto6FF94E53_var;
+
+    // Conditions
+    if (testConds) {
+        if (!((EventPlayer() == gv_teamInfo2.lv_builder))) {
+            return false;
+        }
+    }
+
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    gv_teamInfo2.lv_supplyMade = PlayerGetPropertyFixed(EventPlayer(), c_playerPropSuppliesMade);
+    TriggerEnable(gt_fighterMadeChange2, false);
+    auto6FF94E53_g = gv_playerGroupInfo2.lv_fightersWithNeutral;
+    auto6FF94E53_var = -1;
+    while (true) {
+        auto6FF94E53_var = PlayerGroupNextPlayer(auto6FF94E53_g, auto6FF94E53_var);
+        if (auto6FF94E53_var < 0) { break; }
+        PlayerModifyPropertyFixed(auto6FF94E53_var, c_playerPropSuppliesMade, c_playerPropOperSetTo, gv_teamInfo2.lv_supplyMade);
+    }
+    TriggerEnable(gt_fighterMadeChange2, true);
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void gt_builderMadeChange2_Init () {
+    gt_builderMadeChange2 = TriggerCreate("gt_builderMadeChange2_Func");
+    TriggerAddEventPlayerPropChange(gt_builderMadeChange2, 1, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_builderMadeChange2, 2, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_builderMadeChange2, 3, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_builderMadeChange2, 4, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_builderMadeChange2, 5, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_builderMadeChange2, 6, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_builderMadeChange2, 7, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_builderMadeChange2, 8, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_builderMadeChange2, 9, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_builderMadeChange2, 10, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_builderMadeChange2, 11, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_builderMadeChange2, 12, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_builderMadeChange2, 13, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_builderMadeChange2, 14, c_playerPropSuppliesMade);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Trigger: builderUsedChange2
+//--------------------------------------------------------------------------------------------------
+bool gt_builderUsedChange2_Func (bool testConds, bool runActions) {
+    // Automatic Variable Declarations
+    playergroup autoF93ECF3B_g;
+    int autoF93ECF3B_var;
+
+    // Conditions
+    if (testConds) {
+        if (!((EventPlayer() == gv_teamInfo2.lv_builder))) {
+            return false;
+        }
+    }
+
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    gv_teamInfo2.lv_supplyUsed = PlayerGetPropertyFixed(EventPlayer(), c_playerPropSuppliesUsed);
+    TriggerEnable(gt_fighterUsedChange2, false);
+    autoF93ECF3B_g = gv_playerGroupInfo2.lv_fightersWithNeutral;
+    autoF93ECF3B_var = -1;
+    while (true) {
+        autoF93ECF3B_var = PlayerGroupNextPlayer(autoF93ECF3B_g, autoF93ECF3B_var);
+        if (autoF93ECF3B_var < 0) { break; }
+        PlayerModifyPropertyFixed(autoF93ECF3B_var, c_playerPropSuppliesUsed, c_playerPropOperSetTo, gv_teamInfo2.lv_supplyUsed);
+    }
+    TriggerEnable(gt_fighterUsedChange2, true);
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void gt_builderUsedChange2_Init () {
+    gt_builderUsedChange2 = TriggerCreate("gt_builderUsedChange2_Func");
+    TriggerAddEventPlayerPropChange(gt_builderUsedChange2, 1, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_builderUsedChange2, 2, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_builderUsedChange2, 3, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_builderUsedChange2, 4, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_builderUsedChange2, 5, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_builderUsedChange2, 6, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_builderUsedChange2, 7, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_builderUsedChange2, 8, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_builderUsedChange2, 9, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_builderUsedChange2, 10, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_builderUsedChange2, 11, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_builderUsedChange2, 12, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_builderUsedChange2, 13, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_builderUsedChange2, 14, c_playerPropSuppliesUsed);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Trigger: fighterMadeChange2
+//--------------------------------------------------------------------------------------------------
+bool gt_fighterMadeChange2_Func (bool testConds, bool runActions) {
+    // Automatic Variable Declarations
+    playergroup auto2CE8C1AD_g;
+    int auto2CE8C1AD_var;
+
+    // Conditions
+    if (testConds) {
+        if (!((PlayerGroupHasPlayer(gv_playerGroupInfo2.lv_fightersWithNeutral, EventPlayer()) == true))) {
+            return false;
+        }
+    }
+
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    gv_teamInfo2.lv_supplyMade = PlayerGetPropertyFixed(EventPlayer(), c_playerPropSuppliesMade);
+    TriggerEnable(gt_builderMadeChange2, false);
+    TriggerEnable(gt_fighterMadeChange2, false);
+    auto2CE8C1AD_g = gv_playerGroupInfo2.lv_players;
+    auto2CE8C1AD_var = -1;
+    while (true) {
+        auto2CE8C1AD_var = PlayerGroupNextPlayer(auto2CE8C1AD_g, auto2CE8C1AD_var);
+        if (auto2CE8C1AD_var < 0) { break; }
+        PlayerModifyPropertyFixed(auto2CE8C1AD_var, c_playerPropSuppliesMade, c_playerPropOperSetTo, gv_teamInfo2.lv_supplyMade);
+    }
+    TriggerEnable(gt_builderMadeChange2, true);
+    TriggerEnable(gt_fighterMadeChange2, true);
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void gt_fighterMadeChange2_Init () {
+    gt_fighterMadeChange2 = TriggerCreate("gt_fighterMadeChange2_Func");
+    TriggerAddEventPlayerPropChange(gt_fighterMadeChange2, 1, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_fighterMadeChange2, 2, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_fighterMadeChange2, 3, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_fighterMadeChange2, 4, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_fighterMadeChange2, 5, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_fighterMadeChange2, 6, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_fighterMadeChange2, 7, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_fighterMadeChange2, 8, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_fighterMadeChange2, 9, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_fighterMadeChange2, 10, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_fighterMadeChange2, 11, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_fighterMadeChange2, 12, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_fighterMadeChange2, 13, c_playerPropSuppliesMade);
+    TriggerAddEventPlayerPropChange(gt_fighterMadeChange2, 14, c_playerPropSuppliesMade);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Trigger: fighterUsedChange2
+//--------------------------------------------------------------------------------------------------
+bool gt_fighterUsedChange2_Func (bool testConds, bool runActions) {
+    // Automatic Variable Declarations
+    playergroup auto95859B04_g;
+    int auto95859B04_var;
+
+    // Conditions
+    if (testConds) {
+        if (!((PlayerGroupHasPlayer(gv_playerGroupInfo2.lv_fightersWithNeutral, EventPlayer()) == true))) {
+            return false;
+        }
+    }
+
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    gv_teamInfo2.lv_supplyUsed = PlayerGetPropertyFixed(EventPlayer(), c_playerPropSuppliesUsed);
+    TriggerEnable(gt_builderUsedChange2, false);
+    TriggerEnable(gt_fighterUsedChange2, false);
+    auto95859B04_g = gv_playerGroupInfo2.lv_players;
+    auto95859B04_var = -1;
+    while (true) {
+        auto95859B04_var = PlayerGroupNextPlayer(auto95859B04_g, auto95859B04_var);
+        if (auto95859B04_var < 0) { break; }
+        PlayerModifyPropertyFixed(auto95859B04_var, c_playerPropSuppliesUsed, c_playerPropOperSetTo, gv_teamInfo2.lv_supplyUsed);
+    }
+    TriggerEnable(gt_builderUsedChange2, true);
+    TriggerEnable(gt_fighterUsedChange2, true);
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void gt_fighterUsedChange2_Init () {
+    gt_fighterUsedChange2 = TriggerCreate("gt_fighterUsedChange2_Func");
+    TriggerAddEventPlayerPropChange(gt_fighterUsedChange2, 1, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_fighterUsedChange2, 2, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_fighterUsedChange2, 3, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_fighterUsedChange2, 4, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_fighterUsedChange2, 5, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_fighterUsedChange2, 6, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_fighterUsedChange2, 7, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_fighterUsedChange2, 8, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_fighterUsedChange2, 9, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_fighterUsedChange2, 10, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_fighterUsedChange2, 11, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_fighterUsedChange2, 12, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_fighterUsedChange2, 13, c_playerPropSuppliesUsed);
+    TriggerAddEventPlayerPropChange(gt_fighterUsedChange2, 14, c_playerPropSuppliesUsed);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -2179,24 +2449,22 @@ bool gt_upgrade_Func (bool testConds, bool runActions) {
     }
 
     if ((UnitGetOwner(EventUnit()) == gv_teamInfo1.lv_builder)) {
-        autoE1216329_g = gv_teamInfo1.lv_fighterGroup;
+        autoE1216329_g = gv_playerGroupInfo1.lv_fightersWithNeutral;
         autoE1216329_var = -1;
         while (true) {
             autoE1216329_var = PlayerGroupNextPlayer(autoE1216329_g, autoE1216329_var);
             if (autoE1216329_var < 0) { break; }
             TechTreeUpgradeAddLevel(autoE1216329_var, libNtve_gf_TriggeringProgressUpgrade(), 1);
         }
-        TechTreeUpgradeAddLevel(13, libNtve_gf_TriggeringProgressUpgrade(), 1);
     }
     else {
-        autoC320A639_g = gv_teamInfo2.lv_fighterGroup;
+        autoC320A639_g = gv_playerGroupInfo2.lv_fightersWithNeutral;
         autoC320A639_var = -1;
         while (true) {
             autoC320A639_var = PlayerGroupNextPlayer(autoC320A639_g, autoC320A639_var);
             if (autoC320A639_var < 0) { break; }
             TechTreeUpgradeAddLevel(autoC320A639_var, libNtve_gf_TriggeringProgressUpgrade(), 1);
         }
-        TechTreeUpgradeAddLevel(14, libNtve_gf_TriggeringProgressUpgrade(), 1);
     }
     return true;
 }
@@ -2232,7 +2500,7 @@ bool gt_armoryAdd_Func (bool testConds, bool runActions) {
     if ((UnitGetOwner(EventUnitProgressUnit()) == gv_teamInfo1.lv_builder)) {
         gv_sharedUnit1.lv_armory += 1;
         if ((gv_sharedUnit1.lv_armory == 1)) {
-            autoDC167583_g = gv_teamInfo1.lv_fighterGroup;
+            autoDC167583_g = gv_playerGroupInfo1.lv_fightersWithNeutral;
             autoDC167583_var = -1;
             while (true) {
                 autoDC167583_var = PlayerGroupNextPlayer(autoDC167583_g, autoDC167583_var);
@@ -2245,7 +2513,7 @@ bool gt_armoryAdd_Func (bool testConds, bool runActions) {
     else {
         gv_sharedUnit2.lv_armory += 1;
         if ((gv_sharedUnit2.lv_armory == 1)) {
-            auto3BCB44A7_g = gv_teamInfo2.lv_fighterGroup;
+            auto3BCB44A7_g = gv_playerGroupInfo2.lv_fightersWithNeutral;
             auto3BCB44A7_var = -1;
             while (true) {
                 auto3BCB44A7_var = PlayerGroupNextPlayer(auto3BCB44A7_g, auto3BCB44A7_var);
@@ -2289,7 +2557,7 @@ bool gt_armoryDec_Func (bool testConds, bool runActions) {
     if ((UnitGetOwner(EventUnit()) == gv_teamInfo1.lv_builder)) {
         gv_sharedUnit1.lv_armory -= 1;
         if ((gv_sharedUnit1.lv_armory == 0)) {
-            autoA46B3BBE_g = gv_teamInfo1.lv_fighterGroup;
+            autoA46B3BBE_g = gv_playerGroupInfo1.lv_fightersWithNeutral;
             autoA46B3BBE_var = -1;
             while (true) {
                 autoA46B3BBE_var = PlayerGroupNextPlayer(autoA46B3BBE_g, autoA46B3BBE_var);
@@ -2302,7 +2570,7 @@ bool gt_armoryDec_Func (bool testConds, bool runActions) {
     else {
         gv_sharedUnit2.lv_armory -= 1;
         if ((gv_sharedUnit2.lv_armory == 0)) {
-            auto82FB00A8_g = gv_teamInfo2.lv_fighterGroup;
+            auto82FB00A8_g = gv_playerGroupInfo2.lv_fightersWithNeutral;
             auto82FB00A8_var = -1;
             while (true) {
                 auto82FB00A8_var = PlayerGroupNextPlayer(auto82FB00A8_g, auto82FB00A8_var);
@@ -2346,7 +2614,7 @@ bool gt_banelingNestAdd_Func (bool testConds, bool runActions) {
     if ((UnitGetOwner(EventUnitProgressUnit()) == gv_teamInfo1.lv_builder)) {
         gv_sharedUnit1.lv_banelingNest += 1;
         if ((gv_sharedUnit1.lv_banelingNest == 1)) {
-            auto1634872C_g = gv_teamInfo1.lv_fighterGroup;
+            auto1634872C_g = gv_playerGroupInfo1.lv_fightersWithNeutral;
             auto1634872C_var = -1;
             while (true) {
                 auto1634872C_var = PlayerGroupNextPlayer(auto1634872C_g, auto1634872C_var);
@@ -2359,7 +2627,7 @@ bool gt_banelingNestAdd_Func (bool testConds, bool runActions) {
     else {
         gv_sharedUnit2.lv_banelingNest += 1;
         if ((gv_sharedUnit2.lv_banelingNest == 1)) {
-            autoFB0C25C7_g = gv_teamInfo2.lv_fighterGroup;
+            autoFB0C25C7_g = gv_playerGroupInfo2.lv_fightersWithNeutral;
             autoFB0C25C7_var = -1;
             while (true) {
                 autoFB0C25C7_var = PlayerGroupNextPlayer(autoFB0C25C7_g, autoFB0C25C7_var);
@@ -2403,7 +2671,7 @@ bool gt_banelingNestDec_Func (bool testConds, bool runActions) {
     if ((UnitGetOwner(EventUnit()) == gv_teamInfo1.lv_builder)) {
         gv_sharedUnit1.lv_banelingNest -= 1;
         if ((gv_sharedUnit1.lv_banelingNest == 0)) {
-            autoBC7342D0_g = gv_teamInfo1.lv_fighterGroup;
+            autoBC7342D0_g = gv_playerGroupInfo1.lv_fightersWithNeutral;
             autoBC7342D0_var = -1;
             while (true) {
                 autoBC7342D0_var = PlayerGroupNextPlayer(autoBC7342D0_g, autoBC7342D0_var);
@@ -2416,7 +2684,7 @@ bool gt_banelingNestDec_Func (bool testConds, bool runActions) {
     else {
         gv_sharedUnit2.lv_banelingNest -= 1;
         if ((gv_sharedUnit2.lv_banelingNest == 0)) {
-            auto9501C1FA_g = gv_teamInfo2.lv_fighterGroup;
+            auto9501C1FA_g = gv_playerGroupInfo2.lv_fightersWithNeutral;
             auto9501C1FA_var = -1;
             while (true) {
                 auto9501C1FA_var = PlayerGroupNextPlayer(auto9501C1FA_g, auto9501C1FA_var);
@@ -2460,7 +2728,7 @@ bool gt_roachWarrenAdd_Func (bool testConds, bool runActions) {
     if ((UnitGetOwner(EventUnitProgressUnit()) == gv_teamInfo1.lv_builder)) {
         gv_sharedUnit1.lv_roachWarren += 1;
         if ((gv_sharedUnit1.lv_roachWarren == 1)) {
-            autoBD20EAB9_g = gv_teamInfo1.lv_fighterGroup;
+            autoBD20EAB9_g = gv_playerGroupInfo1.lv_fightersWithNeutral;
             autoBD20EAB9_var = -1;
             while (true) {
                 autoBD20EAB9_var = PlayerGroupNextPlayer(autoBD20EAB9_g, autoBD20EAB9_var);
@@ -2473,7 +2741,7 @@ bool gt_roachWarrenAdd_Func (bool testConds, bool runActions) {
     else {
         gv_sharedUnit2.lv_roachWarren += 1;
         if ((gv_sharedUnit2.lv_roachWarren == 1)) {
-            autoB5C902AE_g = gv_teamInfo2.lv_fighterGroup;
+            autoB5C902AE_g = gv_playerGroupInfo2.lv_fightersWithNeutral;
             autoB5C902AE_var = -1;
             while (true) {
                 autoB5C902AE_var = PlayerGroupNextPlayer(autoB5C902AE_g, autoB5C902AE_var);
@@ -2517,7 +2785,7 @@ bool gt_roachWarrenDec_Func (bool testConds, bool runActions) {
     if ((UnitGetOwner(EventUnit()) == gv_teamInfo1.lv_builder)) {
         gv_sharedUnit1.lv_roachWarren -= 1;
         if ((gv_sharedUnit1.lv_roachWarren == 0)) {
-            auto722A23D8_g = gv_teamInfo1.lv_fighterGroup;
+            auto722A23D8_g = gv_playerGroupInfo1.lv_fightersWithNeutral;
             auto722A23D8_var = -1;
             while (true) {
                 auto722A23D8_var = PlayerGroupNextPlayer(auto722A23D8_g, auto722A23D8_var);
@@ -2530,7 +2798,7 @@ bool gt_roachWarrenDec_Func (bool testConds, bool runActions) {
     else {
         gv_sharedUnit2.lv_roachWarren -= 1;
         if ((gv_sharedUnit2.lv_roachWarren == 0)) {
-            autoB01CAE77_g = gv_teamInfo2.lv_fighterGroup;
+            autoB01CAE77_g = gv_playerGroupInfo2.lv_fightersWithNeutral;
             autoB01CAE77_var = -1;
             while (true) {
                 autoB01CAE77_var = PlayerGroupNextPlayer(autoB01CAE77_g, autoB01CAE77_var);
@@ -2567,7 +2835,7 @@ bool gt_lairAdd_Func (bool testConds, bool runActions) {
     if ((UnitGetOwner(EventUnit()) == gv_teamInfo1.lv_builder)) {
         gv_sharedUnit1.lv_lair += 1;
         if ((gv_sharedUnit1.lv_lair == 1)) {
-            autoBFA4625E_g = gv_teamInfo1.lv_fighterGroup;
+            autoBFA4625E_g = gv_playerGroupInfo1.lv_fightersWithNeutral;
             autoBFA4625E_var = -1;
             while (true) {
                 autoBFA4625E_var = PlayerGroupNextPlayer(autoBFA4625E_g, autoBFA4625E_var);
@@ -2581,7 +2849,7 @@ bool gt_lairAdd_Func (bool testConds, bool runActions) {
     else {
         gv_sharedUnit2.lv_lair += 1;
         if ((gv_sharedUnit2.lv_lair == 1)) {
-            auto1F2FB09E_g = gv_teamInfo2.lv_fighterGroup;
+            auto1F2FB09E_g = gv_playerGroupInfo2.lv_fightersWithNeutral;
             auto1F2FB09E_var = -1;
             while (true) {
                 auto1F2FB09E_var = PlayerGroupNextPlayer(auto1F2FB09E_g, auto1F2FB09E_var);
@@ -2626,7 +2894,7 @@ bool gt_lairDec_Func (bool testConds, bool runActions) {
     if ((UnitGetOwner(EventUnit()) == gv_teamInfo1.lv_builder)) {
         gv_sharedUnit1.lv_lair -= 1;
         if ((gv_sharedUnit1.lv_lair == 0)) {
-            autoD5B0E244_g = gv_teamInfo1.lv_fighterGroup;
+            autoD5B0E244_g = gv_playerGroupInfo1.lv_fightersWithNeutral;
             autoD5B0E244_var = -1;
             while (true) {
                 autoD5B0E244_var = PlayerGroupNextPlayer(autoD5B0E244_g, autoD5B0E244_var);
@@ -2640,7 +2908,7 @@ bool gt_lairDec_Func (bool testConds, bool runActions) {
     else {
         gv_sharedUnit2.lv_lair -= 1;
         if ((gv_sharedUnit2.lv_lair == 0)) {
-            auto101D1A53_g = gv_teamInfo2.lv_fighterGroup;
+            auto101D1A53_g = gv_playerGroupInfo2.lv_fightersWithNeutral;
             auto101D1A53_var = -1;
             while (true) {
                 auto101D1A53_var = PlayerGroupNextPlayer(auto101D1A53_g, auto101D1A53_var);
@@ -2685,7 +2953,7 @@ bool gt_lurkerDenAdd_Func (bool testConds, bool runActions) {
     if ((UnitGetOwner(EventUnitProgressUnit()) == gv_teamInfo1.lv_builder)) {
         gv_sharedUnit1.lv_lurkerDen += 1;
         if ((gv_sharedUnit1.lv_lurkerDen == 1)) {
-            auto0B57E2EA_g = gv_teamInfo1.lv_fighterGroup;
+            auto0B57E2EA_g = gv_playerGroupInfo1.lv_fightersWithNeutral;
             auto0B57E2EA_var = -1;
             while (true) {
                 auto0B57E2EA_var = PlayerGroupNextPlayer(auto0B57E2EA_g, auto0B57E2EA_var);
@@ -2698,7 +2966,7 @@ bool gt_lurkerDenAdd_Func (bool testConds, bool runActions) {
     else {
         gv_sharedUnit2.lv_lurkerDen += 1;
         if ((gv_sharedUnit2.lv_lurkerDen == 1)) {
-            autoDD8AC918_g = gv_teamInfo2.lv_fighterGroup;
+            autoDD8AC918_g = gv_playerGroupInfo2.lv_fightersWithNeutral;
             autoDD8AC918_var = -1;
             while (true) {
                 autoDD8AC918_var = PlayerGroupNextPlayer(autoDD8AC918_g, autoDD8AC918_var);
@@ -2742,7 +3010,7 @@ bool gt_lurkerDenDec_Func (bool testConds, bool runActions) {
     if ((UnitGetOwner(EventUnit()) == gv_teamInfo1.lv_builder)) {
         gv_sharedUnit1.lv_lurkerDen -= 1;
         if ((gv_sharedUnit1.lv_lurkerDen == 0)) {
-            autoB0BB9A99_g = gv_teamInfo1.lv_fighterGroup;
+            autoB0BB9A99_g = gv_playerGroupInfo1.lv_fightersWithNeutral;
             autoB0BB9A99_var = -1;
             while (true) {
                 autoB0BB9A99_var = PlayerGroupNextPlayer(autoB0BB9A99_g, autoB0BB9A99_var);
@@ -2755,7 +3023,7 @@ bool gt_lurkerDenDec_Func (bool testConds, bool runActions) {
     else {
         gv_sharedUnit2.lv_lurkerDen -= 1;
         if ((gv_sharedUnit2.lv_lurkerDen == 0)) {
-            auto839F5BA6_g = gv_teamInfo2.lv_fighterGroup;
+            auto839F5BA6_g = gv_playerGroupInfo2.lv_fightersWithNeutral;
             auto839F5BA6_var = -1;
             while (true) {
                 auto839F5BA6_var = PlayerGroupNextPlayer(auto839F5BA6_g, auto839F5BA6_var);
@@ -2792,7 +3060,7 @@ bool gt_greaterSpireAdd_Func (bool testConds, bool runActions) {
     if ((UnitGetOwner(EventUnit()) == gv_teamInfo1.lv_builder)) {
         gv_sharedUnit1.lv_greaterSpire += 1;
         if ((gv_sharedUnit1.lv_greaterSpire == 1)) {
-            autoCD758636_g = gv_teamInfo1.lv_fighterGroup;
+            autoCD758636_g = gv_playerGroupInfo1.lv_fightersWithNeutral;
             autoCD758636_var = -1;
             while (true) {
                 autoCD758636_var = PlayerGroupNextPlayer(autoCD758636_g, autoCD758636_var);
@@ -2805,7 +3073,7 @@ bool gt_greaterSpireAdd_Func (bool testConds, bool runActions) {
     else {
         gv_sharedUnit2.lv_greaterSpire += 1;
         if ((gv_sharedUnit2.lv_greaterSpire == 1)) {
-            auto7480F6B9_g = gv_teamInfo2.lv_fighterGroup;
+            auto7480F6B9_g = gv_playerGroupInfo2.lv_fightersWithNeutral;
             auto7480F6B9_var = -1;
             while (true) {
                 auto7480F6B9_var = PlayerGroupNextPlayer(auto7480F6B9_g, auto7480F6B9_var);
@@ -2849,7 +3117,7 @@ bool gt_greaterSpireDec_Func (bool testConds, bool runActions) {
     if ((UnitGetOwner(EventUnit()) == gv_teamInfo1.lv_builder)) {
         gv_sharedUnit1.lv_greaterSpire -= 1;
         if ((gv_sharedUnit1.lv_greaterSpire == 0)) {
-            autoFB0C9109_g = gv_teamInfo1.lv_fighterGroup;
+            autoFB0C9109_g = gv_playerGroupInfo1.lv_fightersWithNeutral;
             autoFB0C9109_var = -1;
             while (true) {
                 autoFB0C9109_var = PlayerGroupNextPlayer(autoFB0C9109_g, autoFB0C9109_var);
@@ -2862,7 +3130,7 @@ bool gt_greaterSpireDec_Func (bool testConds, bool runActions) {
     else {
         gv_sharedUnit2.lv_greaterSpire -= 1;
         if ((gv_sharedUnit2.lv_greaterSpire == 0)) {
-            autoCD17B6FB_g = gv_teamInfo2.lv_fighterGroup;
+            autoCD17B6FB_g = gv_playerGroupInfo2.lv_fightersWithNeutral;
             autoCD17B6FB_var = -1;
             while (true) {
                 autoCD17B6FB_var = PlayerGroupNextPlayer(autoCD17B6FB_g, autoCD17B6FB_var);
@@ -2899,7 +3167,7 @@ bool gt_bwGreaterSpireAdd_Func (bool testConds, bool runActions) {
     if ((UnitGetOwner(EventUnit()) == gv_teamInfo1.lv_builder)) {
         gv_sharedUnit1.lv_greaterSpire += 1;
         if ((gv_sharedUnit1.lv_greaterSpire == 1)) {
-            auto34FEF6C7_g = gv_teamInfo1.lv_fighterGroup;
+            auto34FEF6C7_g = gv_playerGroupInfo1.lv_fightersWithNeutral;
             auto34FEF6C7_var = -1;
             while (true) {
                 auto34FEF6C7_var = PlayerGroupNextPlayer(auto34FEF6C7_g, auto34FEF6C7_var);
@@ -2913,7 +3181,7 @@ bool gt_bwGreaterSpireAdd_Func (bool testConds, bool runActions) {
     else {
         gv_sharedUnit2.lv_greaterSpire += 1;
         if ((gv_sharedUnit2.lv_greaterSpire == 1)) {
-            auto7277E04E_g = gv_teamInfo2.lv_fighterGroup;
+            auto7277E04E_g = gv_playerGroupInfo2.lv_fightersWithNeutral;
             auto7277E04E_var = -1;
             while (true) {
                 auto7277E04E_var = PlayerGroupNextPlayer(auto7277E04E_g, auto7277E04E_var);
@@ -2958,7 +3226,7 @@ bool gt_bwGreaterSpireDec_Func (bool testConds, bool runActions) {
     if ((UnitGetOwner(EventUnit()) == gv_teamInfo1.lv_builder)) {
         gv_sharedUnit1.lv_greaterSpire -= 1;
         if ((gv_sharedUnit1.lv_greaterSpire == 0)) {
-            auto04EC120C_g = gv_teamInfo1.lv_fighterGroup;
+            auto04EC120C_g = gv_playerGroupInfo1.lv_fightersWithNeutral;
             auto04EC120C_var = -1;
             while (true) {
                 auto04EC120C_var = PlayerGroupNextPlayer(auto04EC120C_g, auto04EC120C_var);
@@ -2972,7 +3240,7 @@ bool gt_bwGreaterSpireDec_Func (bool testConds, bool runActions) {
     else {
         gv_sharedUnit2.lv_greaterSpire -= 1;
         if ((gv_sharedUnit2.lv_greaterSpire == 0)) {
-            autoCF020829_g = gv_teamInfo2.lv_fighterGroup;
+            autoCF020829_g = gv_playerGroupInfo2.lv_fightersWithNeutral;
             autoCF020829_var = -1;
             while (true) {
                 autoCF020829_var = PlayerGroupNextPlayer(autoCF020829_g, autoCF020829_var);
@@ -3073,7 +3341,7 @@ bool gt_nukeUse_Func (bool testConds, bool runActions) {
 
     lv__unit = EventUnit();
     lv__triggeringPlayer = UnitGetOwner(EventUnit());
-    if (((PlayerGroupHasPlayer(gv_teamInfo1.lv_fighterGroup, lv__triggeringPlayer) == true) || (UnitGetOwner(EventUnit()) == 13))) {
+    if (((PlayerGroupHasPlayer(gv_playerGroupInfo1.lv_fightersWithNeutral, lv__triggeringPlayer) == true))) {
         gv_sharedUnit1.lv_nuke -= 1;
         PlayerCreateEffectPoint(gv_teamInfo1.lv_builder, "NukeNF1B", Point(0.0, 0.0));
         autoA880A39A_g = gv_teamInfo1.lv_ghostGroup;
@@ -3238,7 +3506,7 @@ bool gt_bwNukeUse_Func (bool testConds, bool runActions) {
 
     lv__unit = EventUnit();
     lv__triggeringPlayer = UnitGetOwner(EventUnit());
-    if (((PlayerGroupHasPlayer(gv_teamInfo1.lv_fighterGroup, lv__triggeringPlayer) == true) || (UnitGetOwner(EventUnit()) == 13))) {
+    if (((PlayerGroupHasPlayer(gv_playerGroupInfo1.lv_fightersWithNeutral, lv__triggeringPlayer) == true))) {
         gv_sharedUnit1.lv_nuke -= 1;
         PlayerCreateEffectPoint(gv_teamInfo1.lv_builder, "GhostSCBWNuclearStrike@CalldownDummyNF1B", Point(0.0, 0.0));
         auto26360F9A_g = gv_teamInfo1.lv_ghostGroup;
@@ -3392,7 +3660,7 @@ bool gt_mothershipDec_Func (bool testConds, bool runActions) {
         return true;
     }
 
-    if ((PlayerGroupHasPlayer(gv_playerGroupAll1, UnitGetOwner(EventUnit())) == true)) {
+    if ((PlayerGroupHasPlayer(gv_playerGroupInfo1.lv_players, UnitGetOwner(EventUnit())) == true)) {
         gv_sharedUnit1.lv_motherShip = false;
         autoAFB89D52_g = gv_teamInfo1.lv_nexusGroup;
         autoAFB89D52_u = UnitGroupCount(autoAFB89D52_g, c_unitCountAll);
@@ -3503,6 +3771,7 @@ bool gt_releaseByFighterCommand_Func (bool testConds, bool runActions) {
             if ((UnitGetOwner(lv__unit) == EventPlayer())) {
                 UnitSetOwner(lv__unit, 13, true);
                 UnitSetTeamColorIndex(lv__unit, 0);
+                gf_closeSupplyShareTrigger1();
             }
 
         }
@@ -3516,6 +3785,7 @@ bool gt_releaseByFighterCommand_Func (bool testConds, bool runActions) {
             if ((UnitGetOwner(lv__unit) == EventPlayer())) {
                 UnitSetOwner(lv__unit, 14, true);
                 UnitSetTeamColorIndex(lv__unit, 0);
+                gf_closeSupplyShareTrigger2();
             }
 
         }
@@ -3566,6 +3836,7 @@ bool gt_releaseByBuilderCommand_Func (bool testConds, bool runActions) {
             if ((UnitGetOwner(lv__unit) == EventPlayer()) && (UnitGetType(lv__unit) == "OverlordSCBW")) {
                 UnitSetOwner(lv__unit, 13, true);
                 UnitSetTeamColorIndex(lv__unit, 0);
+                gf_closeSupplyShareTrigger1();
             }
 
         }
@@ -3579,6 +3850,7 @@ bool gt_releaseByBuilderCommand_Func (bool testConds, bool runActions) {
             if ((UnitGetOwner(lv__unit) == EventPlayer()) && (UnitGetType(lv__unit) == "OverlordSCBW")) {
                 UnitSetOwner(lv__unit, 14, true);
                 UnitSetTeamColorIndex(lv__unit, 0);
+                gf_closeSupplyShareTrigger2();
             }
 
         }
@@ -3621,10 +3893,12 @@ bool gt_releaseAfterOverseer_Func (bool testConds, bool runActions) {
         if ((UnitGetOwner(EventUnit()) == gv_teamInfo1.lv_builder)) {
             UnitSetOwner(EventUnit(), 13, true);
             UnitSetTeamColorIndex(EventUnit(), 0);
+            gf_closeSupplyShareTrigger1();
         }
         else {
             UnitSetOwner(EventUnit(), 14, true);
             UnitSetTeamColorIndex(EventUnit(), 0);
+            gf_closeSupplyShareTrigger2();
         }
         UnitIssueOrder(EventUnit(), OrderTargetingPoint(AbilityCommand("move", 0), lv__rallyPoint), c_orderQueueReplace);
     }
@@ -3632,10 +3906,12 @@ bool gt_releaseAfterOverseer_Func (bool testConds, bool runActions) {
         if ((UnitGetOwner(EventUnit()) == gv_teamInfo1.lv_builder)) {
             UnitSetOwner(EventUnit(), 13, true);
             UnitSetTeamColorIndex(EventUnit(), 0);
+            gf_closeSupplyShareTrigger1();
         }
         else {
             UnitSetOwner(EventUnit(), 14, true);
             UnitSetTeamColorIndex(EventUnit(), 0);
+            gf_closeSupplyShareTrigger2();
         }
     }
     return true;
@@ -3674,10 +3950,12 @@ bool gt_releaseAfterOverlordTransport_Func (bool testConds, bool runActions) {
         if ((UnitGetOwner(EventUnit()) == gv_teamInfo1.lv_builder)) {
             UnitSetOwner(EventUnit(), 13, true);
             UnitSetTeamColorIndex(EventUnit(), 0);
+            gf_closeSupplyShareTrigger1();
         }
         else {
             UnitSetOwner(EventUnit(), 14, true);
             UnitSetTeamColorIndex(EventUnit(), 0);
+            gf_closeSupplyShareTrigger2();
         }
         UnitIssueOrder(EventUnit(), OrderTargetingPoint(AbilityCommand("move", 0), lv__rallyPoint), c_orderQueueReplace);
     }
@@ -3685,10 +3963,12 @@ bool gt_releaseAfterOverlordTransport_Func (bool testConds, bool runActions) {
         if ((UnitGetOwner(EventUnit()) == gv_teamInfo1.lv_builder)) {
             UnitSetOwner(EventUnit(), 13, true);
             UnitSetTeamColorIndex(EventUnit(), 0);
+            gf_closeSupplyShareTrigger1();
         }
         else {
             UnitSetOwner(EventUnit(), 14, true);
             UnitSetTeamColorIndex(EventUnit(), 0);
+            gf_closeSupplyShareTrigger2();
         }
     }
     return true;
@@ -3767,10 +4047,12 @@ bool gt_releaseAfterTrain_Func (bool testConds, bool runActions) {
         if ((UnitGetOwner(EventUnit()) == gv_teamInfo1.lv_builder)) {
             UnitSetOwner(EventUnitProgressUnit(), 13, true);
             UnitSetTeamColorIndex(EventUnitProgressUnit(), 0);
+            gf_closeSupplyShareTrigger1();
         }
         else {
             UnitSetOwner(EventUnitProgressUnit(), 14, true);
             UnitSetTeamColorIndex(EventUnitProgressUnit(), 0);
+            gf_closeSupplyShareTrigger2();
         }
         UnitIssueOrder(EventUnitProgressUnit(), OrderTargetingPoint(AbilityCommand("move", 0), lv__rallyPoint), c_orderQueueReplace);
     }
@@ -3778,10 +4060,12 @@ bool gt_releaseAfterTrain_Func (bool testConds, bool runActions) {
         if ((UnitGetOwner(EventUnit()) == gv_teamInfo1.lv_builder)) {
             UnitSetOwner(EventUnitProgressUnit(), 13, true);
             UnitSetTeamColorIndex(EventUnitProgressUnit(), 0);
+            gf_closeSupplyShareTrigger1();
         }
         else {
             UnitSetOwner(EventUnitProgressUnit(), 14, true);
             UnitSetTeamColorIndex(EventUnitProgressUnit(), 0);
+            gf_closeSupplyShareTrigger2();
         }
     }
     return true;
@@ -3828,10 +4112,12 @@ bool gt_releaseAfterWarp_Func (bool testConds, bool runActions) {
         if (((UnitGetOwner(EventUnitProgressUnit()) == gv_teamInfo1.lv_builder) || (UnitGetOwner(EventUnitProgressUnit()) == 13))) {
             UnitSetOwner(EventUnitProgressUnit(), 13, true);
             UnitSetTeamColorIndex(EventUnitProgressUnit(), 0);
+            gf_closeSupplyShareTrigger1();
         }
         else {
             UnitSetOwner(EventUnitProgressUnit(), 14, true);
             UnitSetTeamColorIndex(EventUnitProgressUnit(), 0);
+            gf_closeSupplyShareTrigger2();
         }
         UnitIssueOrder(EventUnitProgressUnit(), OrderTargetingPoint(AbilityCommand("move", 0), lv__rallyPoint), c_orderQueueReplace);
     }
@@ -3839,10 +4125,12 @@ bool gt_releaseAfterWarp_Func (bool testConds, bool runActions) {
         if (((UnitGetOwner(EventUnitProgressUnit()) == gv_teamInfo1.lv_builder) || (UnitGetOwner(EventUnitProgressUnit()) == 13))) {
             UnitSetOwner(EventUnitProgressUnit(), 13, true);
             UnitSetTeamColorIndex(EventUnitProgressUnit(), 0);
+            gf_closeSupplyShareTrigger1();
         }
         else {
             UnitSetOwner(EventUnitProgressUnit(), 14, true);
             UnitSetTeamColorIndex(EventUnitProgressUnit(), 0);
+            gf_closeSupplyShareTrigger2();
         }
     }
     return true;
@@ -3866,11 +4154,11 @@ bool gt_select1_Func (bool testConds, bool runActions) {
 
     // Conditions
     if (testConds) {
-        if (!((UnitGetOwner(EventUnit()) == 13))) {
+        if (!((PlayerGroupHasPlayer(gv_playerGroupInfo1.lv_fightersWithNeutral, EventPlayer()) == true))) {
             return false;
         }
 
-        if (!((PlayerGroupHasPlayer(gv_teamInfo1.lv_fighterGroup, EventPlayer()) == true))) {
+        if (!((UnitGetOwner(EventUnit()) == 13))) {
             return false;
         }
 
@@ -3904,6 +4192,7 @@ bool gt_select1_Func (bool testConds, bool runActions) {
     else {
         UnitSetOwner(EventUnit(), EventPlayer(), true);
     }
+    gf_closeSupplyShareTrigger1();
     return true;
 }
 
@@ -3925,11 +4214,11 @@ bool gt_select2_Func (bool testConds, bool runActions) {
 
     // Conditions
     if (testConds) {
-        if (!((UnitGetOwner(EventUnit()) == 14))) {
+        if (!((PlayerGroupHasPlayer(gv_playerGroupInfo2.lv_fightersWithNeutral, EventPlayer()) == true))) {
             return false;
         }
 
-        if (!((PlayerGroupHasPlayer(gv_teamInfo2.lv_fighterGroup, EventPlayer()) == true))) {
+        if (!((UnitGetOwner(EventUnit()) == 14))) {
             return false;
         }
 
@@ -3963,6 +4252,7 @@ bool gt_select2_Func (bool testConds, bool runActions) {
     else {
         UnitSetOwner(EventUnit(), EventPlayer(), true);
     }
+    gf_closeSupplyShareTrigger2();
     return true;
 }
 
@@ -3988,6 +4278,7 @@ void InitTriggers () {
     gt_startLocation_Init();
     gt_roleSelection1_Init();
     gt_roleSelection2_Init();
+    gt_figherGroup_Init();
     gt_meleeSettings1_Init();
     gt_meleeSettings2_Init();
     gt_nexusGroupInit_Init();
@@ -3996,8 +4287,8 @@ void InitTriggers () {
     gt_supplySettings_Init();
     gt_allianceSettings_Init();
     gt_supplyLimit_Init();
+    gt_tipRole_Init();
     gt_tipCommands_Init();
-    gt_tipLICENSE_Init();
     gt_tipGG_Init();
     gt_tipSensorTower_Init();
     gt_tipSupplyLimit_Init();
@@ -4008,18 +4299,23 @@ void InitTriggers () {
     gt_builderInfoDisplay_Init();
     gt_resourceDisplay1_Init();
     gt_resourceDisplay2_Init();
-    gt_resourceUpdate1_Init();
-    gt_resourceUpdate2_Init();
-    gt_addBySupplyDrop_Init();
-    gt_addByConstructComplete_Init();
-    gt_addByTrainComplete_Init();
-    gt_addByWarpStart_Init();
-    gt_decByConstructStarted_Init();
-    gt_addByTrainStart_Init();
-    gt_decByTrainCancel_Init();
+    gt_builderMineralUpdate1_Init();
+    gt_builderVespeneUpdate1_Init();
+    gt_fighterMineralUpdate1_Init();
+    gt_fighterVespeneUpdate1_Init();
+    gt_builderMineralUpdate2_Init();
+    gt_builderVespeneUpdate2_Init();
+    gt_fighterMineralUpdate2_Init();
+    gt_fighterVespeneUpdate2_Init();
     gt_unchangeByChangeOwner_Init();
-    gt_decByFighterDie_Init();
-    gt_decByBuilderDie_Init();
+    gt_builderMadeChange1_Init();
+    gt_builderUsedChange1_Init();
+    gt_fighterMadeChange1_Init();
+    gt_fighterUsedChange1_Init();
+    gt_builderMadeChange2_Init();
+    gt_builderUsedChange2_Init();
+    gt_fighterMadeChange2_Init();
+    gt_fighterUsedChange2_Init();
     gt_structureShare_Init();
     gt_upgrade_Init();
     gt_armoryAdd_Init();
