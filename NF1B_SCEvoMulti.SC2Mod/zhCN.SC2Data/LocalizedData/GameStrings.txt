@@ -1,0 +1,6 @@
+﻿Button/Name/DevourerSCBW=Morph To Devourer
+Button/Name/LarvaePage2=Larvae (Page 2)
+Button/Name/MutateintoLurkerDen=Mutate into Lurker
+DocInfo/DescShort=Any
+DocInfo/Name=NF1B_SCEvoMulti
+RequirementNode/Tooltip/Eq405072845601=Disabled In NF1B

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Catalog>
+    <CAbilTransport id="BunkerTransport">
+        <TargetFilters value="Biological,Visible;Neutral,Enemy,Dead,Hidden"/>
+    </CAbilTransport>
+    <CAbilTrain id="LarvaTrain">
+        <InfoArray index="Train25" Time="33.5">
+            <Button DefaultButtonFace="MorphtoOverlordTransport" Requirements="HaveLair"/>
+            <Unit value="OverlordTransport"/>
+        </InfoArray>
+        <InfoArray index="Train26" Time="29.1665">
+            <Button DefaultButtonFace="MorphToOverseer" Requirements="HaveLair"/>
+            <Unit value="Overseer"/>
+        </InfoArray>
+        <InfoArray index="Train27" Time="53.8381">
+            <Button DefaultButtonFace="BroodLord" Requirements="HaveGreaterSpire"/>
+            <Unit value="BroodLord"/>
+        </InfoArray>
+        <InfoArray index="Train28" Time="41.75">
+            <Button DefaultButtonFace="LurkerMPA" Requirements="HaveLurkerDen"/>
+            <Unit value="LurkerMP"/>
+        </InfoArray>
+        <InfoArray index="Train29" Time="30.5">
+            <Button DefaultButtonFace="RavagerR" Requirements="HaveBanelingNest2"/>
+            <Unit value="Ravager"/>
+        </InfoArray>
+        <InfoArray index="Train30" Time="26">
+            <Button DefaultButtonFace="Baneling" Requirements="HaveBanelingNest"/>
+            <Unit value="Baneling"/>
+        </InfoArray>
+    </CAbilTrain>
+    <CAbilTransport id="MedivacTransport">
+        <TargetFilters value="Visible;Self,Neutral,Enemy,Buried,UnderConstruction,Dead,Hidden"/>
+    </CAbilTransport>
+    <CAbilMorph id="MorphToBaneling">
+        <CmdButtonArray index="Execute" Requirements="DisabledInNF1B"/>
+    </CAbilMorph>
+    <CAbilMorph id="MorphToBroodLord">
+        <CmdButtonArray index="Execute" Requirements="DisabledInNF1B"/>
+    </CAbilMorph>
+    <CAbilMorph id="MorphToLurker">
+        <CmdButtonArray index="Execute" Requirements="DisabledInNF1B"/>
+    </CAbilMorph>
+    <CAbilMorph id="MorphToRavager">
+        <CmdButtonArray index="Execute" Requirements="DisabledInNF1B"/>
+    </CAbilMorph>
+    <CAbilEffectTarget id="MothershipCoreMassRecall">
+        <TargetFilters index="0" value="-;Neutral,Enemy"/>
+    </CAbilEffectTarget>
+    <CAbilEffectTarget id="MothershipCoreTeleport">
+        <TargetFilters index="0" value="Structure,Visible;Self,Neutral,Enemy,UnderConstruction"/>
+    </CAbilEffectTarget>
+    <CAbilTransport id="NydusCanalTransport">
+        <TargetFilters value="Visible;Neutral,Enemy,Buried,Dead,Hidden"/>
+    </CAbilTransport>
+    <CAbilTransport id="NydusWormTransport">
+        <TargetFilters value="Visible;Neutral,Enemy,Buried,Dead,Hidden"/>
+    </CAbilTransport>
+    <CAbilTransport id="OverlordTransport">
+        <TargetFilters value="Visible;Neutral,Enemy,Buried,UnderConstruction,Dead,Hidden"/>
+    </CAbilTransport>
+    <CAbilEffectTarget id="ScannerSweep">
+        <Cost index="0">
+            <Vital index="Energy" value="25"/>
+        </Cost>
+    </CAbilEffectTarget>
+    <CAbilTransport id="WarpPrismTransport">
+        <TargetFilters value="Visible;Neutral,Enemy,Buried,UnderConstruction,Dead,Hidden"/>
+        <!--LoadCargoEffect value="PurificationNovaTransportPickupSet"/>
+        <UnloadCargoEffect value="PurificationNovaMorphBackFromTransport"/-->
+    </CAbilTransport>
+    <CAbilArmMagazine id="ArmSiloWithNuke">
+        <CalldownEffect value="NukeNF1B"/>
+    </CAbilArmMagazine>
+    <CAbilTransport id="BunkerSCBW@Transport">
+        <TargetFilters value="Biological,Visible;Neutral,Enemy,Dead,Hidden"/>
+    </CAbilTransport>
+    <CAbilTransport id="DropshipSCBW@Transport">
+        <TargetFilters value="Visible;Neutral,Enemy,Buried,UnderConstruction,Dead,Hidden"/>
+    </CAbilTransport>
+    <CAbilTransport id="OverlordSCBW@Transport">
+        <TargetFilters value="Visible;Neutral,Enemy,Buried,UnderConstruction,Dead,Hidden"/>
+    </CAbilTransport>
+    <CAbilTransport id="ShuttleSCBW@Transport">
+        <TargetFilters value="Visible;Neutral,Enemy,Buried,UnderConstruction,Dead,Hidden"/>
+    </CAbilTransport>
+    <CAbilMorph id="DevourerSCBW@Morph">
+        <CmdButtonArray index="Execute" Requirements="DisabledInNF1B"/>
+    </CAbilMorph>
+    <CAbilEffectTarget id="GhostSCBWNuclearStrike">
+        <Effect index="0" value="GhostSCBWNuclearStrike@CalldownSwitch"/>
+        <Cost>
+            <Charge>
+                <CountMax value="99999"/>
+                <CountUse value="1"/>
+                <HideCount value="1"/>
+                <Link value="Abil/GhostSCBWNuclearStrike"/>
+            </Charge>
+            <Cooldown Link="Abil/GhostSCBWNuclearStrike"/>
+        </Cost>
+        <CalldownEffect value="GhostSCBWNuclearStrike@CalldownSwitch"/>
+        <CmdButtonArray index="Execute" Requirements=""/>
+    </CAbilEffectTarget>
+    <CAbilMorph id="GuardianSCBW@Morph">
+        <CmdButtonArray index="Execute" Requirements="DisabledInNF1B"/>
+    </CAbilMorph>
+    <CAbilTrain id="LarvaSCBW@Train">
+        <InfoArray index="Train28" Time="11.5">
+            <Button DefaultButtonFace="DevourerSCBWE" Requirements="DevourerSCBW"/>
+            <Unit value="DevourerSCBW"/>
+        </InfoArray>
+        <InfoArray index="Train29" Time="11.5">
+            <Button DefaultButtonFace="GuardianSCBW" Requirements="GuardianSCBW"/>
+            <Unit value="GuardianSCBW"/>
+        </InfoArray>
+        <InfoArray index="Train30" Time="13.125">
+            <Button DefaultButtonFace="LurkerSCBWA" Requirements="LurkerSCBW"/>
+            <Unit value="LurkerSCBW"/>
+        </InfoArray>
+    </CAbilTrain>
+    <CAbilMorph id="LurkerSCBW@Morph">
+        <CmdButtonArray index="Execute" Requirements="DisabledInNF1B"/>
+    </CAbilMorph>
+    <CAbilArmMagazine id="NukeSCBWArm">
+        <CalldownEffect value="GhostSCBWNuclearStrike@CalldownDummyNF1B"/>
+    </CAbilArmMagazine>
+    <CAbilEffectTarget id="TacNukeStrike">
+        <Effect index="0" value="GhostSCBWNuclearStrike@CalldownSwitch"/>
+        <Cost>
+            <Charge>
+                <CountMax value="452607"/>
+                <CountUse value="1"/>
+                <HideCount value="1"/>
+                <Link value="Abil/TacNukeStrike"/>
+            </Charge>
+            <Cooldown Link="Abil/TacNukeStrike"/>
+        </Cost>
+        <CalldownEffect value=""/>
+        <CmdButtonArray index="Execute" Requirements=""/>
+    </CAbilEffectTarget>
+</Catalog>

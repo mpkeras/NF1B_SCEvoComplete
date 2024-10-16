@@ -1,0 +1,4 @@
+﻿Button/Hotkey/DevourerSCBWE=E
+Button/Hotkey/LarvaePage2=S
+Button/Hotkey/LurkerSCBWA=A
+Button/Hotkey/RavagerR=R

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Catalog>
+    <CUnit id="Bunker">
+        <FlagArray index="ShareControl" value="1"/>
+    </CUnit>
+    <CUnit id="Larva">
+        <CardLayouts index="0">
+            <LayoutButtons index="0" Column="1"/>
+            <LayoutButtons index="1" Column="3"/>
+            <LayoutButtons index="2" Column="2"/>
+            <LayoutButtons index="3" Column="4"/>
+            <LayoutButtons index="7" Face="LarvaePage2" Type="Submenu" SubmenuCardId="2" SubmenuIsSticky="1"/>
+            <LayoutButtons Row="0" Column="0"/>
+        </CardLayouts>
+        <CardLayouts CardId="2">
+            <LayoutButtons Face="Baneling" Type="AbilCmd" AbilCmd="LarvaTrain,Train30" Row="0" Column="0"/>
+            <LayoutButtons Face="RavagerR" Type="AbilCmd" AbilCmd="LarvaTrain,Train29" Row="0" Column="1"/>
+            <LayoutButtons Face="LurkerMPA" Type="AbilCmd" AbilCmd="LarvaTrain,Train28" Row="1" Column="0"/>
+            <LayoutButtons Face="MorphToOverseer" Type="AbilCmd" AbilCmd="LarvaTrain,Train26" Row="1" Column="1"/>
+            <LayoutButtons Face="MorphtoOverlordTransport" Type="AbilCmd" AbilCmd="LarvaTrain,Train25" Row="1" Column="2"/>
+            <LayoutButtons Face="BroodLord" Type="AbilCmd" AbilCmd="LarvaTrain,Train27" Row="2" Column="0"/>
+        </CardLayouts>
+    </CUnit>
+    <CUnit id="MissileTurret">
+        <FlagArray index="ShareControl" value="1"/>
+    </CUnit>
+    <CUnit id="NydusCanal">
+        <FlagArray index="ShareControl" value="1"/>
+    </CUnit>
+    <CUnit id="PhotonCannon">
+        <FlagArray index="ShareControl" value="1"/>
+    </CUnit>
+    <CUnit id="SensorTower">
+        <FlagArray index="ShareControl" value="1"/>
+        <EnergyStart value="25"/>
+        <EnergyMax value="100"/>
+        <EnergyRegenRate value="0.5625"/>
+        <AbilArray Link="ScannerSweep"/>
+        <CardLayouts index="0">
+            <LayoutButtons Face="Scan" Type="AbilCmd" AbilCmd="ScannerSweep,Execute" Row="2" Column="0"/>
+        </CardLayouts>
+    </CUnit>
+    <CUnit id="ShieldBattery">
+        <FlagArray index="ShareControl" value="1"/>
+    </CUnit>
+    <CUnit id="SpineCrawler">
+        <FlagArray index="ShareControl" value="1"/>
+    </CUnit>
+    <CUnit id="SpineCrawlerUprooted">
+        <FlagArray index="ShareControl" value="1"/>
+    </CUnit>
+    <CUnit id="SporeCrawler">
+        <FlagArray index="ShareControl" value="1"/>
+    </CUnit>
+    <CUnit id="SporeCrawlerUprooted">
+        <FlagArray index="ShareControl" value="1"/>
+    </CUnit>
+    <CUnit id="SupplyDepot">
+        <FlagArray index="ShareControl" value="1"/>
+    </CUnit>
+    <CUnit id="SupplyDepotLowered">
+        <FlagArray index="ShareControl" value="1"/>
+    </CUnit>
+    <CUnit id="ComsatStationSCBW">
+        <FlagArray index="ShareControl" value="1"/>
+    </CUnit>
+    <CUnit id="BunkerSCBW">
+        <FlagArray index="ShareControl" value="1"/>
+    </CUnit>
+    <CUnit id="MissileTurretSCBW">
+        <FlagArray index="ShareControl" value="1"/>
+    </CUnit>
+    <CUnit id="PhotonCannonSCBW">
+        <FlagArray index="ShareControl" value="1"/>
+    </CUnit>
+    <CUnit id="ShieldBatterySCBW">
+        <FlagArray index="ShareControl" value="1"/>
+    </CUnit>
+    <CUnit id="SporeColonySCBW">
+        <FlagArray index="ShareControl" value="1"/>
+    </CUnit>
+    <CUnit id="SunkenColonySCBW">
+        <FlagArray index="ShareControl" value="1"/>
+    </CUnit>
+    <CUnit id="LarvaSCBW">
+        <CardLayouts index="0">
+            <LayoutButtons Face="GuardianSCBW" Type="AbilCmd" AbilCmd="LarvaSCBW@Train,Train29" Row="1" Column="3"/>
+            <LayoutButtons Face="LurkerSCBWA" Type="AbilCmd" AbilCmd="LarvaSCBW@Train,Train30" Row="0" Column="3"/>
+            <LayoutButtons Face="DevourerSCBWE" Type="AbilCmd" AbilCmd="LarvaSCBW@Train,Train28" Row="1" Column="4"/>
+        </CardLayouts>
+    </CUnit>
+</Catalog>
