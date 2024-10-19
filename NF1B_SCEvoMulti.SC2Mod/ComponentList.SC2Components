@@ -5,4 +5,5 @@
     <DataComponent Type="info">DocumentInfo</DataComponent>
     <DataComponent Type="text" Locale="koKR">GameText</DataComponent>
     <DataComponent Type="text" Locale="zhCN">GameText</DataComponent>
+    <DataComponent Type="attr">Attributes</DataComponent>
 </Components>

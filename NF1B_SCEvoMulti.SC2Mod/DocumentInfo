@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <DocInfo>
     <Dependencies>
-        <Value>bnet:SC: Evo Complete/0.0/215951</Value>
+        <Value>bnet:SCEvo_Multi/0.0/231759,file:Mods\SC Evolution Complete\SCEvo_Multi.SC2Mod</Value>
     </Dependencies>
 </DocInfo>

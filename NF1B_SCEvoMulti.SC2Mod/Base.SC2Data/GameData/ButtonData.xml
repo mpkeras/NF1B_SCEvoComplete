@@ -7,7 +7,7 @@
         <Universal value="1"/>
     </CButton>
     <CButton id="LurkerMPA">
-        <Name value="Button/Name/MutateintoLurkerDen"/>
+        <Name value="Button/Name/LurkerMP"/>
         <Tooltip value="Button/Tooltip/MutateintoLurkerDen"/>
         <Icon value="Assets\Textures\btn-unit-zerg-lurker.dds"/>
         <AlertName value="Button/Name/MutateintoLurkerDen"/>
