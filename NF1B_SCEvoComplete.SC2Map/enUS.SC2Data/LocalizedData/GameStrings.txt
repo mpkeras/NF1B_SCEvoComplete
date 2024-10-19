@@ -1,8 +1,4 @@
-﻿Attribute002/Desc=Switch Between Builders and Fighters
-Attribute002/Name=Role
-Attribute002/Value001/Name=Builder
-Attribute002/Value002/Name=Fighter
-Button/Tooltip/GuardianSCBW2=Long-range anti-ground flyer. <n/><n/><c val="ffff8a">Can attack ground units.</c>
+﻿Button/Tooltip/GuardianSCBW2=Long-range anti-ground flyer. <n/><n/><c val="ffff8a">Can attack ground units.</c>
 DocInfo/DescLong=A map inspired by the Archon Mode and the SC: Evo Complete mod. The code triggers of this map has been completely rewritten and does not use code from other similar maps.<n/><n/>Thanks to the SC: Evo Complete mod authors for their hard work.
 DocInfo/DescShort=12
 DocInfo/HowToPlayBasic00=All players are divided into two teams, each with one builder and multiple fighters
@@ -16,7 +12,14 @@ DocInfo/PatchNote003=Fixed an issue where resource panel may show the other team
 DocInfo/PatchNote004=Fixed an issue where carrier and reaver without player control can not construct interceptors and scarabs
 DocInfo/PatchNote005=Fixed an issue where fighter can not return resources correctly to builder when canceling the construction of interceptors and scarabs
 DocInfo/PatchNote006=Fixed an issue where the race icons in the upper left corner are not the same size
-DocInfo/Website=https://github.com/mpkeras/NF1B_SCEvoComplete
+DocInfo/PatchNote007=Host can choose the supply limit in the Attribute page
+DocInfo/PatchNote008=Default supply limit decreased from 400 to 300
+DocInfo/PatchNote009=When there is only one human player, the game will enter into the debug mode where player can input several debug commands
+DocInfo/PatchNote010=Add several neutral Command Center on map for SCBW Queen to infest
+DocInfo/PatchNote011=Fixed some language error
+DocInfo/Screenshot01=
+DocInfo/Screenshot02=
+DocInfo/Screenshot03=
 Effect/Name/GhostSCBWNuclearStrike@CPNF1B=CP NF1B
 Effect/Name/GhostSCBWNuclearStrike@CalldownDummyNF1B=Calldown Dummy NF1B
 Effect/Name/GhostSCBWNuclearStrike@CalldownNF1B=Calldown NF1B
@@ -48,8 +51,14 @@ MapInfo/Team03/Name=exp1v1 bot
 MapInfo/Team04/Name=2v2 Bottom
 MapInfo/Team05/Name=2v2 top
 Param/Value/047E93E7=Tip: If your race is SC2 Zerg, the builder need press the S button (default is S) twice to choose units which require a second phase mutation.
+Param/Value/0F43ABCC=200<n/>
 Param/Value/10816450=Your role is <c val="ffff8a">Fighter</c>, control the soldiers to defeat the enemy on the battlefield.
-Param/Value/5698279A=Tip: The Supply Limit is 400.
+Param/Value/1AC85A47=Tip: Press F12 for help
+Param/Value/297E2BE5=350
+Param/Value/2D322F0D=400
+Param/Value/45E37495=300
+Param/Value/514459C7=400
+Param/Value/56DB4C47=-con: Enables shared control on other players' units<n/><n/>-coff: Disables shared control on other players' units<n/><n/>-o: Change owner of selected units to current user<n/><n/>-res: Adds 10000 of each Resource to the Available Resources<n/><n/>-fog: Disables/Enables Fog of War<n/><n/>-food: Disables/Enables the need for Supplies<n/><n/>-fast: Enables/Enables Fast Builds and Fast Upgrades<n/><n/>test: Equivalent to "-res" + "-fog" + "-food" + "-fast"
 Param/Value/5ED931F6=Commands
 Param/Value/6AE9E7D6=Your role is <c val="ffff8a">Fighter</c>, control the soldiers to defeat the enemy on the battlefield.
 Param/Value/6FD47613=There's only one player left in team 1. Team 2 win.
@@ -60,15 +69,19 @@ Param/Value/9F90689B=Tip: The fighters' units cannot mutate units in their hand.
 Param/Value/A283F7C2=Team 2's builder surrendered. Team 1 win.
 Param/Value/A34A344A=Tip: If your race is SC2 Zerg, the builder need press the S button (default is S) twice to choose units which require a second phase mutation.
 Param/Value/AEE0382B=Tip: Check the top left corner for information of Races.
+Param/Value/B63FBAB8=200<n/>
 Param/Value/B9FAD2E2=Tip: The fighters' units cannot mutate units in their hand. All units that require a second phase mutation need to be trained by builders directly.
 Param/Value/BC76442D=Tip: <c val="ffff8a">Sensor towers</c> have <c val="ffff8a">Scanner Sweep</c> Abilities and can be controlled directly by the fighter.
 Param/Value/C0AF10B1=0
+Param/Value/C2B87501=Detecting only one human player. Debug mode on.
 Param/Value/CA3F7518=Tip: If defeat is assured, the <c val="ffff8a">Builder</c> can surrender by simply exiting the game or entering "-gg".
 Param/Value/CAE6A306=Your role is <c val="ffff8a">Builder</c>, train soldiers for the fighters.
 Param/Value/CEF41543=0
 Param/Value/CF2DDDB5=Your role is <c val="ffff8a">Builder</c>, train soldiers for the fighters.
+Param/Value/DA162D42=Debug Commands
 Param/Value/E33F8417=0
 Param/Value/E539788E=0
 Param/Value/F4D1DCD3=<c val="ffff8a">-r/-R</c>: Release units (Builders can only release SCBW overlords)<n/><n/><c val="ffff8a">-gg/-GG</c>: Surrender (For builders use only)
+Param/Value/FBEE3EC0=250
 Variant001/ModeDesc=A mode inspired by the Archon Mode.
 Variant001/ModeName=N Fight 1 Builds

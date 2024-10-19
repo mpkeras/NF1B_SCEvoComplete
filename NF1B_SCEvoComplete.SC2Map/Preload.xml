@@ -3,6 +3,7 @@
 <Asset path="assets\textures\ui_emoticons_gas.dds" Type="Image"/>
 <Asset path="assets\textures\sc2_ui_loadingscreen_playercard_raceindicator_bwzerg.dds" Type="Image"/>
 <Asset path="assets\textures\ui_tip_questionmark.dds" Type="Image"/>
+<Asset path="assets\textures\ui_tipicon_campaign_space01-repair.dds" Type="Image"/>
 <Asset path="assets\textures\sc2_ui_loadingscreen_playercard_raceindicator_bwprotoss.dds" Type="Image"/>
 <Asset path="assets\textures\sc2_ui_loadingscreen_playercard_raceindicator_protoss.dds" Type="Image"/>
 <Asset path="assets\textures\sc2_ui_loadingscreen_playercard_raceindicator_bwterran.dds" Type="Image"/>
@@ -47,4 +48,5 @@
 <Unit id="UnbuildableBricksDestructible" Variations="5,6"/>
 <Unit id="DestructibleRockEx16x6"/>
 <Unit id="DestructibleRockEx1DiagonalHugeBLUR"/>
+<Unit id="CommandCenterSCBW"/>
 </Preload>

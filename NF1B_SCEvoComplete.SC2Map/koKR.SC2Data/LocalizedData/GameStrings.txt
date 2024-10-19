@@ -28,7 +28,11 @@ DocInfo/PatchNote003=Fixed an issue where resource panel may show the other team
 DocInfo/PatchNote004=Fixed an issue where carrier and reaver without player control can not construct interceptors and scarabs
 DocInfo/PatchNote005=Fixed an issue where fighter can not return resources correctly to builder when canceling the construction of interceptors and scarabs
 DocInfo/PatchNote006=Fixed an issue where the race icons in the upper left corner are not the same size
-DocInfo/Website=https://github.com/mpkeras/NF1B_SCEvoComplete
+DocInfo/PatchNote007=Host can choose the supply limit in the Attribute page
+DocInfo/PatchNote008=Default supply limit decreased from 400 to 300
+DocInfo/PatchNote009=When there is only one human player, the game will enter into the debug mode where player can input several debug commands
+DocInfo/PatchNote010=Add several neutral Command Center on map for SCBW Queen to infest
+DocInfo/PatchNote011=Fixed some language error
 Effect/Name/GhostSCBWNuclearStrike@CPNF1B=CP NF1B
 Effect/Name/GhostSCBWNuclearStrike@CalldownDummyNF1B=Calldown Dummy NF1B
 Effect/Name/GhostSCBWNuclearStrike@CalldownNF1B=Calldown NF1B
@@ -79,6 +83,7 @@ Param/Value/B9FAD2E2=팁: 전투기는 자신의 손에 있는 유닛을 돌연�
 Param/Value/BA4EC2BF=LICENSE for SC: Evo Complete
 Param/Value/BC76442D=팁: <c val=“ffff8a”>센서 타워</c>에는 <c val=“ffff8a”>스캐너 스윕</c> 능력이 있으며, 전투기가 직접 제어할 수 있습니다.
 Param/Value/C0AF10B1=0
+Param/Value/C2B87501=한 명의 인간 플레이어만 감지. 디버그 모드가 켜져 있습니다.
 Param/Value/CA3F7518=팁: 패배가 확실시되면 <c val=“ffff8a”>빌더</c>는 게임을 종료하거나 “-gg”를 입력하여 항복할 수 있습니다.
 Param/Value/CEF41543=0
 Param/Value/E33F8417=0
