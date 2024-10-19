@@ -7,20 +7,40 @@
         <Value>EditorData\Images\UI_Arcade_IconUltraArchon.tga</Value>
     </Icon>
     <Dependencies>
-        <Value>bnet:NF1B_SCEvoMulti/0.0/236353</Value>
+        <Value>bnet:NF1B_SCEvoMulti/0.0/236353,file:Mods\NF1B_SCEvoMulti.SC2Mod</Value>
     </Dependencies>
+    <Screenshot>
+        <File>
+            <Value>init.jpg</Value>
+            <Value>neutral.jpg</Value>
+            <Value>rocks.jpg</Value>
+        </File>
+        <CaptionId>
+            <Value>1</Value>
+            <Value>2</Value>
+            <Value>3</Value>
+        </CaptionId>
+        <Flags>
+            <Value> </Value>
+            <Value> </Value>
+            <Value> </Value>
+        </Flags>
+    </Screenshot>
     <PatchNote>
         <Version>
             <Value>0.1</Value>
             <Value>0.2</Value>
+            <Value>0.3</Value>
         </Version>
         <Date>
             <Value>1/1/2077</Value>
             <Value>1/2/2077</Value>
+            <Value>1/3/2077</Value>
         </Date>
         <Notes>
             <Value>1</Value>
             <Value>2,3,4,5,6</Value>
+            <Value>7,8,9,10,11</Value>
         </Notes>
     </PatchNote>
 </DocInfo>

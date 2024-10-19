@@ -23,7 +23,11 @@ DocInfo/PatchNote003=修复控兵资源面板可能显示对方资源的问题
 DocInfo/PatchNote004=修复无人控制的航空母舰和掠夺者无法建造拦截机和金甲虫的问题
 DocInfo/PatchNote005=修复控兵取消建造拦截机和金甲虫时无法将资源退回给运营的问题
 DocInfo/PatchNote006=修复左上角种族图标大小不一致的问题
-DocInfo/Website=https://github.com/mpkeras/NF1B_SCEvoComplete
+DocInfo/PatchNote007=房主现在可以选择本次对局的人口上限
+DocInfo/PatchNote008=默认人口上限由400降低至300
+DocInfo/PatchNote009=当只有一名人类玩家时，游戏将会进入调试模式，玩家可以输入调试命令
+DocInfo/PatchNote010=地图中增加中立指挥中心方便星际1皇后感染
+DocInfo/PatchNote011=修复一些语言错误
 Effect/Name/GhostSCBWNuclearStrike@CPNF1B=CP NF1B
 Effect/Name/GhostSCBWNuclearStrike@CalldownDummyNF1B=Calldown Dummy NF1B
 Effect/Name/GhostSCBWNuclearStrike@CalldownNF1B=Calldown NF1B
@@ -73,6 +77,7 @@ Param/Value/B902116F=你的角色是<c val="ffff8a">控兵</c>，控制单位在
 Param/Value/B9FAD2E2=提示: 控兵不能变异手中的单位。所有需要二阶段变异的单位需要运营直接训练。
 Param/Value/BC76442D=提示: <c val="ffff8a">感应塔</c>拥有<c val="ffff8a">扫描</c>技能且能被控兵直接控制。
 Param/Value/C0AF10B1=0
+Param/Value/C2B87501=检测到只有一名人类玩家，开启调试模式。
 Param/Value/CA3F7518=提示: 如果败局已定，运营可以通过直接退出游戏或输入“-gg”来投降。
 Param/Value/CEF41543=0
 Param/Value/E33F8417=0
