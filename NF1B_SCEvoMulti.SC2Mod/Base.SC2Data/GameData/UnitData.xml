@@ -32,8 +32,8 @@
     </CUnit>
     <CUnit id="SensorTower">
         <FlagArray index="ShareControl" value="1"/>
-        <EnergyStart value="25"/>
-        <EnergyMax value="100"/>
+        <EnergyStart value="50"/>
+        <EnergyMax value="200"/>
         <EnergyRegenRate value="0.5625"/>
         <AbilArray Link="ScannerSweep"/>
         <CardLayouts index="0">
