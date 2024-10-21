@@ -59,11 +59,6 @@
     <CAbilTransport id="OverlordTransport">
         <TargetFilters value="Visible;Neutral,Enemy,Buried,UnderConstruction,Dead,Hidden"/>
     </CAbilTransport>
-    <CAbilEffectTarget id="ScannerSweep">
-        <Cost index="0">
-            <Vital index="Energy" value="25"/>
-        </Cost>
-    </CAbilEffectTarget>
     <CAbilTransport id="WarpPrismTransport">
         <TargetFilters value="Visible;Neutral,Enemy,Buried,UnderConstruction,Dead,Hidden"/>
         <!--LoadCargoEffect value="PurificationNovaTransportPickupSet"/>
