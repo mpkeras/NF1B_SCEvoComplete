@@ -7,7 +7,7 @@
         <Value>EditorData\Images\UI_Arcade_IconUltraArchon.tga</Value>
     </Icon>
     <Dependencies>
-        <Value>bnet:NF1B_SCEvoMulti/0.0/236353,file:Mods\NF1B_SCEvoMulti.SC2Mod</Value>
+        <Value>bnet:NF1B_SCEvoMulti/0.0/236353,file:Mods\NF1B_SCEvoComplete\NF1B_SCEvoMulti.SC2Mod</Value>
     </Dependencies>
     <Screenshot>
         <File>
