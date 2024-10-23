@@ -27,6 +27,12 @@
     <CUnit id="NydusCanal">
         <FlagArray index="ShareControl" value="1"/>
     </CUnit>
+    <CUnit id="NydusCanalSCBW">
+        <FlagArray index="ShareControl" value="1"/>
+    </CUnit>
+    <CUnit id="NydusNetwork">
+        <FlagArray index="ShareControl" value="1"/>
+    </CUnit>
     <CUnit id="PhotonCannon">
         <FlagArray index="ShareControl" value="1"/>
     </CUnit>
