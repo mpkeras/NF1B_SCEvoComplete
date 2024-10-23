@@ -50,6 +50,9 @@
     <CAbilEffectTarget id="MothershipCoreTeleport">
         <TargetFilters index="0" value="Structure,Visible;Self,Neutral,Enemy,UnderConstruction"/>
     </CAbilEffectTarget>
+    <CAbilTransport id="NydusCanalSCBW@Transport">
+        <TargetFilters value="Visible;Neutral,Enemy,Buried,Dead,Hidden"/>
+    </CAbilTransport>
     <CAbilTransport id="NydusCanalTransport">
         <TargetFilters value="Visible;Neutral,Enemy,Buried,Dead,Hidden"/>
     </CAbilTransport>
