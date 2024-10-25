@@ -25,6 +25,7 @@ DocInfo/PatchNote016=Sensor Tower's max energy increased from 100 to 200
 DocInfo/PatchNote017=Sensor Tower's starting energy increased from 25 to 50
 DocInfo/PatchNote018=Fixed an issue where two teams have different resources display location
 DocInfo/PatchNote019=Fixed an issue where the zerg tip do not display in game
+DocInfo/PatchNote020=
 DocInfo/Screenshot01=
 DocInfo/Screenshot02=
 DocInfo/Screenshot03=
@@ -61,12 +62,13 @@ MapInfo/Team05/Name=2v2 top
 Param/Value/047E93E7=Tip: If your race is SC2 Zerg, the builder need press the S button (default is S) twice to choose units which require a second phase mutation.
 Param/Value/0F43ABCC=200<n/>
 Param/Value/10816450=Your role is <c val="ffff8a">Fighter</c>, control the units to defeat the enemy on the battlefield.
+Param/Value/194069C0=Hotkeys
 Param/Value/1AC85A47=Tip: Press F12 for help
 Param/Value/297E2BE5=350
 Param/Value/2D322F0D=400
 Param/Value/45E37495=300
 Param/Value/514459C7=400
-Param/Value/56DB4C47=-con: Enables shared control on other players' units<n/><n/>-coff: Disables shared control on other players' units<n/><n/>-o: Change owner of selected units to current user<n/><n/>-res: Adds 10000 of each Resource to the Available Resources<n/><n/>-fog: Disables/Enables Fog of War<n/><n/>-food: Disables/Enables the need for Supplies<n/><n/>-fast: Enables/Enables Fast Builds and Fast Upgrades<n/><n/>test: Equivalent to "-res" + "-fog" + "-food" + "-fast"
+Param/Value/56DB4C47=-con: Enables shared control on other players' units<n/><n/>-coff: Disables shared control on other players' units<n/><n/>-o: Change owner of selected units to current user<n/><n/>-res: Adds 10000 of each Resource to the Available Resources<n/><n/>-fog: Disables/Enables Fog of War<n/><n/>-food: Disables/Enables the need for Supplies<n/><n/>-fast: Enables/Enables Fast Builds and Fast Upgrades<n/><n/>test: Equivalent to "-res" + "-fog" + "-food" + "-fast"<n/><n/>-w: Create workers from all races
 Param/Value/5ED931F6=Commands
 Param/Value/6AE9E7D6=Your role is <c val="ffff8a">Fighter</c>, control the units to defeat the enemy on the battlefield.
 Param/Value/6FD47613=There's only one player left in team 1. Team 2 win.
@@ -89,7 +91,8 @@ Param/Value/CF2DDDB5=Your role is <c val="ffff8a">Builder</c>, train units for t
 Param/Value/DA162D42=Debug Commands
 Param/Value/E33F8417=0
 Param/Value/E539788E=0
-Param/Value/F4D1DCD3=<c val="ffff8a">-r/-R</c>: Release units (Builders can only release SCBW overlords)<n/><n/><c val="ffff8a">-gg/-GG</c>: Surrender (For builders use only)
+Param/Value/F4D1DCD3=<c val="ffff8a">-r/-R</c>: Release units (Builders can only release SCBW overlords)<n/><n/><c val="ffff8a">-gg/-GG</c>: Surrender (For builders use only)<n/><n/><c val="ffff8a">-b <id></c>: Change builder to player <id> (For builders use only. Can only be used within 1 minute of the start of the game)<n/><n/><c val="ffff8a">-g</c>: Change builder to a random player in fighters (For builders use only. Can only be used within 1 minute of the start of the game)
 Param/Value/FBEE3EC0=250
+Param/Value/FD733CCC=<c val="ffff8a">Ctrl+X</c>: Open/Close User Panel
 Variant001/ModeDesc=A mode inspired by the Archon Mode.
 Variant001/ModeName=N Fight 1 Builds

@@ -72,6 +72,7 @@ MapInfo/Team03/Name=exp1v1 bot
 MapInfo/Team04/Name=2v2 Bottom
 MapInfo/Team05/Name=2v2 top
 Param/Value/047E93E7=팁: 종족이 SC2 Zerg 인 경우, 두 번째 단계 돌연변이가 필요한 유닛을 선택하려면 빌더가 S 버튼(기본값은 S)을 두 번 눌러야 합니다.
+Param/Value/194069C0=단축키
 Param/Value/2AB137AB=당신의 역할은 전장에서 유닛을 조종하여 적을 물리치는 <c val=“ffff8a”>전사</c>입니다.
 Param/Value/3C5BF2EE=당신의 역할은 <c val=“ffff8a”>빌더</c>로, 전투기를 훈련시키는 것입니다.
 Param/Value/3D947A37=The MIT License (MIT)<n/><n/>Copyright (c) 2016 Abraham Yunes<n/><n/>Permission is hereby granted, free of charge, to any person obtaining a copy<n/>of this software and associated documentation files (the "Software"), to deal<n/>in the Software without restriction, including without limitation the rights<n/>to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<n/>copies of the Software, and to permit persons to whom the Software is<n/>furnished to do so, subject to the following conditions:<n/><n/>The above copyright notice and this permission notice shall be included in all<n/>copies or substantial portions of the Software.<n/><n/>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<n/>IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<n/>FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<n/>AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<n/>LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<n/>OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<n/>SOFTWARE.
@@ -96,6 +97,7 @@ Param/Value/CA3F7518=팁: 패배가 확실시되면 <c val=“ffff8a”>빌더</
 Param/Value/CEF41543=0
 Param/Value/E33F8417=0
 Param/Value/E539788E=0
-Param/Value/F4D1DCD3=<c val=“ffff8a”>-r/-R</c>: 유닛 해제(빌더는 SCBW 대군주만 해제 가능)<n/><n/><c val=“ffff8a”>-gg/-GG</c>: 항복(빌더만 사용 가능)
+Param/Value/F4D1DCD3=<c val="ffff8a">-r/-R</c>: 유닛 해제(빌더는 SCBW 대군주만 해제 가능)<n/><n/><c val="ffff8a">-gg/-GG</c>: 항복(빌더만 사용 가능)<n/><n/><c val="ffff8a">-b <id></c>: 빌더를 플레이어 <id>로 변경(빌더 전용, 게임 시작 후 1분 이내에만 사용할 수 있습니다)<n/><n/><c val="ffff8a">-g</c>: 전투기에서 빌더를 무작위 플레이어로 변경(빌더 전용, 게임 시작 후 1분 이내에만 사용할 수 있습니다)
+Param/Value/FD733CCC=<c val="ffff8a">Ctrl+X</c>: 사용자 패널 열기/닫기
 Variant001/ModeDesc=아콘 모드에서 영감을 받은 모드입니다.
 Variant001/ModeName=N 싸움 1 빌드

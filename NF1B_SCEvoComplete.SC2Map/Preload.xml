@@ -2,16 +2,15 @@
 <Preload>
 <Asset path="assets\textures\ui_emoticons_gas.dds" Type="Image"/>
 <Asset path="assets\textures\sc2_ui_loadingscreen_playercard_raceindicator_bwzerg.dds" Type="Image"/>
-<Asset path="assets\textures\ui_tip_questionmark.dds" Type="Image"/>
+<Asset path="assets\textures\ui_tipicon_campaign_zerus03-yagdratunnel.dds" Type="Image"/>
 <Asset path="assets\textures\ui_tipicon_campaign_space01-repair.dds" Type="Image"/>
 <Asset path="assets\textures\sc2_ui_loadingscreen_playercard_raceindicator_bwprotoss.dds" Type="Image"/>
 <Asset path="assets\textures\sc2_ui_loadingscreen_playercard_raceindicator_protoss.dds" Type="Image"/>
 <Asset path="assets\textures\sc2_ui_loadingscreen_playercard_raceindicator_bwterran.dds" Type="Image"/>
 <Asset path="assets\textures\sc2_ui_loadingscreen_playercard_raceindicator_terran.dds" Type="Image"/>
+<Asset path="assets\textures\ui_btn_aicommand_commandcard_claim.dds" Type="Image"/>
 <Asset path="assets\textures\sc2_ui_loadingscreen_playercard_raceindicator_zerg.dds" Type="Image"/>
 <Asset path="assets\textures\ui_emoticons_minerals.dds" Type="Image"/>
-<Abil id="move"/>
-<Abil id="BattlecruiserMove"/>
 <Actor id="SYSTEM_ActorConfig"/>
 <Actor id="CharDunesCurtain" Variations="0,1,2,3"/>
 <Actor id="Elsecaro_Bush2x2" Variations="0,1,2,3,4"/>
@@ -41,6 +40,9 @@
 <Race id="BWPr"/>
 <Race id="BWZe"/>
 <Terrain id="HybridLabXelNaga"/>
+<Unit id="SCV"/>
+<Unit id="Probe"/>
+<Unit id="Drone"/>
 <Unit id="RichVespeneGeyser"/>
 <Unit id="MineralField" Variations="0,1,2,3,4,5,6,7,9"/>
 <Unit id="MineralField750" Variations="0,1,3,4,5,6,7,8,9"/>
@@ -48,5 +50,8 @@
 <Unit id="UnbuildableBricksDestructible" Variations="5,6"/>
 <Unit id="DestructibleRockEx16x6"/>
 <Unit id="DestructibleRockEx1DiagonalHugeBLUR"/>
+<Unit id="DroneSCBW"/>
+<Unit id="ProbeSCBW"/>
 <Unit id="CommandCenterSCBW"/>
+<Unit id="SCVSCBW"/>
 </Preload>
