@@ -97,7 +97,7 @@ Param/Value/CA3F7518=팁: 패배가 확실시되면 <c val=“ffff8a”>빌더</
 Param/Value/CEF41543=0
 Param/Value/E33F8417=0
 Param/Value/E539788E=0
-Param/Value/F4D1DCD3=<c val="ffff8a">-r/-R</c>: 유닛 해제(빌더는 SCBW 대군주만 해제 가능)<n/><n/><c val="ffff8a">-gg/-GG</c>: 항복(빌더만 사용 가능)<n/><n/><c val="ffff8a">-b <id></c>: 빌더를 플레이어 <id>로 변경(빌더 전용, 게임 시작 후 1분 이내에만 사용할 수 있습니다)<n/><n/><c val="ffff8a">-g</c>: 전투기에서 빌더를 무작위 플레이어로 변경(빌더 전용, 게임 시작 후 1분 이내에만 사용할 수 있습니다)
+Param/Value/F4D1DCD3=<c val="ffff8a">-r/-R</c>: 유닛 해제(빌더는 SCBW 오버로드, SCBW 커맨드 센터 및 SC2 궤도 명령을 출시할 수 있습니다.)<n/><n/><c val="ffff8a">-o</c>: 이전에 빌더가 출시한 유닛에 대한 통제권 획득(빌더 전용)<n/><n/><c val="ffff8a">-gg/-GG</c>: 항복(빌더 전용)<n/><n/><c val="ffff8a">-b <id></c>: 빌더를 플레이어 <id>로 변경(빌더 전용, 게임 시작 후 1분 이내에만 사용할 수 있습니다)<n/><n/><c val="ffff8a">-g</c>: 전투기에서 빌더를 무작위 플레이어로 변경(빌더 전용, 게임 시작 후 1분 이내에만 사용할 수 있습니다)
 Param/Value/FD733CCC=<c val="ffff8a">Ctrl+X</c>: 사용자 패널 열기/닫기
 Variant001/ModeDesc=아콘 모드에서 영감을 받은 모드입니다.
 Variant001/ModeName=N 싸움 1 빌드
