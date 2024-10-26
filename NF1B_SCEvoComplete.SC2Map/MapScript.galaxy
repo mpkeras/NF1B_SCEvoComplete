@@ -135,8 +135,10 @@ void gf_signal (int lp_s);
 bool gf_IsEconomicUnitType (unit lp_unit);
 bool gf_IsWorkerUnitType (unit lp_unit);
 bool gf_IsMainBaseUnitType (unit lp_unit);
-bool gf_IsSharedGroupedType (unit lp_unit);
+bool gf_IsSharedGroupedUnitType (unit lp_unit);
+bool gf_IsCanReleaseByBuilderUnitType (unit lp_unit);
 int gf_GetTeamOfPlayer (int lp_player);
+int gf_GetNeutralOfTeam (int lp_team);
 void gf_ReturnCargo (unit lp_unit);
 int gf_RandomFighterFromTeam (int lp_team);
 void gf_SetPlayerRaceToBW (int lp_player);
@@ -153,8 +155,10 @@ void gf_CloseResourceUpdateTrigger (int lp_team);
 void gf_OpenResourceUpdateTrigger (int lp_team);
 void gf_OpenSupplyShareTrigger (int lp_team);
 void gf_CloseSupplyShareTrigger (int lp_team);
-void gf_MaintainSupplyUnchanged (int lp_team, int lp_oldOwner, int lp_newOwner);
+void gf_MaintainSupplyUnchanged (int lp_oldOwner, int lp_newOwner);
 void gf_ChangeOwnershipAndIssueOrder (unit lp_unit, int lp_fighter);
+void gf_DisableAbilityForReleasedMainBase (unit lp_unit);
+void gf_EnableAbilityForReleasedMainBase (unit lp_unit);
 void gf_ChangeFighterMode (int lp_team, int lp_mode);
 void gf_UpdateFighterMode (int lp_team);
 void gf_FighterDefeat (int lp_team);
@@ -262,16 +266,17 @@ trigger gt_BWGhostTrainComplete;
 trigger gt_AddMothership;
 trigger gt_DecMothership;
 trigger gt_BuildNexusComplete;
-trigger gt_Team1_ReleaseByFighterCommand;
-trigger gt_Team2_ReleaseByFighterCommand;
 trigger gt_Team1_ReleaseByBuilderCommand;
 trigger gt_Team2_ReleaseByBuilderCommand;
+trigger gt_Team1_ReleaseByFighterCommand;
+trigger gt_Team2_ReleaseByFighterCommand;
 trigger gt_Team1_ReleaseAfterMorph;
 trigger gt_Team2_ReleaseAfterMorph;
 trigger gt_Team1_ReleaseAfterTrain;
 trigger gt_Team2_ReleaseAfterTrain;
 trigger gt_Team1_ReleaseAfterWarp;
 trigger gt_Team2_ReleaseAfterWarp;
+trigger gt_GetByBuillderCommand;
 trigger gt_Team1_FighterSelect;
 trigger gt_Team2_FighterSelect;
 trigger gt_BuilderDefeat;
@@ -308,7 +313,7 @@ bool gf_IsEconomicUnitType (unit lp_unit) {
 
     // Implementation
     lv__unitType = UnitGetType(lp_unit);
-    if (((lv__unitType == "SCV") || (lv__unitType == "SCVSCBW") || (lv__unitType == "Drone") || (lv__unitType == "DroneSCBW") || (lv__unitType == "Probe") || (lv__unitType == "ProbeSCBW") || (lv__unitType == "Queen") || (lv__unitType == "Overlord") || (lv__unitType == "OverlordSCBW") || (lv__unitType == "MULE"))) {
+    if (((lv__unitType == "SCV") || (lv__unitType == "MULE") || (lv__unitType == "Drone") || (lv__unitType == "Queen") || (lv__unitType == "Overlord") || (lv__unitType == "Probe") || (lv__unitType == "SCVSCBW") || (lv__unitType == "DroneSCBW") || (lv__unitType == "OverlordSCBW") || (lv__unitType == "ProbeSCBW"))) {
         return true;
     }
     else {
@@ -350,7 +355,7 @@ bool gf_IsMainBaseUnitType (unit lp_unit) {
     }
 }
 
-bool gf_IsSharedGroupedType (unit lp_unit) {
+bool gf_IsSharedGroupedUnitType (unit lp_unit) {
     // Variable Declarations
     string lv__unitType;
 
@@ -359,7 +364,24 @@ bool gf_IsSharedGroupedType (unit lp_unit) {
 
     // Implementation
     lv__unitType = UnitGetType(lp_unit);
-    if (((lv__unitType == "SensorTower") || (lv__unitType == "CreepTumorQueen") || (lv__unitType == "CreepTumorBurrowed") || (lv__unitType == "CreepTumor"))) {
+    if (((lv__unitType == "SensorTower") || (lv__unitType == "CreepTumorQueen") || (lv__unitType == "CreepTumorBurrowed") || (lv__unitType == "CreepTumor") || (lv__unitType == "OrbitalCommand") || (lv__unitType == "OrbitalCommandFlying") || (lv__unitType == "CommandCenterSCBW") || (lv__unitType == "CommandCenterSCBW@Flying") || (lv__unitType == "ComsatStationSCBW"))) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+bool gf_IsCanReleaseByBuilderUnitType (unit lp_unit) {
+    // Variable Declarations
+    string lv__unitType;
+
+    // Automatic Variable Declarations
+    // Variable Initialization
+
+    // Implementation
+    lv__unitType = UnitGetType(lp_unit);
+    if (((lv__unitType == "OverlordSCBW") || (lv__unitType == "OrbitalCommand") || (lv__unitType == "CommandCenterSCBW"))) {
         return true;
     }
     else {
@@ -375,6 +397,17 @@ int gf_GetTeamOfPlayer (int lp_player) {
     }
     else {
         return 2;
+    }
+}
+
+int gf_GetNeutralOfTeam (int lp_team) {
+    // Automatic Variable Declarations
+    // Implementation
+    if ((lp_team == 1)) {
+        return 13;
+    }
+    else {
+        return 14;
     }
 }
 
@@ -825,12 +858,18 @@ void gf_CloseSupplyShareTrigger (int lp_team) {
     }
 }
 
-void gf_MaintainSupplyUnchanged (int lp_team, int lp_oldOwner, int lp_newOwner) {
+void gf_MaintainSupplyUnchanged (int lp_oldOwner, int lp_newOwner) {
+    // Variable Declarations
+    int lv__team;
+
     // Automatic Variable Declarations
     int autoB6480F46_val;
 
+    // Variable Initialization
+
     // Implementation
-    autoB6480F46_val = lp_team;
+    lv__team = gf_GetTeamOfPlayer(lp_newOwner);
+    autoB6480F46_val = lv__team;
     if (autoB6480F46_val == 1) {
         PlayerModifyPropertyFixed(lp_oldOwner, c_playerPropSuppliesMade, c_playerPropOperSetTo, gv_team1_teamInfo.lv_supplyMade);
         PlayerModifyPropertyFixed(lp_oldOwner, c_playerPropSuppliesUsed, c_playerPropOperSetTo, gv_team1_teamInfo.lv_supplyUsed);
@@ -845,7 +884,7 @@ void gf_MaintainSupplyUnchanged (int lp_team, int lp_oldOwner, int lp_newOwner) 
     }
     else {
     }
-    gf_OpenSupplyShareTrigger(lp_team);
+    gf_OpenSupplyShareTrigger(lv__team);
 }
 
 void gf_ChangeOwnershipAndIssueOrder (unit lp_unit, int lp_fighter) {
@@ -874,6 +913,38 @@ void gf_ChangeOwnershipAndIssueOrder (unit lp_unit, int lp_fighter) {
         }
     }
 
+}
+
+void gf_DisableAbilityForReleasedMainBase (unit lp_unit) {
+    // Automatic Variable Declarations
+    string autoB8080D02_val;
+
+    // Implementation
+    autoB8080D02_val = UnitGetType(lp_unit);
+    if (autoB8080D02_val == "OrbitalCommand") {
+        UnitAbilityEnable(lp_unit, "CommandCenterTrain", false);
+    }
+    else if (autoB8080D02_val == "CommandCenterSCBW") {
+        UnitAbilityEnable(lp_unit, "CommandCenterSCBW@Train", false);
+    }
+    else {
+    }
+}
+
+void gf_EnableAbilityForReleasedMainBase (unit lp_unit) {
+    // Automatic Variable Declarations
+    string auto09D7AC19_val;
+
+    // Implementation
+    auto09D7AC19_val = UnitGetType(lp_unit);
+    if (auto09D7AC19_val == "OrbitalCommand") {
+        UnitAbilityEnable(lp_unit, "CommandCenterTrain", true);
+    }
+    else if (auto09D7AC19_val == "CommandCenterSCBW") {
+        UnitAbilityEnable(lp_unit, "CommandCenterSCBW@Train", true);
+    }
+    else {
+    }
 }
 
 void gf_ChangeFighterMode (int lp_team, int lp_mode) {
@@ -1272,6 +1343,8 @@ void gt_fast_Init () {
 bool gt_gaincontrol_Func (bool testConds, bool runActions) {
     // Variable Declarations
     unit lv__unit;
+    int lv__player;
+    int lv__oldOwner;
 
     // Automatic Variable Declarations
     unitgroup auto8F238D2C_g;
@@ -1291,18 +1364,29 @@ bool gt_gaincontrol_Func (bool testConds, bool runActions) {
         return true;
     }
 
+    lv__player = EventPlayer();
     auto8F238D2C_g = UnitGroupSelected(EventPlayer());
     auto8F238D2C_u = UnitGroupCount(auto8F238D2C_g, c_unitCountAll);
     for (;; auto8F238D2C_u -= 1) {
         lv__unit = UnitGroupUnitFromEnd(auto8F238D2C_g, auto8F238D2C_u);
         if (lv__unit == null) { break; }
-        if ((PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_players, EventPlayer()) == true) && (PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_players, UnitGetOwner(lv__unit)) == true)) {
+        lv__oldOwner = UnitGetOwner(lv__unit);
+        if ((PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_players, lv__player) == true) && (PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_players, lv__oldOwner) == true)) {
             gf_CloseSupplyShareTrigger(1);
+            UnitSetOwner(lv__unit, lv__player, true);
+            gf_MaintainSupplyUnchanged(lv__oldOwner, lv__player);
         }
-        else if ((PlayerGroupHasPlayer(gv_team2_playerGroupInfo.lv_players, EventPlayer()) == true) && (PlayerGroupHasPlayer(gv_team2_playerGroupInfo.lv_players, UnitGetOwner(lv__unit)) == true)) {
+        else if ((PlayerGroupHasPlayer(gv_team2_playerGroupInfo.lv_players, lv__player) == true) && (PlayerGroupHasPlayer(gv_team2_playerGroupInfo.lv_players, lv__oldOwner) == true)) {
             gf_CloseSupplyShareTrigger(2);
+            UnitSetOwner(lv__unit, lv__player, true);
+            gf_MaintainSupplyUnchanged(lv__oldOwner, lv__player);
         }
-        UnitSetOwner(lv__unit, EventPlayer(), true);
+        else if ((PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_players, lv__player) == true) && (PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_players, lv__oldOwner) == false)) {
+            UnitSetOwner(lv__unit, lv__player, true);
+        }
+        else if ((PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_players, lv__player) == false) && (PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_players, lv__oldOwner) == false)) {
+            UnitSetOwner(lv__unit, lv__player, true);
+        }
     }
     return true;
 }
@@ -1310,7 +1394,7 @@ bool gt_gaincontrol_Func (bool testConds, bool runActions) {
 //--------------------------------------------------------------------------------------------------
 void gt_gaincontrol_Init () {
     gt_gaincontrol = TriggerCreate("gt_gaincontrol_Func");
-    TriggerAddEventChatMessage(gt_gaincontrol, c_playerAny, ("-o"), true);
+    TriggerAddEventChatMessage(gt_gaincontrol, c_playerAny, ("-gain"), true);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -2912,7 +2996,7 @@ bool gt_ChangeBuilder_Func (bool testConds, bool runActions) {
         gf_UpdateRole(lv__team, lv__oldBuilder, lv__newBuilder);
         gf_UpdateFighterMode(lv__team);
         gf_OwnershipForChangeBuilder(lv__team, lv__oldBuilder, lv__newBuilder);
-        gf_MaintainSupplyUnchanged(lv__team, lv__oldBuilder, lv__newBuilder);
+        gf_MaintainSupplyUnchanged(lv__oldBuilder, lv__newBuilder);
         gf_UpdateResource(lv__team, lv__oldBuilder, lv__newBuilder);
         gf_UpdateBuilderName(lv__newBuilder, lv__team);
     }
@@ -2971,7 +3055,7 @@ bool gt_GiveUpBuilderRole_Func (bool testConds, bool runActions) {
     gf_UpdateRole(lv__team, lv__oldBuilder, lv__newBuilder);
     gf_UpdateFighterMode(lv__team);
     gf_OwnershipForChangeBuilder(lv__team, lv__oldBuilder, lv__newBuilder);
-    gf_MaintainSupplyUnchanged(lv__team, lv__oldBuilder, lv__newBuilder);
+    gf_MaintainSupplyUnchanged(lv__oldBuilder, lv__newBuilder);
     gf_UpdateResource(lv__team, lv__oldBuilder, lv__newBuilder);
     gf_UpdateBuilderName(lv__newBuilder, lv__team);
     return true;
@@ -5248,6 +5332,108 @@ void gt_BuildNexusComplete_Init () {
 }
 
 //--------------------------------------------------------------------------------------------------
+// Trigger: Team1_ReleaseByBuilderCommand
+//--------------------------------------------------------------------------------------------------
+bool gt_Team1_ReleaseByBuilderCommand_Func (bool testConds, bool runActions) {
+    // Variable Declarations
+    int lv__player;
+    unit lv__unit;
+
+    // Automatic Variable Declarations
+    unitgroup auto38DC9000_g;
+    int auto38DC9000_u;
+
+    // Variable Initialization
+
+    // Conditions
+    if (testConds) {
+        if (!((EventPlayer() == gv_team1_teamInfo.lv_builder))) {
+            return false;
+        }
+    }
+
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    lv__player = EventPlayer();
+    gf_CloseSupplyShareTrigger(1);
+    auto38DC9000_g = UnitGroupSelected(lv__player);
+    auto38DC9000_u = UnitGroupCount(auto38DC9000_g, c_unitCountAll);
+    for (;; auto38DC9000_u -= 1) {
+        lv__unit = UnitGroupUnitFromEnd(auto38DC9000_g, auto38DC9000_u);
+        if (lv__unit == null) { break; }
+        if ((UnitGetOwner(lv__unit) == lv__player) && gf_IsCanReleaseByBuilderUnitType(lv__unit)) {
+            UnitSetOwner(lv__unit, gv_team1_teamMode.lv_ownerForRelease, true);
+            UnitSetTeamColorIndex(lv__unit, gv_team1_teamMode.lv_colorForRelease);
+            gf_DisableAbilityForReleasedMainBase(lv__unit);
+        }
+
+    }
+    gf_MaintainSupplyUnchanged(lv__player, gv_team1_teamMode.lv_ownerForRelease);
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void gt_Team1_ReleaseByBuilderCommand_Init () {
+    gt_Team1_ReleaseByBuilderCommand = TriggerCreate("gt_Team1_ReleaseByBuilderCommand_Func");
+    TriggerAddEventChatMessage(gt_Team1_ReleaseByBuilderCommand, c_playerAny, ("-r"), true);
+    TriggerAddEventChatMessage(gt_Team1_ReleaseByBuilderCommand, c_playerAny, ("-R"), true);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Trigger: Team2_ReleaseByBuilderCommand
+//--------------------------------------------------------------------------------------------------
+bool gt_Team2_ReleaseByBuilderCommand_Func (bool testConds, bool runActions) {
+    // Variable Declarations
+    int lv__player;
+    unit lv__unit;
+
+    // Automatic Variable Declarations
+    unitgroup auto7EDF63D4_g;
+    int auto7EDF63D4_u;
+
+    // Variable Initialization
+
+    // Conditions
+    if (testConds) {
+        if (!((EventPlayer() == gv_team2_teamInfo.lv_builder))) {
+            return false;
+        }
+    }
+
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    lv__player = EventPlayer();
+    gf_CloseSupplyShareTrigger(2);
+    auto7EDF63D4_g = UnitGroupSelected(lv__player);
+    auto7EDF63D4_u = UnitGroupCount(auto7EDF63D4_g, c_unitCountAll);
+    for (;; auto7EDF63D4_u -= 1) {
+        lv__unit = UnitGroupUnitFromEnd(auto7EDF63D4_g, auto7EDF63D4_u);
+        if (lv__unit == null) { break; }
+        if ((UnitGetOwner(lv__unit) == lv__player) && gf_IsCanReleaseByBuilderUnitType(lv__unit)) {
+            UnitSetOwner(lv__unit, gv_team2_teamMode.lv_ownerForRelease, true);
+            UnitSetTeamColorIndex(lv__unit, gv_team2_teamMode.lv_colorForRelease);
+            gf_DisableAbilityForReleasedMainBase(lv__unit);
+        }
+
+    }
+    gf_MaintainSupplyUnchanged(lv__player, gv_team2_teamMode.lv_ownerForRelease);
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void gt_Team2_ReleaseByBuilderCommand_Init () {
+    gt_Team2_ReleaseByBuilderCommand = TriggerCreate("gt_Team2_ReleaseByBuilderCommand_Func");
+    TriggerAddEventChatMessage(gt_Team2_ReleaseByBuilderCommand, c_playerAny, ("-r"), true);
+    TriggerAddEventChatMessage(gt_Team2_ReleaseByBuilderCommand, c_playerAny, ("-R"), true);
+}
+
+//--------------------------------------------------------------------------------------------------
 // Trigger: Team1_ReleaseByFighterCommand
 //--------------------------------------------------------------------------------------------------
 bool gt_Team1_ReleaseByFighterCommand_Func (bool testConds, bool runActions) {
@@ -5286,7 +5472,7 @@ bool gt_Team1_ReleaseByFighterCommand_Func (bool testConds, bool runActions) {
         }
 
     }
-    gf_MaintainSupplyUnchanged(1, lv__player, gv_team1_teamMode.lv_ownerForRelease);
+    gf_MaintainSupplyUnchanged(lv__player, gv_team1_teamMode.lv_ownerForRelease);
     return true;
 }
 
@@ -5336,7 +5522,7 @@ bool gt_Team2_ReleaseByFighterCommand_Func (bool testConds, bool runActions) {
         }
 
     }
-    gf_MaintainSupplyUnchanged(2, lv__player, gv_team2_teamMode.lv_ownerForRelease);
+    gf_MaintainSupplyUnchanged(lv__player, gv_team2_teamMode.lv_ownerForRelease);
     return true;
 }
 
@@ -5345,106 +5531,6 @@ void gt_Team2_ReleaseByFighterCommand_Init () {
     gt_Team2_ReleaseByFighterCommand = TriggerCreate("gt_Team2_ReleaseByFighterCommand_Func");
     TriggerAddEventChatMessage(gt_Team2_ReleaseByFighterCommand, c_playerAny, ("-r"), true);
     TriggerAddEventChatMessage(gt_Team2_ReleaseByFighterCommand, c_playerAny, ("-R"), true);
-}
-
-//--------------------------------------------------------------------------------------------------
-// Trigger: Team1_ReleaseByBuilderCommand
-//--------------------------------------------------------------------------------------------------
-bool gt_Team1_ReleaseByBuilderCommand_Func (bool testConds, bool runActions) {
-    // Variable Declarations
-    int lv__player;
-    unit lv__unit;
-
-    // Automatic Variable Declarations
-    unitgroup auto38DC9000_g;
-    int auto38DC9000_u;
-
-    // Variable Initialization
-
-    // Conditions
-    if (testConds) {
-        if (!((EventPlayer() == gv_team1_teamInfo.lv_builder))) {
-            return false;
-        }
-    }
-
-    // Actions
-    if (!runActions) {
-        return true;
-    }
-
-    lv__player = EventPlayer();
-    gf_CloseSupplyShareTrigger(1);
-    auto38DC9000_g = UnitGroupSelected(lv__player);
-    auto38DC9000_u = UnitGroupCount(auto38DC9000_g, c_unitCountAll);
-    for (;; auto38DC9000_u -= 1) {
-        lv__unit = UnitGroupUnitFromEnd(auto38DC9000_g, auto38DC9000_u);
-        if (lv__unit == null) { break; }
-        if ((UnitGetOwner(lv__unit) == lv__player) && (UnitGetType(lv__unit) == "OverlordSCBW")) {
-            UnitSetOwner(lv__unit, gv_team1_teamMode.lv_ownerForRelease, true);
-            UnitSetTeamColorIndex(lv__unit, gv_team1_teamMode.lv_colorForRelease);
-        }
-
-    }
-    gf_MaintainSupplyUnchanged(1, lv__player, gv_team1_teamMode.lv_ownerForRelease);
-    return true;
-}
-
-//--------------------------------------------------------------------------------------------------
-void gt_Team1_ReleaseByBuilderCommand_Init () {
-    gt_Team1_ReleaseByBuilderCommand = TriggerCreate("gt_Team1_ReleaseByBuilderCommand_Func");
-    TriggerAddEventChatMessage(gt_Team1_ReleaseByBuilderCommand, c_playerAny, ("-r"), true);
-    TriggerAddEventChatMessage(gt_Team1_ReleaseByBuilderCommand, c_playerAny, ("-R"), true);
-}
-
-//--------------------------------------------------------------------------------------------------
-// Trigger: Team2_ReleaseByBuilderCommand
-//--------------------------------------------------------------------------------------------------
-bool gt_Team2_ReleaseByBuilderCommand_Func (bool testConds, bool runActions) {
-    // Variable Declarations
-    int lv__player;
-    unit lv__unit;
-
-    // Automatic Variable Declarations
-    unitgroup auto7EDF63D4_g;
-    int auto7EDF63D4_u;
-
-    // Variable Initialization
-
-    // Conditions
-    if (testConds) {
-        if (!((EventPlayer() == gv_team2_teamInfo.lv_builder))) {
-            return false;
-        }
-    }
-
-    // Actions
-    if (!runActions) {
-        return true;
-    }
-
-    lv__player = EventPlayer();
-    gf_CloseSupplyShareTrigger(2);
-    auto7EDF63D4_g = UnitGroupSelected(lv__player);
-    auto7EDF63D4_u = UnitGroupCount(auto7EDF63D4_g, c_unitCountAll);
-    for (;; auto7EDF63D4_u -= 1) {
-        lv__unit = UnitGroupUnitFromEnd(auto7EDF63D4_g, auto7EDF63D4_u);
-        if (lv__unit == null) { break; }
-        if ((UnitGetOwner(lv__unit) == lv__player) && (UnitGetType(lv__unit) == "OverlordSCBW")) {
-            UnitSetOwner(lv__unit, gv_team2_teamMode.lv_ownerForRelease, true);
-            UnitSetTeamColorIndex(lv__unit, gv_team2_teamMode.lv_colorForRelease);
-        }
-
-    }
-    gf_MaintainSupplyUnchanged(2, lv__player, gv_team2_teamMode.lv_ownerForRelease);
-    return true;
-}
-
-//--------------------------------------------------------------------------------------------------
-void gt_Team2_ReleaseByBuilderCommand_Init () {
-    gt_Team2_ReleaseByBuilderCommand = TriggerCreate("gt_Team2_ReleaseByBuilderCommand_Func");
-    TriggerAddEventChatMessage(gt_Team2_ReleaseByBuilderCommand, c_playerAny, ("-r"), true);
-    TriggerAddEventChatMessage(gt_Team2_ReleaseByBuilderCommand, c_playerAny, ("-R"), true);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -5486,7 +5572,7 @@ bool gt_Team1_ReleaseAfterMorph_Func (bool testConds, bool runActions) {
         UnitIssueOrder(lv__unit, lv__order, c_orderQueueReplace);
         PlayerSetAlliance(gv_team1_teamMode.lv_ownerForRelease, c_allianceIdControl, lv__oldOwner, false);
     }
-    gf_MaintainSupplyUnchanged(1, lv__oldOwner, gv_team1_teamMode.lv_ownerForRelease);
+    gf_MaintainSupplyUnchanged(lv__oldOwner, gv_team1_teamMode.lv_ownerForRelease);
     return true;
 }
 
@@ -5536,7 +5622,7 @@ bool gt_Team2_ReleaseAfterMorph_Func (bool testConds, bool runActions) {
         UnitIssueOrder(lv__unit, lv__order, c_orderQueueReplace);
         PlayerSetAlliance(gv_team2_teamMode.lv_ownerForRelease, c_allianceIdControl, lv__oldOwner, false);
     }
-    gf_MaintainSupplyUnchanged(2, lv__oldOwner, gv_team2_teamMode.lv_ownerForRelease);
+    gf_MaintainSupplyUnchanged(lv__oldOwner, gv_team2_teamMode.lv_ownerForRelease);
     return true;
 }
 
@@ -5590,7 +5676,7 @@ bool gt_Team1_ReleaseAfterTrain_Func (bool testConds, bool runActions) {
         UnitIssueOrder(lv__unit, lv__order, c_orderQueueReplace);
         PlayerSetAlliance(gv_team1_teamMode.lv_ownerForRelease, c_allianceIdControl, lv__oldOwner, false);
     }
-    gf_MaintainSupplyUnchanged(1, lv__oldOwner, gv_team1_teamMode.lv_ownerForRelease);
+    gf_MaintainSupplyUnchanged(lv__oldOwner, gv_team1_teamMode.lv_ownerForRelease);
     return true;
 }
 
@@ -5643,7 +5729,7 @@ bool gt_Team2_ReleaseAfterTrain_Func (bool testConds, bool runActions) {
         UnitIssueOrder(lv__unit, lv__order, c_orderQueueReplace);
         PlayerSetAlliance(gv_team2_teamMode.lv_ownerForRelease, c_allianceIdControl, lv__oldOwner, false);
     }
-    gf_MaintainSupplyUnchanged(2, lv__oldOwner, gv_team2_teamMode.lv_ownerForRelease);
+    gf_MaintainSupplyUnchanged(lv__oldOwner, gv_team2_teamMode.lv_ownerForRelease);
     return true;
 }
 
@@ -5696,7 +5782,7 @@ bool gt_Team1_ReleaseAfterWarp_Func (bool testConds, bool runActions) {
         UnitIssueOrder(lv__unit, lv__order, c_orderQueueReplace);
         PlayerSetAlliance(gv_team1_teamMode.lv_ownerForRelease, c_allianceIdControl, lv__oldOwner, false);
     }
-    gf_MaintainSupplyUnchanged(1, lv__oldOwner, gv_team1_teamMode.lv_ownerForRelease);
+    gf_MaintainSupplyUnchanged(lv__oldOwner, gv_team1_teamMode.lv_ownerForRelease);
     return true;
 }
 
@@ -5749,7 +5835,7 @@ bool gt_Team2_ReleaseAfterWarp_Func (bool testConds, bool runActions) {
         UnitIssueOrder(lv__unit, lv__order, c_orderQueueReplace);
         PlayerSetAlliance(gv_team2_teamMode.lv_ownerForRelease, c_allianceIdControl, lv__oldOwner, false);
     }
-    gf_MaintainSupplyUnchanged(2, lv__oldOwner, gv_team2_teamMode.lv_ownerForRelease);
+    gf_MaintainSupplyUnchanged(lv__oldOwner, gv_team2_teamMode.lv_ownerForRelease);
     return true;
 }
 
@@ -5757,6 +5843,59 @@ bool gt_Team2_ReleaseAfterWarp_Func (bool testConds, bool runActions) {
 void gt_Team2_ReleaseAfterWarp_Init () {
     gt_Team2_ReleaseAfterWarp = TriggerCreate("gt_Team2_ReleaseAfterWarp_Func");
     TriggerAddEventUnitConstructProgress(gt_Team2_ReleaseAfterWarp, null, c_unitProgressStageComplete);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Trigger: GetByBuillderCommand
+//--------------------------------------------------------------------------------------------------
+bool gt_GetByBuillderCommand_Func (bool testConds, bool runActions) {
+    // Variable Declarations
+    unit lv__unit;
+    int lv__builder;
+    int lv__team;
+    int lv__neutral;
+
+    // Automatic Variable Declarations
+    unitgroup auto7DCA46F6_g;
+    int auto7DCA46F6_u;
+
+    // Variable Initialization
+
+    // Conditions
+    if (testConds) {
+        if (!(((EventPlayer() == gv_team1_teamInfo.lv_builder) || (EventPlayer() == gv_team2_teamInfo.lv_builder)))) {
+            return false;
+        }
+    }
+
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    lv__builder = EventPlayer();
+    lv__team = gf_GetTeamOfPlayer(lv__builder);
+    lv__neutral = gf_GetNeutralOfTeam(lv__team);
+    gf_CloseSupplyShareTrigger(lv__team);
+    auto7DCA46F6_g = UnitGroupSelected(lv__builder);
+    auto7DCA46F6_u = UnitGroupCount(auto7DCA46F6_g, c_unitCountAll);
+    for (;; auto7DCA46F6_u -= 1) {
+        lv__unit = UnitGroupUnitFromEnd(auto7DCA46F6_g, auto7DCA46F6_u);
+        if (lv__unit == null) { break; }
+        if (gf_IsCanReleaseByBuilderUnitType(lv__unit)) {
+            UnitSetOwner(lv__unit, lv__builder, true);
+            gf_EnableAbilityForReleasedMainBase(lv__unit);
+        }
+
+    }
+    gf_MaintainSupplyUnchanged(lv__neutral, lv__builder);
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void gt_GetByBuillderCommand_Init () {
+    gt_GetByBuillderCommand = TriggerCreate("gt_GetByBuillderCommand_Func");
+    TriggerAddEventChatMessage(gt_GetByBuillderCommand, c_playerAny, ("-o"), true);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -5780,7 +5919,11 @@ bool gt_Team1_FighterSelect_Func (bool testConds, bool runActions) {
             return false;
         }
 
-        if (!((gf_IsSharedGroupedType(EventUnit()) == false))) {
+        if (!((gf_IsSharedGroupedUnitType(EventUnit()) == false))) {
+            return false;
+        }
+
+        if (!((gf_IsWorkerUnitType(EventUnit()) == false))) {
             return false;
         }
     }
@@ -5793,7 +5936,7 @@ bool gt_Team1_FighterSelect_Func (bool testConds, bool runActions) {
     lv__unit = EventUnit();
     lv__fighter = EventPlayer();
     gf_ChangeOwnershipAndIssueOrder(lv__unit, lv__fighter);
-    gf_MaintainSupplyUnchanged(1, 13, lv__fighter);
+    gf_MaintainSupplyUnchanged(13, lv__fighter);
     return true;
 }
 
@@ -5824,7 +5967,11 @@ bool gt_Team2_FighterSelect_Func (bool testConds, bool runActions) {
             return false;
         }
 
-        if (!((gf_IsSharedGroupedType(EventUnit()) == false))) {
+        if (!((gf_IsSharedGroupedUnitType(EventUnit()) == false))) {
+            return false;
+        }
+
+        if (!((gf_IsWorkerUnitType(EventUnit()) == false))) {
             return false;
         }
     }
@@ -5837,7 +5984,7 @@ bool gt_Team2_FighterSelect_Func (bool testConds, bool runActions) {
     lv__unit = EventUnit();
     lv__fighter = EventPlayer();
     gf_ChangeOwnershipAndIssueOrder(lv__unit, lv__fighter);
-    gf_MaintainSupplyUnchanged(2, 14, lv__fighter);
+    gf_MaintainSupplyUnchanged(14, lv__fighter);
     return true;
 }
 
@@ -6017,16 +6164,17 @@ void InitTriggers () {
     gt_AddMothership_Init();
     gt_DecMothership_Init();
     gt_BuildNexusComplete_Init();
-    gt_Team1_ReleaseByFighterCommand_Init();
-    gt_Team2_ReleaseByFighterCommand_Init();
     gt_Team1_ReleaseByBuilderCommand_Init();
     gt_Team2_ReleaseByBuilderCommand_Init();
+    gt_Team1_ReleaseByFighterCommand_Init();
+    gt_Team2_ReleaseByFighterCommand_Init();
     gt_Team1_ReleaseAfterMorph_Init();
     gt_Team2_ReleaseAfterMorph_Init();
     gt_Team1_ReleaseAfterTrain_Init();
     gt_Team2_ReleaseAfterTrain_Init();
     gt_Team1_ReleaseAfterWarp_Init();
     gt_Team2_ReleaseAfterWarp_Init();
+    gt_GetByBuillderCommand_Init();
     gt_Team1_FighterSelect_Init();
     gt_Team2_FighterSelect_Init();
     gt_BuilderDefeat_Init();
