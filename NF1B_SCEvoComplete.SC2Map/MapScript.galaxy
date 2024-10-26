@@ -5738,6 +5738,7 @@ bool gt_fighterSelect1_Func (bool testConds, bool runActions) {
     order lv__order;
     unit lv__unit;
     int lv__fighter;
+    int lv__playerForOrder;
 
     // Automatic Variable Declarations
     // Variable Initialization
@@ -5766,8 +5767,16 @@ bool gt_fighterSelect1_Func (bool testConds, bool runActions) {
     lv__fighter = EventPlayer();
     gf_closeSupplyShareTrigger(1);
     lv__order = UnitOrder(lv__unit, 0);
+    lv__playerForOrder = OrderGetPlayer(lv__order);
     UnitSetOwner(lv__unit, lv__fighter, true);
-    UnitIssueOrder(lv__unit, lv__order, c_orderQueueReplace);
+    if ((PlayerGetAlliance(lv__fighter, c_allianceIdControl, lv__playerForOrder) == true)) {
+        UnitIssueOrder(lv__unit, lv__order, c_orderQueueReplace);
+    }
+    else {
+        PlayerSetAlliance(lv__fighter, c_allianceIdControl, lv__playerForOrder, true);
+        UnitIssueOrder(lv__unit, lv__order, c_orderQueueReplace);
+        PlayerSetAlliance(lv__fighter, c_allianceIdControl, lv__playerForOrder, false);
+    }
     gf_MaintainSupplyUnchanged(1, 13, lv__fighter);
     return true;
 }
@@ -5786,6 +5795,7 @@ bool gt_fighterSelect2_Func (bool testConds, bool runActions) {
     order lv__order;
     unit lv__unit;
     int lv__fighter;
+    int lv__playerForOrder;
 
     // Automatic Variable Declarations
     // Variable Initialization
@@ -5814,8 +5824,16 @@ bool gt_fighterSelect2_Func (bool testConds, bool runActions) {
     lv__fighter = EventPlayer();
     gf_closeSupplyShareTrigger(2);
     lv__order = UnitOrder(lv__unit, 0);
+    lv__playerForOrder = OrderGetPlayer(lv__order);
     UnitSetOwner(lv__unit, lv__fighter, true);
-    UnitIssueOrder(lv__unit, lv__order, c_orderQueueReplace);
+    if ((PlayerGetAlliance(lv__fighter, c_allianceIdControl, lv__playerForOrder) == true)) {
+        UnitIssueOrder(lv__unit, lv__order, c_orderQueueReplace);
+    }
+    else {
+        PlayerSetAlliance(lv__fighter, c_allianceIdControl, lv__playerForOrder, true);
+        UnitIssueOrder(lv__unit, lv__order, c_orderQueueReplace);
+        PlayerSetAlliance(lv__fighter, c_allianceIdControl, lv__playerForOrder, false);
+    }
     gf_MaintainSupplyUnchanged(2, 14, lv__fighter);
     return true;
 }
