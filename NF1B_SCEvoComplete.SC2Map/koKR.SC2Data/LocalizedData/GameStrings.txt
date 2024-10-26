@@ -13,7 +13,6 @@ Attribute002/Value002/Name=파이터
 Button/Name/DevourerSCBW=Morph To Devourer
 Button/Name/LurkerSCBW=Morph to Lurker
 Button/Tooltip/DevourerSCBW=Anti-air flyer. Can use <s val="TooltipHighlightSCBW">Acid Spores</s>.<n/><n/><c val="#ColorAttackInfo">Can attack air units.</c>
-Button/Tooltip/GuardianSCBW2=Long-range anti-ground flyer. <n/><n/><c val="ffff8a">Can attack ground units.</c>
 Button/Tooltip/LurkerSCBW=Area-damage ambusher. Must burrow to attack. <n/><n/><c val="ffff8a">Can attack ground units.</c>
 DocInfo/DescLong=아콘 모드와 SC: Evo Complete 모드에서 영감을 받은 맵입니다. 이 맵의 코드 트리거는 완전히 재작성되었으며 다른 유사한 맵의 코드를 사용하지 않았습니다.<n/><n/>수고해주신 SC: Evo Complete 모드 제작자분들께 감사드립니다.
 DocInfo/DescShort=12

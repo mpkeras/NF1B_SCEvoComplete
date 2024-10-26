@@ -1,5 +1,4 @@
-﻿Button/Tooltip/GuardianSCBW2=Long-range anti-ground flyer. <n/><n/><c val="ffff8a">Can attack ground units.</c>
-DocInfo/DescLong=A map inspired by the Archon Mode and the SC: Evo Complete mod. The code triggers of this map has been completely rewritten and does not use code from other similar maps.<n/><n/>Thanks to the SC: Evo Complete mod authors for their hard work.
+﻿DocInfo/DescLong=A map inspired by the Archon Mode and the SC: Evo Complete mod. The code triggers of this map has been completely rewritten and does not use code from other similar maps.<n/><n/>Thanks to the SC: Evo Complete mod authors for their hard work.
 DocInfo/DescShort=12
 DocInfo/HowToPlayBasic00=All players are divided into two teams, each with one builder and multiple fighters
 DocInfo/HowToPlayBasic01=If you are a builder, train units for the fighters
