@@ -138,6 +138,8 @@ bool gf_IsMainBaseUnitType (unit lp_unit);
 bool gf_IsSharedGroupedUnitType (unit lp_unit);
 bool gf_IsCanReleaseByBuilderUnitType (unit lp_unit);
 int gf_GetTeamOfPlayer (int lp_player);
+int gf_GetOwnerForRelease (int lp_team);
+int gf_GetColorForRelease (int lp_team);
 int gf_GetNeutralOfTeam (int lp_team);
 void gf_ReturnCargo (unit lp_unit);
 int gf_RandomFighterFromTeam (int lp_team);
@@ -397,6 +399,28 @@ int gf_GetTeamOfPlayer (int lp_player) {
     }
     else {
         return 2;
+    }
+}
+
+int gf_GetOwnerForRelease (int lp_team) {
+    // Automatic Variable Declarations
+    // Implementation
+    if ((lp_team == 1)) {
+        return gv_team1_teamMode.lv_ownerForRelease;
+    }
+    else {
+        return gv_team2_teamMode.lv_ownerForRelease;
+    }
+}
+
+int gf_GetColorForRelease (int lp_team) {
+    // Automatic Variable Declarations
+    // Implementation
+    if ((lp_team == 1)) {
+        return gv_team1_teamMode.lv_colorForRelease;
+    }
+    else {
+        return gv_team2_teamMode.lv_colorForRelease;
     }
 }
 
@@ -5389,14 +5413,8 @@ bool gt_ReleaseByBuilderCommand_Func (bool testConds, bool runActions) {
 
     lv__player = EventPlayer();
     lv__team = gf_GetTeamOfPlayer(lv__player);
-    if ((lv__team == 1)) {
-        lv__newOwner = gv_team1_teamMode.lv_ownerForRelease;
-        lv__newColor = gv_team1_teamMode.lv_colorForRelease;
-    }
-    else {
-        lv__newOwner = gv_team2_teamMode.lv_ownerForRelease;
-        lv__newColor = gv_team2_teamMode.lv_colorForRelease;
-    }
+    lv__newOwner = gf_GetOwnerForRelease(lv__team);
+    lv__newColor = gf_GetColorForRelease(lv__team);
     gf_CloseSupplyShareTrigger(lv__team);
     auto38DC9000_g = UnitGroupSelected(lv__player);
     auto38DC9000_u = UnitGroupCount(auto38DC9000_g, c_unitCountAll);
