@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Catalog>
+    <CBehaviorResource id="HighYieldMineralFieldMinerals">
+        <Capacity value="1500"/>
+        <Contents value="1500"/>
+    </CBehaviorResource>
     <CBehaviorResource id="HighYieldMineralFieldMinerals750">
+        <Capacity value="1500"/>
+        <Contents value="1500"/>
+    </CBehaviorResource>
+    <CBehaviorResource id="MineralFieldMinerals">
         <Capacity value="1500"/>
         <Contents value="1500"/>
     </CBehaviorResource>
@@ -8,12 +16,20 @@
         <Capacity value="1500"/>
         <Contents value="1500"/>
     </CBehaviorResource>
+    <CBehaviorResource id="MineralFieldMineralsOpaque">
+        <Capacity value="1500"/>
+        <Contents value="1500"/>
+    </CBehaviorResource>
+    <CBehaviorResource id="MineralFieldMineralsOpaque900">
+        <Capacity value="1500"/>
+        <Contents value="1500"/>
+    </CBehaviorResource>
     <CBehaviorResource id="RawRichVespeneGeyserGas">
-        <Capacity value="2750"/>
-        <Contents value="2750"/>
+        <Capacity value="2500"/>
+        <Contents value="2500"/>
     </CBehaviorResource>
     <CBehaviorResource id="RawVespeneGeyserGas">
-        <Capacity value="2750"/>
-        <Contents value="2750"/>
+        <Capacity value="2500"/>
+        <Contents value="2500"/>
     </CBehaviorResource>
 </Catalog>
