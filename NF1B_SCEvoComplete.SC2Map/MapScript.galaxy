@@ -2,7 +2,7 @@
 // 
 // Generated Map Script
 // 
-// Name:   N ?????? 1 ?????? (SC: Evo Complete) ?????????
+// Name:   N Fight 1 Builds (SC: Evo Complete)
 // 
 //==================================================================================================
 include "TriggerLibs/NativeLib"
@@ -183,6 +183,7 @@ trigger gt__1f;
 trigger gt_worker;
 trigger gt_gg;
 trigger gt_race;
+trigger gt_color;
 trigger gt_DisableExperimental;
 trigger gt_EnableExperimental;
 trigger gt_unlock_pv_releaseToChangeOwner;
@@ -266,8 +267,7 @@ trigger gt_BWGhostTrainComplete;
 trigger gt_AddMothership;
 trigger gt_DecMothership;
 trigger gt_BuildNexusComplete;
-trigger gt_Team1_ReleaseByBuilderCommand;
-trigger gt_Team2_ReleaseByBuilderCommand;
+trigger gt_ReleaseByBuilderCommand;
 trigger gt_Team1_ReleaseByFighterCommand;
 trigger gt_Team2_ReleaseByFighterCommand;
 trigger gt_Team1_ReleaseAfterMorph;
@@ -1663,6 +1663,33 @@ void gt_race_Init () {
     TriggerAddEventChatMessage(gt_race, c_playerAny, ("-r t1"), true);
     TriggerAddEventChatMessage(gt_race, c_playerAny, ("-r z1"), true);
     TriggerAddEventChatMessage(gt_race, c_playerAny, ("-r p1"), true);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Trigger: color
+//--------------------------------------------------------------------------------------------------
+bool gt_color_Func (bool testConds, bool runActions) {
+    // Automatic Variable Declarations
+    // Conditions
+    if (testConds) {
+        if (!((gv_debug == 1))) {
+            return false;
+        }
+    }
+
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    PlayerSetColorIndex(1, 1, true);
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void gt_color_Init () {
+    gt_color = TriggerCreate("gt_color_Func");
+    TriggerAddEventChatMessage(gt_color, c_playerAny, ("-c"), true);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -5332,12 +5359,15 @@ void gt_BuildNexusComplete_Init () {
 }
 
 //--------------------------------------------------------------------------------------------------
-// Trigger: Team1_ReleaseByBuilderCommand
+// Trigger: ReleaseByBuilderCommand
 //--------------------------------------------------------------------------------------------------
-bool gt_Team1_ReleaseByBuilderCommand_Func (bool testConds, bool runActions) {
+bool gt_ReleaseByBuilderCommand_Func (bool testConds, bool runActions) {
     // Variable Declarations
     int lv__player;
     unit lv__unit;
+    int lv__team;
+    int lv__newOwner;
+    int lv__newColor;
 
     // Automatic Variable Declarations
     unitgroup auto38DC9000_g;
@@ -5347,7 +5377,7 @@ bool gt_Team1_ReleaseByBuilderCommand_Func (bool testConds, bool runActions) {
 
     // Conditions
     if (testConds) {
-        if (!((EventPlayer() == gv_team1_teamInfo.lv_builder))) {
+        if (!(((EventPlayer() == gv_team1_teamInfo.lv_builder) || (EventPlayer() == gv_team2_teamInfo.lv_builder)))) {
             return false;
         }
     }
@@ -5358,79 +5388,42 @@ bool gt_Team1_ReleaseByBuilderCommand_Func (bool testConds, bool runActions) {
     }
 
     lv__player = EventPlayer();
-    gf_CloseSupplyShareTrigger(1);
+    lv__team = gf_GetTeamOfPlayer(lv__player);
+    if ((lv__team == 1)) {
+        lv__newOwner = gv_team1_teamMode.lv_ownerForRelease;
+        lv__newColor = gv_team1_teamMode.lv_colorForRelease;
+    }
+    else {
+        lv__newOwner = gv_team2_teamMode.lv_ownerForRelease;
+        lv__newColor = gv_team2_teamMode.lv_colorForRelease;
+    }
+    gf_CloseSupplyShareTrigger(lv__team);
     auto38DC9000_g = UnitGroupSelected(lv__player);
     auto38DC9000_u = UnitGroupCount(auto38DC9000_g, c_unitCountAll);
     for (;; auto38DC9000_u -= 1) {
         lv__unit = UnitGroupUnitFromEnd(auto38DC9000_g, auto38DC9000_u);
         if (lv__unit == null) { break; }
         if ((UnitGetOwner(lv__unit) == lv__player) && gf_IsCanReleaseByBuilderUnitType(lv__unit)) {
-            UnitSetOwner(lv__unit, gv_team1_teamMode.lv_ownerForRelease, true);
-            UnitSetTeamColorIndex(lv__unit, gv_team1_teamMode.lv_colorForRelease);
-            gf_DisableAbilityForReleasedMainBase(lv__unit);
+            if (gf_IsSharedGroupedUnitType(lv__unit)) {
+                UnitSetOwner(lv__unit, lv__newOwner, false);
+                gf_DisableAbilityForReleasedMainBase(lv__unit);
+            }
+            else {
+                UnitSetOwner(lv__unit, lv__newOwner, true);
+                UnitSetTeamColorIndex(lv__unit, lv__newColor);
+            }
         }
 
     }
-    gf_MaintainSupplyUnchanged(lv__player, gv_team1_teamMode.lv_ownerForRelease);
+    gf_MaintainSupplyUnchanged(lv__player, lv__newOwner);
     return true;
 }
 
 //--------------------------------------------------------------------------------------------------
-void gt_Team1_ReleaseByBuilderCommand_Init () {
-    gt_Team1_ReleaseByBuilderCommand = TriggerCreate("gt_Team1_ReleaseByBuilderCommand_Func");
-    TriggerAddEventChatMessage(gt_Team1_ReleaseByBuilderCommand, c_playerAny, ("-r"), true);
-    TriggerAddEventChatMessage(gt_Team1_ReleaseByBuilderCommand, c_playerAny, ("-R"), true);
-}
-
-//--------------------------------------------------------------------------------------------------
-// Trigger: Team2_ReleaseByBuilderCommand
-//--------------------------------------------------------------------------------------------------
-bool gt_Team2_ReleaseByBuilderCommand_Func (bool testConds, bool runActions) {
-    // Variable Declarations
-    int lv__player;
-    unit lv__unit;
-
-    // Automatic Variable Declarations
-    unitgroup auto7EDF63D4_g;
-    int auto7EDF63D4_u;
-
-    // Variable Initialization
-
-    // Conditions
-    if (testConds) {
-        if (!((EventPlayer() == gv_team2_teamInfo.lv_builder))) {
-            return false;
-        }
-    }
-
-    // Actions
-    if (!runActions) {
-        return true;
-    }
-
-    lv__player = EventPlayer();
-    gf_CloseSupplyShareTrigger(2);
-    auto7EDF63D4_g = UnitGroupSelected(lv__player);
-    auto7EDF63D4_u = UnitGroupCount(auto7EDF63D4_g, c_unitCountAll);
-    for (;; auto7EDF63D4_u -= 1) {
-        lv__unit = UnitGroupUnitFromEnd(auto7EDF63D4_g, auto7EDF63D4_u);
-        if (lv__unit == null) { break; }
-        if ((UnitGetOwner(lv__unit) == lv__player) && gf_IsCanReleaseByBuilderUnitType(lv__unit)) {
-            UnitSetOwner(lv__unit, gv_team2_teamMode.lv_ownerForRelease, true);
-            UnitSetTeamColorIndex(lv__unit, gv_team2_teamMode.lv_colorForRelease);
-            gf_DisableAbilityForReleasedMainBase(lv__unit);
-        }
-
-    }
-    gf_MaintainSupplyUnchanged(lv__player, gv_team2_teamMode.lv_ownerForRelease);
-    return true;
-}
-
-//--------------------------------------------------------------------------------------------------
-void gt_Team2_ReleaseByBuilderCommand_Init () {
-    gt_Team2_ReleaseByBuilderCommand = TriggerCreate("gt_Team2_ReleaseByBuilderCommand_Func");
-    TriggerAddEventChatMessage(gt_Team2_ReleaseByBuilderCommand, c_playerAny, ("-r"), true);
-    TriggerAddEventChatMessage(gt_Team2_ReleaseByBuilderCommand, c_playerAny, ("-R"), true);
+void gt_ReleaseByBuilderCommand_Init () {
+    gt_ReleaseByBuilderCommand = TriggerCreate("gt_ReleaseByBuilderCommand_Func");
+    TriggerAddEventChatMessage(gt_ReleaseByBuilderCommand, c_playerAny, ("-r"), true);
+    TriggerAddEventChatMessage(gt_ReleaseByBuilderCommand, c_playerAny, ("-R"), true);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -6081,6 +6074,7 @@ void InitTriggers () {
     gt_worker_Init();
     gt_gg_Init();
     gt_race_Init();
+    gt_color_Init();
     gt_DisableExperimental_Init();
     gt_EnableExperimental_Init();
     gt_unlock_pv_releaseToChangeOwner_Init();
@@ -6164,8 +6158,7 @@ void InitTriggers () {
     gt_AddMothership_Init();
     gt_DecMothership_Init();
     gt_BuildNexusComplete_Init();
-    gt_Team1_ReleaseByBuilderCommand_Init();
-    gt_Team2_ReleaseByBuilderCommand_Init();
+    gt_ReleaseByBuilderCommand_Init();
     gt_Team1_ReleaseByFighterCommand_Init();
     gt_Team2_ReleaseByFighterCommand_Init();
     gt_Team1_ReleaseAfterMorph_Init();
