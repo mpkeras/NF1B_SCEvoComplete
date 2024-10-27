@@ -270,17 +270,12 @@ trigger gt_AddMothership;
 trigger gt_DecMothership;
 trigger gt_BuildNexusComplete;
 trigger gt_ReleaseByBuilderCommand;
-trigger gt_Team1_ReleaseByFighterCommand;
-trigger gt_Team2_ReleaseByFighterCommand;
-trigger gt_Team1_ReleaseAfterMorph;
-trigger gt_Team2_ReleaseAfterMorph;
-trigger gt_Team1_ReleaseAfterTrain;
-trigger gt_Team2_ReleaseAfterTrain;
-trigger gt_Team1_ReleaseAfterWarp;
-trigger gt_Team2_ReleaseAfterWarp;
+trigger gt_ReleaseByFighterCommand;
+trigger gt_ReleaseAfterMorph;
+trigger gt_ReleaseAfterTrain;
+trigger gt_ReleaseAfterWarp;
 trigger gt_GetByBuillderCommand;
-trigger gt_Team1_FighterSelect;
-trigger gt_Team2_FighterSelect;
+trigger gt_GetByFighterSelect;
 trigger gt_BuilderDefeat;
 
 //--------------------------------------------------------------------------------------------------
@@ -5445,12 +5440,15 @@ void gt_ReleaseByBuilderCommand_Init () {
 }
 
 //--------------------------------------------------------------------------------------------------
-// Trigger: Team1_ReleaseByFighterCommand
+// Trigger: ReleaseByFighterCommand
 //--------------------------------------------------------------------------------------------------
-bool gt_Team1_ReleaseByFighterCommand_Func (bool testConds, bool runActions) {
+bool gt_ReleaseByFighterCommand_Func (bool testConds, bool runActions) {
     // Variable Declarations
     int lv__player;
     unit lv__unit;
+    int lv__team;
+    int lv__newOwner;
+    int lv__newColor;
 
     // Automatic Variable Declarations
     unitgroup autoC85D29BB_g;
@@ -5460,7 +5458,7 @@ bool gt_Team1_ReleaseByFighterCommand_Func (bool testConds, bool runActions) {
 
     // Conditions
     if (testConds) {
-        if (!((PlayerGroupHasPlayer(gv_team1_teamInfo.lv_fighterGroup, EventPlayer()) == true))) {
+        if (!(((PlayerGroupHasPlayer(gv_team1_teamInfo.lv_fighterGroup, EventPlayer()) == true) || (PlayerGroupHasPlayer(gv_team2_teamInfo.lv_fighterGroup, EventPlayer()) == true)))) {
             return false;
         }
     }
@@ -5471,95 +5469,51 @@ bool gt_Team1_ReleaseByFighterCommand_Func (bool testConds, bool runActions) {
     }
 
     lv__player = EventPlayer();
-    gf_CloseSupplyShareTrigger(1);
+    lv__team = gf_GetTeamOfPlayer(lv__player);
+    lv__newOwner = gf_GetOwnerForRelease(lv__team);
+    lv__newColor = gf_GetColorForRelease(lv__team);
+    gf_CloseSupplyShareTrigger(lv__team);
     autoC85D29BB_g = UnitGroupSelected(lv__player);
     autoC85D29BB_u = UnitGroupCount(autoC85D29BB_g, c_unitCountAll);
     for (;; autoC85D29BB_u -= 1) {
         lv__unit = UnitGroupUnitFromEnd(autoC85D29BB_g, autoC85D29BB_u);
         if (lv__unit == null) { break; }
         if ((UnitGetOwner(lv__unit) == lv__player)) {
-            UnitSetOwner(lv__unit, gv_team1_teamMode.lv_ownerForRelease, true);
-            UnitSetTeamColorIndex(lv__unit, gv_team1_teamMode.lv_colorForRelease);
+            UnitSetOwner(lv__unit, lv__newOwner, true);
+            UnitSetTeamColorIndex(lv__unit, lv__newColor);
         }
 
     }
-    gf_MaintainSupplyUnchanged(lv__player, gv_team1_teamMode.lv_ownerForRelease);
+    gf_MaintainSupplyUnchanged(lv__player, lv__newOwner);
     return true;
 }
 
 //--------------------------------------------------------------------------------------------------
-void gt_Team1_ReleaseByFighterCommand_Init () {
-    gt_Team1_ReleaseByFighterCommand = TriggerCreate("gt_Team1_ReleaseByFighterCommand_Func");
-    TriggerAddEventChatMessage(gt_Team1_ReleaseByFighterCommand, c_playerAny, ("-r"), true);
-    TriggerAddEventChatMessage(gt_Team1_ReleaseByFighterCommand, c_playerAny, ("-R"), true);
+void gt_ReleaseByFighterCommand_Init () {
+    gt_ReleaseByFighterCommand = TriggerCreate("gt_ReleaseByFighterCommand_Func");
+    TriggerAddEventChatMessage(gt_ReleaseByFighterCommand, c_playerAny, ("-r"), true);
+    TriggerAddEventChatMessage(gt_ReleaseByFighterCommand, c_playerAny, ("-R"), true);
 }
 
 //--------------------------------------------------------------------------------------------------
-// Trigger: Team2_ReleaseByFighterCommand
+// Trigger: ReleaseAfterMorph
 //--------------------------------------------------------------------------------------------------
-bool gt_Team2_ReleaseByFighterCommand_Func (bool testConds, bool runActions) {
-    // Variable Declarations
-    int lv__player;
-    unit lv__unit;
-
-    // Automatic Variable Declarations
-    unitgroup auto6515C5C6_g;
-    int auto6515C5C6_u;
-
-    // Variable Initialization
-
-    // Conditions
-    if (testConds) {
-        if (!((PlayerGroupHasPlayer(gv_team2_teamInfo.lv_fighterGroup, EventPlayer()) == true))) {
-            return false;
-        }
-    }
-
-    // Actions
-    if (!runActions) {
-        return true;
-    }
-
-    lv__player = EventPlayer();
-    gf_CloseSupplyShareTrigger(2);
-    auto6515C5C6_g = UnitGroupSelected(lv__player);
-    auto6515C5C6_u = UnitGroupCount(auto6515C5C6_g, c_unitCountAll);
-    for (;; auto6515C5C6_u -= 1) {
-        lv__unit = UnitGroupUnitFromEnd(auto6515C5C6_g, auto6515C5C6_u);
-        if (lv__unit == null) { break; }
-        if ((UnitGetOwner(lv__unit) == lv__player)) {
-            UnitSetOwner(lv__unit, gv_team2_teamMode.lv_ownerForRelease, true);
-            UnitSetTeamColorIndex(lv__unit, gv_team2_teamMode.lv_colorForRelease);
-        }
-
-    }
-    gf_MaintainSupplyUnchanged(lv__player, gv_team2_teamMode.lv_ownerForRelease);
-    return true;
-}
-
-//--------------------------------------------------------------------------------------------------
-void gt_Team2_ReleaseByFighterCommand_Init () {
-    gt_Team2_ReleaseByFighterCommand = TriggerCreate("gt_Team2_ReleaseByFighterCommand_Func");
-    TriggerAddEventChatMessage(gt_Team2_ReleaseByFighterCommand, c_playerAny, ("-r"), true);
-    TriggerAddEventChatMessage(gt_Team2_ReleaseByFighterCommand, c_playerAny, ("-R"), true);
-}
-
-//--------------------------------------------------------------------------------------------------
-// Trigger: Team1_ReleaseAfterMorph
-//--------------------------------------------------------------------------------------------------
-bool gt_Team1_ReleaseAfterMorph_Func (bool testConds, bool runActions) {
+bool gt_ReleaseAfterMorph_Func (bool testConds, bool runActions) {
     // Variable Declarations
     order lv__order;
     unit lv__unit;
     point lv__rallyPoint;
     int lv__oldOwner;
+    int lv__team;
+    int lv__newOwner;
+    int lv__newColor;
 
     // Automatic Variable Declarations
     // Variable Initialization
 
     // Conditions
     if (testConds) {
-        if (!((UnitGetOwner(EventUnit()) == gv_team1_teamInfo.lv_builder))) {
+        if (!(((UnitGetOwner(EventUnit()) == gv_team1_teamInfo.lv_builder) || (UnitGetOwner(EventUnit()) == gv_team2_teamInfo.lv_builder)))) {
             return false;
         }
     }
@@ -5571,95 +5525,51 @@ bool gt_Team1_ReleaseAfterMorph_Func (bool testConds, bool runActions) {
 
     lv__unit = EventUnit();
     lv__oldOwner = UnitGetOwner(lv__unit);
-    gf_CloseSupplyShareTrigger(1);
+    lv__team = gf_GetTeamOfPlayer(lv__oldOwner);
+    lv__newOwner = gf_GetOwnerForRelease(lv__team);
+    lv__newColor = gf_GetColorForRelease(lv__team);
+    gf_CloseSupplyShareTrigger(lv__team);
     lv__order = UnitOrder(lv__unit, 0);
-    UnitSetOwner(lv__unit, gv_team1_teamMode.lv_ownerForRelease, true);
-    UnitSetTeamColorIndex(lv__unit, gv_team1_teamMode.lv_colorForRelease);
-    if ((PlayerGetAlliance(gv_team1_teamMode.lv_ownerForRelease, c_allianceIdControl, lv__oldOwner) == true)) {
+    UnitSetOwner(lv__unit, lv__newOwner, true);
+    UnitSetTeamColorIndex(lv__unit, lv__newColor);
+    if ((PlayerGetAlliance(lv__newOwner, c_allianceIdControl, lv__oldOwner) == true)) {
         UnitIssueOrder(lv__unit, lv__order, c_orderQueueReplace);
     }
     else {
-        PlayerSetAlliance(gv_team1_teamMode.lv_ownerForRelease, c_allianceIdControl, lv__oldOwner, true);
+        PlayerSetAlliance(lv__newOwner, c_allianceIdControl, lv__oldOwner, true);
         UnitIssueOrder(lv__unit, lv__order, c_orderQueueReplace);
-        PlayerSetAlliance(gv_team1_teamMode.lv_ownerForRelease, c_allianceIdControl, lv__oldOwner, false);
+        PlayerSetAlliance(lv__newOwner, c_allianceIdControl, lv__oldOwner, false);
     }
-    gf_MaintainSupplyUnchanged(lv__oldOwner, gv_team1_teamMode.lv_ownerForRelease);
+    gf_MaintainSupplyUnchanged(lv__oldOwner, lv__newOwner);
     return true;
 }
 
 //--------------------------------------------------------------------------------------------------
-void gt_Team1_ReleaseAfterMorph_Init () {
-    gt_Team1_ReleaseAfterMorph = TriggerCreate("gt_Team1_ReleaseAfterMorph_Func");
-    TriggerAddEventUnitAbility(gt_Team1_ReleaseAfterMorph, null, AbilityCommand("MorphToOverseer", 0), c_unitAbilStageComplete, false);
-    TriggerAddEventUnitAbility(gt_Team1_ReleaseAfterMorph, null, AbilityCommand("MorphToTransportOverlord", 0), c_unitAbilStageComplete, false);
+void gt_ReleaseAfterMorph_Init () {
+    gt_ReleaseAfterMorph = TriggerCreate("gt_ReleaseAfterMorph_Func");
+    TriggerAddEventUnitAbility(gt_ReleaseAfterMorph, null, AbilityCommand("MorphToOverseer", 0), c_unitAbilStageComplete, false);
+    TriggerAddEventUnitAbility(gt_ReleaseAfterMorph, null, AbilityCommand("MorphToTransportOverlord", 0), c_unitAbilStageComplete, false);
 }
 
 //--------------------------------------------------------------------------------------------------
-// Trigger: Team2_ReleaseAfterMorph
+// Trigger: ReleaseAfterTrain
 //--------------------------------------------------------------------------------------------------
-bool gt_Team2_ReleaseAfterMorph_Func (bool testConds, bool runActions) {
+bool gt_ReleaseAfterTrain_Func (bool testConds, bool runActions) {
     // Variable Declarations
     order lv__order;
-    unit lv__unit;
     point lv__rallyPoint;
+    unit lv__unit;
     int lv__oldOwner;
+    int lv__team;
+    int lv__newOwner;
+    int lv__newColor;
 
     // Automatic Variable Declarations
     // Variable Initialization
 
     // Conditions
     if (testConds) {
-        if (!((UnitGetOwner(EventUnit()) == gv_team2_teamInfo.lv_builder))) {
-            return false;
-        }
-    }
-
-    // Actions
-    if (!runActions) {
-        return true;
-    }
-
-    lv__unit = EventUnit();
-    lv__oldOwner = UnitGetOwner(lv__unit);
-    gf_CloseSupplyShareTrigger(2);
-    lv__order = UnitOrder(lv__unit, 0);
-    UnitSetOwner(lv__unit, gv_team2_teamMode.lv_ownerForRelease, true);
-    UnitSetTeamColorIndex(lv__unit, gv_team2_teamMode.lv_colorForRelease);
-    if ((PlayerGetAlliance(gv_team2_teamMode.lv_ownerForRelease, c_allianceIdControl, lv__oldOwner) == true)) {
-        UnitIssueOrder(lv__unit, lv__order, c_orderQueueReplace);
-    }
-    else {
-        PlayerSetAlliance(gv_team2_teamMode.lv_ownerForRelease, c_allianceIdControl, lv__oldOwner, true);
-        UnitIssueOrder(lv__unit, lv__order, c_orderQueueReplace);
-        PlayerSetAlliance(gv_team2_teamMode.lv_ownerForRelease, c_allianceIdControl, lv__oldOwner, false);
-    }
-    gf_MaintainSupplyUnchanged(lv__oldOwner, gv_team2_teamMode.lv_ownerForRelease);
-    return true;
-}
-
-//--------------------------------------------------------------------------------------------------
-void gt_Team2_ReleaseAfterMorph_Init () {
-    gt_Team2_ReleaseAfterMorph = TriggerCreate("gt_Team2_ReleaseAfterMorph_Func");
-    TriggerAddEventUnitAbility(gt_Team2_ReleaseAfterMorph, null, AbilityCommand("MorphToOverseer", 0), c_unitAbilStageComplete, false);
-    TriggerAddEventUnitAbility(gt_Team2_ReleaseAfterMorph, null, AbilityCommand("MorphToTransportOverlord", 0), c_unitAbilStageComplete, false);
-}
-
-//--------------------------------------------------------------------------------------------------
-// Trigger: Team1_ReleaseAfterTrain
-//--------------------------------------------------------------------------------------------------
-bool gt_Team1_ReleaseAfterTrain_Func (bool testConds, bool runActions) {
-    // Variable Declarations
-    order lv__order;
-    point lv__rallyPoint;
-    unit lv__unit;
-    int lv__oldOwner;
-
-    // Automatic Variable Declarations
-    // Variable Initialization
-
-    // Conditions
-    if (testConds) {
-        if (!((UnitGetOwner(EventUnit()) == gv_team1_teamInfo.lv_builder))) {
+        if (!(((UnitGetOwner(EventUnit()) == gv_team1_teamInfo.lv_builder) || (UnitGetOwner(EventUnit()) == gv_team2_teamInfo.lv_builder)))) {
             return false;
         }
 
@@ -5675,97 +5585,50 @@ bool gt_Team1_ReleaseAfterTrain_Func (bool testConds, bool runActions) {
 
     lv__unit = EventUnitProgressUnit();
     lv__oldOwner = UnitGetOwner(lv__unit);
-    gf_CloseSupplyShareTrigger(1);
+    lv__team = gf_GetTeamOfPlayer(lv__oldOwner);
+    lv__newOwner = gf_GetOwnerForRelease(lv__team);
+    lv__newColor = gf_GetColorForRelease(lv__team);
+    gf_CloseSupplyShareTrigger(lv__team);
     lv__order = UnitOrder(lv__unit, 0);
-    UnitSetOwner(lv__unit, gv_team1_teamMode.lv_ownerForRelease, true);
-    UnitSetTeamColorIndex(lv__unit, gv_team1_teamMode.lv_colorForRelease);
-    if ((PlayerGetAlliance(gv_team1_teamMode.lv_ownerForRelease, c_allianceIdControl, lv__oldOwner) == true)) {
+    UnitSetOwner(lv__unit, lv__newOwner, true);
+    UnitSetTeamColorIndex(lv__unit, lv__newColor);
+    if ((PlayerGetAlliance(lv__newOwner, c_allianceIdControl, lv__oldOwner) == true)) {
         UnitIssueOrder(lv__unit, lv__order, c_orderQueueReplace);
     }
     else {
-        PlayerSetAlliance(gv_team1_teamMode.lv_ownerForRelease, c_allianceIdControl, lv__oldOwner, true);
+        PlayerSetAlliance(lv__newOwner, c_allianceIdControl, lv__oldOwner, true);
         UnitIssueOrder(lv__unit, lv__order, c_orderQueueReplace);
-        PlayerSetAlliance(gv_team1_teamMode.lv_ownerForRelease, c_allianceIdControl, lv__oldOwner, false);
+        PlayerSetAlliance(lv__newOwner, c_allianceIdControl, lv__oldOwner, false);
     }
-    gf_MaintainSupplyUnchanged(lv__oldOwner, gv_team1_teamMode.lv_ownerForRelease);
+    gf_MaintainSupplyUnchanged(lv__oldOwner, lv__newOwner);
     return true;
 }
 
 //--------------------------------------------------------------------------------------------------
-void gt_Team1_ReleaseAfterTrain_Init () {
-    gt_Team1_ReleaseAfterTrain = TriggerCreate("gt_Team1_ReleaseAfterTrain_Func");
-    TriggerAddEventUnitTrainProgress(gt_Team1_ReleaseAfterTrain, null, c_unitProgressStageComplete);
+void gt_ReleaseAfterTrain_Init () {
+    gt_ReleaseAfterTrain = TriggerCreate("gt_ReleaseAfterTrain_Func");
+    TriggerAddEventUnitTrainProgress(gt_ReleaseAfterTrain, null, c_unitProgressStageComplete);
 }
 
 //--------------------------------------------------------------------------------------------------
-// Trigger: Team2_ReleaseAfterTrain
+// Trigger: ReleaseAfterWarp
 //--------------------------------------------------------------------------------------------------
-bool gt_Team2_ReleaseAfterTrain_Func (bool testConds, bool runActions) {
+bool gt_ReleaseAfterWarp_Func (bool testConds, bool runActions) {
     // Variable Declarations
     order lv__order;
     point lv__rallyPoint;
     unit lv__unit;
     int lv__oldOwner;
+    int lv__team;
+    int lv__newOwner;
+    int lv__newColor;
 
     // Automatic Variable Declarations
     // Variable Initialization
 
     // Conditions
     if (testConds) {
-        if (!((UnitGetOwner(EventUnit()) == gv_team2_teamInfo.lv_builder))) {
-            return false;
-        }
-
-        if (!((gf_IsEconomicUnitType(EventUnitProgressUnit()) == false))) {
-            return false;
-        }
-    }
-
-    // Actions
-    if (!runActions) {
-        return true;
-    }
-
-    lv__unit = EventUnitProgressUnit();
-    lv__oldOwner = UnitGetOwner(lv__unit);
-    gf_CloseSupplyShareTrigger(2);
-    lv__order = UnitOrder(lv__unit, 0);
-    UnitSetOwner(lv__unit, gv_team2_teamMode.lv_ownerForRelease, true);
-    UnitSetTeamColorIndex(lv__unit, gv_team2_teamMode.lv_colorForRelease);
-    if ((PlayerGetAlliance(gv_team2_teamMode.lv_ownerForRelease, c_allianceIdControl, lv__oldOwner) == true)) {
-        UnitIssueOrder(lv__unit, lv__order, c_orderQueueReplace);
-    }
-    else {
-        PlayerSetAlliance(gv_team2_teamMode.lv_ownerForRelease, c_allianceIdControl, lv__oldOwner, true);
-        UnitIssueOrder(lv__unit, lv__order, c_orderQueueReplace);
-        PlayerSetAlliance(gv_team2_teamMode.lv_ownerForRelease, c_allianceIdControl, lv__oldOwner, false);
-    }
-    gf_MaintainSupplyUnchanged(lv__oldOwner, gv_team2_teamMode.lv_ownerForRelease);
-    return true;
-}
-
-//--------------------------------------------------------------------------------------------------
-void gt_Team2_ReleaseAfterTrain_Init () {
-    gt_Team2_ReleaseAfterTrain = TriggerCreate("gt_Team2_ReleaseAfterTrain_Func");
-    TriggerAddEventUnitTrainProgress(gt_Team2_ReleaseAfterTrain, null, c_unitProgressStageComplete);
-}
-
-//--------------------------------------------------------------------------------------------------
-// Trigger: Team1_ReleaseAfterWarp
-//--------------------------------------------------------------------------------------------------
-bool gt_Team1_ReleaseAfterWarp_Func (bool testConds, bool runActions) {
-    // Variable Declarations
-    order lv__order;
-    point lv__rallyPoint;
-    unit lv__unit;
-    int lv__oldOwner;
-
-    // Automatic Variable Declarations
-    // Variable Initialization
-
-    // Conditions
-    if (testConds) {
-        if (!(((UnitGetOwner(EventUnitProgressUnit()) == gv_team1_teamInfo.lv_builder) || (UnitGetOwner(EventUnitProgressUnit()) == 13)))) {
+        if (!(((UnitGetOwner(EventUnitProgressUnit()) == gv_team1_teamInfo.lv_builder) || (UnitGetOwner(EventUnitProgressUnit()) == gv_team2_teamInfo.lv_builder) || (UnitGetOwner(EventUnitProgressUnit()) == 13) || (UnitGetOwner(EventUnitProgressUnit()) == 14)))) {
             return false;
         }
 
@@ -5781,79 +5644,29 @@ bool gt_Team1_ReleaseAfterWarp_Func (bool testConds, bool runActions) {
 
     lv__unit = EventUnitProgressUnit();
     lv__oldOwner = UnitGetOwner(lv__unit);
-    gf_CloseSupplyShareTrigger(1);
+    lv__team = gf_GetTeamOfPlayer(lv__oldOwner);
+    lv__newOwner = gf_GetOwnerForRelease(lv__team);
+    lv__newColor = gf_GetColorForRelease(lv__team);
+    gf_CloseSupplyShareTrigger(lv__team);
     lv__order = UnitOrder(lv__unit, 0);
-    UnitSetOwner(lv__unit, gv_team1_teamMode.lv_ownerForRelease, true);
-    UnitSetTeamColorIndex(lv__unit, gv_team1_teamMode.lv_colorForRelease);
-    if ((PlayerGetAlliance(gv_team1_teamMode.lv_ownerForRelease, c_allianceIdControl, lv__oldOwner) == true)) {
+    UnitSetOwner(lv__unit, lv__newOwner, true);
+    UnitSetTeamColorIndex(lv__unit, lv__newColor);
+    if ((PlayerGetAlliance(lv__newOwner, c_allianceIdControl, lv__oldOwner) == true)) {
         UnitIssueOrder(lv__unit, lv__order, c_orderQueueReplace);
     }
     else {
-        PlayerSetAlliance(gv_team1_teamMode.lv_ownerForRelease, c_allianceIdControl, lv__oldOwner, true);
+        PlayerSetAlliance(lv__newOwner, c_allianceIdControl, lv__oldOwner, true);
         UnitIssueOrder(lv__unit, lv__order, c_orderQueueReplace);
-        PlayerSetAlliance(gv_team1_teamMode.lv_ownerForRelease, c_allianceIdControl, lv__oldOwner, false);
+        PlayerSetAlliance(lv__newOwner, c_allianceIdControl, lv__oldOwner, false);
     }
-    gf_MaintainSupplyUnchanged(lv__oldOwner, gv_team1_teamMode.lv_ownerForRelease);
+    gf_MaintainSupplyUnchanged(lv__oldOwner, lv__newOwner);
     return true;
 }
 
 //--------------------------------------------------------------------------------------------------
-void gt_Team1_ReleaseAfterWarp_Init () {
-    gt_Team1_ReleaseAfterWarp = TriggerCreate("gt_Team1_ReleaseAfterWarp_Func");
-    TriggerAddEventUnitConstructProgress(gt_Team1_ReleaseAfterWarp, null, c_unitProgressStageComplete);
-}
-
-//--------------------------------------------------------------------------------------------------
-// Trigger: Team2_ReleaseAfterWarp
-//--------------------------------------------------------------------------------------------------
-bool gt_Team2_ReleaseAfterWarp_Func (bool testConds, bool runActions) {
-    // Variable Declarations
-    order lv__order;
-    point lv__rallyPoint;
-    unit lv__unit;
-    int lv__oldOwner;
-
-    // Automatic Variable Declarations
-    // Variable Initialization
-
-    // Conditions
-    if (testConds) {
-        if (!(((UnitGetOwner(EventUnitProgressUnit()) == gv_team2_teamInfo.lv_builder) || (UnitGetOwner(EventUnitProgressUnit()) == 14)))) {
-            return false;
-        }
-
-        if (!((UnitTypeTestAttribute(libNtve_gf_TriggeringProgressUnitType(), c_unitAttributeStructure) == false))) {
-            return false;
-        }
-    }
-
-    // Actions
-    if (!runActions) {
-        return true;
-    }
-
-    lv__unit = EventUnitProgressUnit();
-    lv__oldOwner = UnitGetOwner(lv__unit);
-    gf_CloseSupplyShareTrigger(2);
-    lv__order = UnitOrder(lv__unit, 0);
-    UnitSetOwner(lv__unit, gv_team2_teamMode.lv_ownerForRelease, true);
-    UnitSetTeamColorIndex(lv__unit, gv_team2_teamMode.lv_colorForRelease);
-    if ((PlayerGetAlliance(gv_team2_teamMode.lv_ownerForRelease, c_allianceIdControl, lv__oldOwner) == true)) {
-        UnitIssueOrder(lv__unit, lv__order, c_orderQueueReplace);
-    }
-    else {
-        PlayerSetAlliance(gv_team2_teamMode.lv_ownerForRelease, c_allianceIdControl, lv__oldOwner, true);
-        UnitIssueOrder(lv__unit, lv__order, c_orderQueueReplace);
-        PlayerSetAlliance(gv_team2_teamMode.lv_ownerForRelease, c_allianceIdControl, lv__oldOwner, false);
-    }
-    gf_MaintainSupplyUnchanged(lv__oldOwner, gv_team2_teamMode.lv_ownerForRelease);
-    return true;
-}
-
-//--------------------------------------------------------------------------------------------------
-void gt_Team2_ReleaseAfterWarp_Init () {
-    gt_Team2_ReleaseAfterWarp = TriggerCreate("gt_Team2_ReleaseAfterWarp_Func");
-    TriggerAddEventUnitConstructProgress(gt_Team2_ReleaseAfterWarp, null, c_unitProgressStageComplete);
+void gt_ReleaseAfterWarp_Init () {
+    gt_ReleaseAfterWarp = TriggerCreate("gt_ReleaseAfterWarp_Func");
+    TriggerAddEventUnitConstructProgress(gt_ReleaseAfterWarp, null, c_unitProgressStageComplete);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -5910,23 +5723,20 @@ void gt_GetByBuillderCommand_Init () {
 }
 
 //--------------------------------------------------------------------------------------------------
-// Trigger: Team1_FighterSelect
+// Trigger: GetByFighterSelect
 //--------------------------------------------------------------------------------------------------
-bool gt_Team1_FighterSelect_Func (bool testConds, bool runActions) {
+bool gt_GetByFighterSelect_Func (bool testConds, bool runActions) {
     // Variable Declarations
     unit lv__unit;
     int lv__fighter;
+    int lv__oldOwner;
 
     // Automatic Variable Declarations
     // Variable Initialization
 
     // Conditions
     if (testConds) {
-        if (!((PlayerGroupHasPlayer(gv_team1_teamInfo.lv_fighterGroup, EventPlayer()) == true))) {
-            return false;
-        }
-
-        if (!((UnitGetOwner(EventUnit()) == 13))) {
+        if (!((((PlayerGroupHasPlayer(gv_team1_teamInfo.lv_fighterGroup, EventPlayer()) == true) && (UnitGetOwner(EventUnit()) == 13)) || ((PlayerGroupHasPlayer(gv_team2_teamInfo.lv_fighterGroup, EventPlayer()) == true) && (UnitGetOwner(EventUnit()) == 14))))) {
             return false;
         }
 
@@ -5946,63 +5756,16 @@ bool gt_Team1_FighterSelect_Func (bool testConds, bool runActions) {
 
     lv__unit = EventUnit();
     lv__fighter = EventPlayer();
+    lv__oldOwner = UnitGetOwner(lv__unit);
     gf_ChangeOwnershipAndIssueOrder(lv__unit, lv__fighter);
-    gf_MaintainSupplyUnchanged(13, lv__fighter);
+    gf_MaintainSupplyUnchanged(lv__oldOwner, lv__fighter);
     return true;
 }
 
 //--------------------------------------------------------------------------------------------------
-void gt_Team1_FighterSelect_Init () {
-    gt_Team1_FighterSelect = TriggerCreate("gt_Team1_FighterSelect_Func");
-    TriggerAddEventUnitSelected(gt_Team1_FighterSelect, null, c_playerAny, true);
-}
-
-//--------------------------------------------------------------------------------------------------
-// Trigger: Team2_FighterSelect
-//--------------------------------------------------------------------------------------------------
-bool gt_Team2_FighterSelect_Func (bool testConds, bool runActions) {
-    // Variable Declarations
-    unit lv__unit;
-    int lv__fighter;
-
-    // Automatic Variable Declarations
-    // Variable Initialization
-
-    // Conditions
-    if (testConds) {
-        if (!((PlayerGroupHasPlayer(gv_team2_teamInfo.lv_fighterGroup, EventPlayer()) == true))) {
-            return false;
-        }
-
-        if (!((UnitGetOwner(EventUnit()) == 14))) {
-            return false;
-        }
-
-        if (!((gf_IsSharedGroupedUnitType(EventUnit()) == false))) {
-            return false;
-        }
-
-        if (!((gf_IsWorkerUnitType(EventUnit()) == false))) {
-            return false;
-        }
-    }
-
-    // Actions
-    if (!runActions) {
-        return true;
-    }
-
-    lv__unit = EventUnit();
-    lv__fighter = EventPlayer();
-    gf_ChangeOwnershipAndIssueOrder(lv__unit, lv__fighter);
-    gf_MaintainSupplyUnchanged(14, lv__fighter);
-    return true;
-}
-
-//--------------------------------------------------------------------------------------------------
-void gt_Team2_FighterSelect_Init () {
-    gt_Team2_FighterSelect = TriggerCreate("gt_Team2_FighterSelect_Func");
-    TriggerAddEventUnitSelected(gt_Team2_FighterSelect, null, c_playerAny, true);
+void gt_GetByFighterSelect_Init () {
+    gt_GetByFighterSelect = TriggerCreate("gt_GetByFighterSelect_Func");
+    TriggerAddEventUnitSelected(gt_GetByFighterSelect, null, c_playerAny, true);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -6177,17 +5940,12 @@ void InitTriggers () {
     gt_DecMothership_Init();
     gt_BuildNexusComplete_Init();
     gt_ReleaseByBuilderCommand_Init();
-    gt_Team1_ReleaseByFighterCommand_Init();
-    gt_Team2_ReleaseByFighterCommand_Init();
-    gt_Team1_ReleaseAfterMorph_Init();
-    gt_Team2_ReleaseAfterMorph_Init();
-    gt_Team1_ReleaseAfterTrain_Init();
-    gt_Team2_ReleaseAfterTrain_Init();
-    gt_Team1_ReleaseAfterWarp_Init();
-    gt_Team2_ReleaseAfterWarp_Init();
+    gt_ReleaseByFighterCommand_Init();
+    gt_ReleaseAfterMorph_Init();
+    gt_ReleaseAfterTrain_Init();
+    gt_ReleaseAfterWarp_Init();
     gt_GetByBuillderCommand_Init();
-    gt_Team1_FighterSelect_Init();
-    gt_Team2_FighterSelect_Init();
+    gt_GetByFighterSelect_Init();
     gt_BuilderDefeat_Init();
 }
 
