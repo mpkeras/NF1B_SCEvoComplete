@@ -159,7 +159,6 @@ void gf_SetPlayerGroup ();
 void gf_SetStartLocation ();
 void gf_SetRoleForTeam1 ();
 void gf_SetRoleForTeam2 ();
-void gf_SetFigherGroup ();
 void gf_SetStartingUnit ();
 void gf_SetUI ();
 void gf_SetFighterMode ();
@@ -710,21 +709,15 @@ void gf_SetStartLocation () {
 void gf_SetRoleForTeam1 () {
     // Variable Declarations
     int lv__player;
-    int lv__i;
+    int lv__builder;
     int lv__random;
     int lv__builderNum;
     playergroup lv__builderGroup;
 
     // Automatic Variable Declarations
     playergroup auto61B413DA_g;
-    playergroup auto2DEF6397_g;
-    playergroup auto71D331E5_g;
-    int auto71D331E5_var;
-    playergroup autoED047531_g;
-    int autoED047531_var;
 
     // Variable Initialization
-    lv__i = 1;
     lv__builderGroup = PlayerGroupEmpty();
 
     // Implementation
@@ -738,73 +731,44 @@ void gf_SetRoleForTeam1 () {
         if (lv__player < 0) { break; }
         if ((GameAttributePlayerValue("[bnet:NF1B_SCEvoMulti/0.0/236353,file:Mods\\NF1B_SCEvoComplete\\NF1B_SCEvoMulti.SC2Mod]2", lv__player) == "0001")) {
             PlayerGroupAdd(lv__builderGroup, lv__player);
-            lv__builderNum += 1;
         }
         else {
             PlayerGroupAdd(gv_team1_teamInfo.lv_fighterGroup, lv__player);
         }
     }
+    lv__builderNum = PlayerGroupCount(lv__builderGroup);
     if ((lv__builderNum == 0)) {
         lv__random = RandomInt(1, gv_team1_teamInfo.lv_userNum);
-        auto2DEF6397_g = gv_team1_playerGroupInfo.lv_users;
-        lv__player = -1;
-        while (true) {
-            lv__player = PlayerGroupNextPlayer(auto2DEF6397_g, lv__player);
-            if (lv__player < 0) { break; }
-            if ((lv__random == lv__i)) {
-                gv_team1_teamInfo.lv_builder = lv__player;
-                PlayerGroupRemove(gv_team1_teamInfo.lv_fighterGroup, lv__player);
-                break;
-            }
-
-            lv__i += 1;
-        }
+        lv__builder = PlayerGroupPlayer(gv_team1_playerGroupInfo.lv_users, lv__random);
+        gv_team1_teamInfo.lv_builder = lv__builder;
+        PlayerGroupRemove(gv_team1_teamInfo.lv_fighterGroup, lv__builder);
     }
     else if ((lv__builderNum == 1)) {
-        auto71D331E5_g = lv__builderGroup;
-        auto71D331E5_var = -1;
-        while (true) {
-            auto71D331E5_var = PlayerGroupNextPlayer(auto71D331E5_g, auto71D331E5_var);
-            if (auto71D331E5_var < 0) { break; }
-            gv_team1_teamInfo.lv_builder = auto71D331E5_var;
-        }
+        gv_team1_teamInfo.lv_builder = PlayerGroupPlayer(lv__builderGroup, 1);
     }
     else if ((lv__builderNum > 1)) {
         lv__random = RandomInt(1, lv__builderNum);
-        autoED047531_g = lv__builderGroup;
-        autoED047531_var = -1;
-        while (true) {
-            autoED047531_var = PlayerGroupNextPlayer(autoED047531_g, autoED047531_var);
-            if (autoED047531_var < 0) { break; }
-            if ((lv__random == lv__i)) {
-                gv_team1_teamInfo.lv_builder = autoED047531_var;
-            }
-            else {
-                PlayerGroupAdd(gv_team1_teamInfo.lv_fighterGroup, autoED047531_var);
-            }
-            lv__i += 1;
-        }
+        lv__builder = PlayerGroupPlayer(lv__builderGroup, lv__random);
+        gv_team1_teamInfo.lv_builder = lv__builder;
+        PlayerGroupRemove(lv__builderGroup, lv__builder);
+        libNtve_gf_AddPlayerGroupToPlayerGroup(lv__builderGroup, gv_team1_teamInfo.lv_fighterGroup);
     }
+    libNtve_gf_AddPlayerGroupToPlayerGroup(gv_team1_teamInfo.lv_fighterGroup, gv_team1_playerGroupInfo.lv_fightersWithNeutral);
+    PlayerGroupAdd(gv_team1_playerGroupInfo.lv_fightersWithNeutral, 13);
 }
 
 void gf_SetRoleForTeam2 () {
     // Variable Declarations
     int lv__player;
-    int lv__i;
+    int lv__builder;
     int lv__random;
     int lv__builderNum;
     playergroup lv__builderGroup;
 
     // Automatic Variable Declarations
     playergroup auto15D3362E_g;
-    playergroup auto04423F94_g;
-    playergroup auto2B37B108_g;
-    int auto2B37B108_var;
-    playergroup autoF3B4BD6C_g;
-    int autoF3B4BD6C_var;
 
     // Variable Initialization
-    lv__i = 1;
     lv__builderGroup = PlayerGroupEmpty();
 
     // Implementation
@@ -818,60 +782,28 @@ void gf_SetRoleForTeam2 () {
         if (lv__player < 0) { break; }
         if ((GameAttributePlayerValue("[bnet:NF1B_SCEvoMulti/0.0/236353,file:Mods\\NF1B_SCEvoComplete\\NF1B_SCEvoMulti.SC2Mod]2", lv__player) == "0001")) {
             PlayerGroupAdd(lv__builderGroup, lv__player);
-            lv__builderNum += 1;
         }
         else {
             PlayerGroupAdd(gv_team2_teamInfo.lv_fighterGroup, lv__player);
         }
     }
+    lv__builderNum = PlayerGroupCount(lv__builderGroup);
     if ((lv__builderNum == 0)) {
         lv__random = RandomInt(1, gv_team2_teamInfo.lv_userNum);
-        auto04423F94_g = gv_team2_playerGroupInfo.lv_users;
-        lv__player = -1;
-        while (true) {
-            lv__player = PlayerGroupNextPlayer(auto04423F94_g, lv__player);
-            if (lv__player < 0) { break; }
-            if ((lv__random == lv__i)) {
-                gv_team2_teamInfo.lv_builder = lv__player;
-                PlayerGroupRemove(gv_team2_teamInfo.lv_fighterGroup, lv__player);
-                break;
-            }
-
-            lv__i += 1;
-        }
+        lv__builder = PlayerGroupPlayer(gv_team2_playerGroupInfo.lv_users, lv__random);
+        gv_team2_teamInfo.lv_builder = lv__builder;
+        PlayerGroupRemove(gv_team2_teamInfo.lv_fighterGroup, lv__builder);
     }
     else if ((lv__builderNum == 1)) {
-        auto2B37B108_g = lv__builderGroup;
-        auto2B37B108_var = -1;
-        while (true) {
-            auto2B37B108_var = PlayerGroupNextPlayer(auto2B37B108_g, auto2B37B108_var);
-            if (auto2B37B108_var < 0) { break; }
-            gv_team2_teamInfo.lv_builder = auto2B37B108_var;
-        }
+        gv_team2_teamInfo.lv_builder = PlayerGroupPlayer(lv__builderGroup, 1);
     }
     else if ((lv__builderNum > 1)) {
         lv__random = RandomInt(1, lv__builderNum);
-        autoF3B4BD6C_g = lv__builderGroup;
-        autoF3B4BD6C_var = -1;
-        while (true) {
-            autoF3B4BD6C_var = PlayerGroupNextPlayer(autoF3B4BD6C_g, autoF3B4BD6C_var);
-            if (autoF3B4BD6C_var < 0) { break; }
-            if ((lv__random == lv__i)) {
-                gv_team2_teamInfo.lv_builder = autoF3B4BD6C_var;
-            }
-            else {
-                PlayerGroupAdd(gv_team2_teamInfo.lv_fighterGroup, autoF3B4BD6C_var);
-            }
-            lv__i += 1;
-        }
+        lv__builder = PlayerGroupPlayer(lv__builderGroup, lv__random);
+        gv_team2_teamInfo.lv_builder = lv__builder;
+        PlayerGroupRemove(lv__builderGroup, lv__builder);
+        libNtve_gf_AddPlayerGroupToPlayerGroup(lv__builderGroup, gv_team2_teamInfo.lv_fighterGroup);
     }
-}
-
-void gf_SetFigherGroup () {
-    // Automatic Variable Declarations
-    // Implementation
-    libNtve_gf_AddPlayerGroupToPlayerGroup(gv_team1_teamInfo.lv_fighterGroup, gv_team1_playerGroupInfo.lv_fightersWithNeutral);
-    PlayerGroupAdd(gv_team1_playerGroupInfo.lv_fightersWithNeutral, 13);
     libNtve_gf_AddPlayerGroupToPlayerGroup(gv_team2_teamInfo.lv_fighterGroup, gv_team2_playerGroupInfo.lv_fightersWithNeutral);
     PlayerGroupAdd(gv_team2_playerGroupInfo.lv_fightersWithNeutral, 14);
 }
@@ -2683,7 +2615,6 @@ bool gt_DuringRoleSelection_Func (bool testConds, bool runActions) {
 
     gf_SetRoleForTeam1();
     gf_SetRoleForTeam2();
-    gf_SetFigherGroup();
     gf_SetStartingUnit();
     return true;
 }
