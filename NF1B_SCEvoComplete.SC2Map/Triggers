@@ -18511,7 +18511,7 @@
         <ExpressionParam Type="Param" Id="89681803"/>
     </Element>
     <Element Type="Param" Id="89681803">
-        <Value>-g</Value>
+        <Value>-b</Value>
         <ValueType Type="string"/>
         <ExpressionCode Value="A"/>
     </Element>

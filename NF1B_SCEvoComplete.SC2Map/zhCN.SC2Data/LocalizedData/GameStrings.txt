@@ -98,7 +98,7 @@ Param/Value/CA3F7518=提示: 如果败局已定，运营可以通过直接退出
 Param/Value/CEF41543=0
 Param/Value/E33F8417=0
 Param/Value/E539788E=0
-Param/Value/F4D1DCD3=<c val="ffff8a">-r/-R</c>: 释放单位（运营可以释放星际1王虫、星际1指挥中心和星际2轨道控制中心）<n/><n/><c val="ffff8a">-o</c>: 对运营之前释放的单位重新获取控制（仅限运营使用）<n/><n/><c val="ffff8a">-gg/-GG</c>: 投降（仅限运营使用）<n/><n/><c val="ffff8a">-b <id></c>: 更换运营为指定<id>玩家（仅限运营使用，只能在游戏开始1分钟内使用）<n/><n/><c val="ffff8a">-g</c>: 更换运营为本队伍的随机控兵玩家（仅限运营使用，只能在游戏开始1分钟内使用）
+Param/Value/F4D1DCD3=<c val="ffff8a">-r/-R</c>: 释放单位（运营可以释放星际1王虫、星际1指挥中心和星际2轨道控制中心）<n/><n/><c val="ffff8a">-o</c>: 对运营之前释放的单位重新获取控制（仅限运营使用）<n/><n/><c val="ffff8a">-gg/-GG</c>: 投降（仅限运营使用）<n/><n/><c val="ffff8a">-b <id></c>: 更换运营为指定<id>玩家（仅限运营使用，只能在游戏开始1分钟内使用）<n/><n/><c val="ffff8a">-b</c>: 更换运营为本队伍的随机控兵玩家（仅限运营使用，只能在游戏开始1分钟内使用）
 Param/Value/FD733CCC=<c val="ffff8a">Ctrl+X</c>: 打开玩家面板
 Variant001/ModeDesc=受执政官模式启发的模式
 Variant001/ModeName=N打1造

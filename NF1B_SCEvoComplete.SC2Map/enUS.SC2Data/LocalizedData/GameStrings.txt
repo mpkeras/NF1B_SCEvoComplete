@@ -96,7 +96,7 @@ Param/Value/CF2DDDB5=Your role is <c val="ffff8a">Builder</c>, train units for t
 Param/Value/DA162D42=Debug Commands
 Param/Value/E33F8417=0
 Param/Value/E539788E=0
-Param/Value/F4D1DCD3=<c val="ffff8a">-r</c>: Release units (Builders can release SCBW Overlord, SCBW Command Center and SC2 Orbital Command)<n/><n/><c val="ffff8a">-o</c>: Gain Control on units which were released by builders previously (For builders use only)<n/><n/><c val="ffff8a">-gg</c>: Surrender (For builders use only)<n/><n/><c val="ffff8a">-b <id></c>: Change builder to player <id> (For builders use only. Can only be used within 1 minute of the start of the game)<n/><n/><c val="ffff8a">-g</c>: Change builder to a random player in fighters (For builders use only. Can only be used within 1 minute of the start of the game)
+Param/Value/F4D1DCD3=<c val="ffff8a">-r</c>: Release units (Builders can release SCBW Overlord, SCBW Command Center and SC2 Orbital Command)<n/><n/><c val="ffff8a">-o</c>: Gain Control on units which were released by builders previously (For builders use only)<n/><n/><c val="ffff8a">-gg</c>: Surrender (For builders use only)<n/><n/><c val="ffff8a">-b <id></c>: Change builder to player <id> (For builders use only. Can only be used within 1 minute of the start of the game)<n/><n/><c val="ffff8a">-b</c>: Change builder to a random player in fighters (For builders use only. Can only be used within 1 minute of the start of the game)
 Param/Value/FBEE3EC0=250
 Param/Value/FD733CCC=<c val="ffff8a">Ctrl+X</c>: Open/Close User Panel
 Variant001/ModeDesc=A mode inspired by the Archon Mode.
