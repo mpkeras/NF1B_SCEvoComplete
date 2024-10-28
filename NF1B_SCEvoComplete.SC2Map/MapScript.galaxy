@@ -1039,6 +1039,8 @@ bool auto_gf_SetAlliance_TriggerFunc (bool testConds, bool runActions) {
     }
     libNtve_gf_SetAllianceBetweenTwoPlayerGroups(gv_team1_playerGroupInfo.lv_players, gv_team2_playerGroupInfo.lv_players, libNtve_ge_AllianceSetting_Enemy);
     libNtve_gf_SetAllianceBetweenTwoPlayerGroups(gv_team2_playerGroupInfo.lv_players, gv_team1_playerGroupInfo.lv_players, libNtve_ge_AllianceSetting_Enemy);
+    libNtve_gf_SetAlliance(13, 15, libNtve_ge_AllianceSetting_Enemy);
+    libNtve_gf_SetAlliance(14, 15, libNtve_ge_AllianceSetting_Enemy);
     return true;
 }
 
