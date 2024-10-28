@@ -37,6 +37,7 @@ struct gs_SharedUnit {
     int lv_lair;
     int lv_lurkerDen;
     int lv_greaterSpire;
+    int lv_greaterSpireBW;
     bool lv_motherShip;
     int lv_nuke;
 };
@@ -264,14 +265,14 @@ trigger gt_AddLurkerDen;
 trigger gt_DecLurkerDen;
 trigger gt_AddGreaterSpire;
 trigger gt_DecGreaterSpire;
-trigger gt_AddBWGreaterSpire;
-trigger gt_DecBWGreaterSpire;
+trigger gt_AddGreaterSpireBW;
+trigger gt_DecGreaterSpireBW;
 trigger gt_AddNuke;
 trigger gt_UseNuke;
 trigger gt_TrainGhostComplete;
-trigger gt_AddBWNuke;
-trigger gt_UseBWNuke;
-trigger gt_BWGhostTrainComplete;
+trigger gt_AddNukeBW;
+trigger gt_UseNukeBW;
+trigger gt_TrainGhostBWComplete;
 trigger gt_AddMothership;
 trigger gt_DecMothership;
 trigger gt_BuildNexusComplete;
@@ -4728,9 +4729,9 @@ void gt_DecGreaterSpire_Init () {
 }
 
 //--------------------------------------------------------------------------------------------------
-// Trigger: AddBWGreaterSpire
+// Trigger: AddGreaterSpireBW
 //--------------------------------------------------------------------------------------------------
-bool gt_AddBWGreaterSpire_Func (bool testConds, bool runActions) {
+bool gt_AddGreaterSpireBW_Func (bool testConds, bool runActions) {
     // Automatic Variable Declarations
     playergroup auto7277E04E_g;
     int auto7277E04E_var;
@@ -4743,8 +4744,8 @@ bool gt_AddBWGreaterSpire_Func (bool testConds, bool runActions) {
     }
 
     if ((UnitGetOwner(EventUnit()) == gv_team1_teamInfo.lv_builder)) {
-        gv_team1_sharedUnit.lv_greaterSpire += 1;
-        if ((gv_team1_sharedUnit.lv_greaterSpire == 1)) {
+        gv_team1_sharedUnit.lv_greaterSpireBW += 1;
+        if ((gv_team1_sharedUnit.lv_greaterSpireBW == 1)) {
             auto34FEF6C7_g = gv_team1_playerGroupInfo.lv_fightersWithNeutral;
             auto34FEF6C7_var = -1;
             while (true) {
@@ -4757,8 +4758,8 @@ bool gt_AddBWGreaterSpire_Func (bool testConds, bool runActions) {
 
     }
     else {
-        gv_team2_sharedUnit.lv_greaterSpire += 1;
-        if ((gv_team2_sharedUnit.lv_greaterSpire == 1)) {
+        gv_team2_sharedUnit.lv_greaterSpireBW += 1;
+        if ((gv_team2_sharedUnit.lv_greaterSpireBW == 1)) {
             auto7277E04E_g = gv_team2_playerGroupInfo.lv_fightersWithNeutral;
             auto7277E04E_var = -1;
             while (true) {
@@ -4774,15 +4775,15 @@ bool gt_AddBWGreaterSpire_Func (bool testConds, bool runActions) {
 }
 
 //--------------------------------------------------------------------------------------------------
-void gt_AddBWGreaterSpire_Init () {
-    gt_AddBWGreaterSpire = TriggerCreate("gt_AddBWGreaterSpire_Func");
-    TriggerAddEventUnitAbility(gt_AddBWGreaterSpire, null, AbilityCommand("GreaterSpireSCBW@Morph", 0), c_unitAbilStageComplete, false);
+void gt_AddGreaterSpireBW_Init () {
+    gt_AddGreaterSpireBW = TriggerCreate("gt_AddGreaterSpireBW_Func");
+    TriggerAddEventUnitAbility(gt_AddGreaterSpireBW, null, AbilityCommand("GreaterSpireSCBW@Morph", 0), c_unitAbilStageComplete, false);
 }
 
 //--------------------------------------------------------------------------------------------------
-// Trigger: DecBWGreaterSpire
+// Trigger: DecGreaterSpireBW
 //--------------------------------------------------------------------------------------------------
-bool gt_DecBWGreaterSpire_Func (bool testConds, bool runActions) {
+bool gt_DecGreaterSpireBW_Func (bool testConds, bool runActions) {
     // Automatic Variable Declarations
     playergroup autoCF020829_g;
     int autoCF020829_var;
@@ -4791,7 +4792,7 @@ bool gt_DecBWGreaterSpire_Func (bool testConds, bool runActions) {
 
     // Conditions
     if (testConds) {
-        if (!((UnitGetType(EventUnit()) == "GreaterSpire"))) {
+        if (!((UnitGetType(EventUnit()) == "GreaterSpireSCBW"))) {
             return false;
         }
     }
@@ -4802,8 +4803,8 @@ bool gt_DecBWGreaterSpire_Func (bool testConds, bool runActions) {
     }
 
     if ((UnitGetOwner(EventUnit()) == gv_team1_teamInfo.lv_builder)) {
-        gv_team1_sharedUnit.lv_greaterSpire -= 1;
-        if ((gv_team1_sharedUnit.lv_greaterSpire == 0)) {
+        gv_team1_sharedUnit.lv_greaterSpireBW -= 1;
+        if ((gv_team1_sharedUnit.lv_greaterSpireBW == 0)) {
             auto04EC120C_g = gv_team1_playerGroupInfo.lv_fightersWithNeutral;
             auto04EC120C_var = -1;
             while (true) {
@@ -4816,8 +4817,8 @@ bool gt_DecBWGreaterSpire_Func (bool testConds, bool runActions) {
 
     }
     else {
-        gv_team2_sharedUnit.lv_greaterSpire -= 1;
-        if ((gv_team2_sharedUnit.lv_greaterSpire == 0)) {
+        gv_team2_sharedUnit.lv_greaterSpireBW -= 1;
+        if ((gv_team2_sharedUnit.lv_greaterSpireBW == 0)) {
             autoCF020829_g = gv_team2_playerGroupInfo.lv_fightersWithNeutral;
             autoCF020829_var = -1;
             while (true) {
@@ -4833,9 +4834,9 @@ bool gt_DecBWGreaterSpire_Func (bool testConds, bool runActions) {
 }
 
 //--------------------------------------------------------------------------------------------------
-void gt_DecBWGreaterSpire_Init () {
-    gt_DecBWGreaterSpire = TriggerCreate("gt_DecBWGreaterSpire_Func");
-    TriggerAddEventUnitDied(gt_DecBWGreaterSpire, null);
+void gt_DecGreaterSpireBW_Init () {
+    gt_DecGreaterSpireBW = TriggerCreate("gt_DecGreaterSpireBW_Func");
+    TriggerAddEventUnitDied(gt_DecGreaterSpireBW, null);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -5006,9 +5007,9 @@ void gt_TrainGhostComplete_Init () {
 }
 
 //--------------------------------------------------------------------------------------------------
-// Trigger: AddBWNuke
+// Trigger: AddNukeBW
 //--------------------------------------------------------------------------------------------------
-bool gt_AddBWNuke_Func (bool testConds, bool runActions) {
+bool gt_AddNukeBW_Func (bool testConds, bool runActions) {
     // Variable Declarations
     int lv__player;
     unit lv__unit;
@@ -5057,15 +5058,15 @@ bool gt_AddBWNuke_Func (bool testConds, bool runActions) {
 }
 
 //--------------------------------------------------------------------------------------------------
-void gt_AddBWNuke_Init () {
-    gt_AddBWNuke = TriggerCreate("gt_AddBWNuke_Func");
-    TriggerAddEventUnitArmMagazineProgress(gt_AddBWNuke, null, c_unitProgressStageComplete);
+void gt_AddNukeBW_Init () {
+    gt_AddNukeBW = TriggerCreate("gt_AddNukeBW_Func");
+    TriggerAddEventUnitArmMagazineProgress(gt_AddNukeBW, null, c_unitProgressStageComplete);
 }
 
 //--------------------------------------------------------------------------------------------------
-// Trigger: UseBWNuke
+// Trigger: UseNukeBW
 //--------------------------------------------------------------------------------------------------
-bool gt_UseBWNuke_Func (bool testConds, bool runActions) {
+bool gt_UseNukeBW_Func (bool testConds, bool runActions) {
     // Variable Declarations
     unit lv__unit;
     int lv__triggeringPlayer;
@@ -5118,15 +5119,15 @@ bool gt_UseBWNuke_Func (bool testConds, bool runActions) {
 }
 
 //--------------------------------------------------------------------------------------------------
-void gt_UseBWNuke_Init () {
-    gt_UseBWNuke = TriggerCreate("gt_UseBWNuke_Func");
-    TriggerAddEventUnitAbility(gt_UseBWNuke, null, AbilityCommand("GhostSCBWNuclearStrike", 0), c_abilEffectStageCast, false);
+void gt_UseNukeBW_Init () {
+    gt_UseNukeBW = TriggerCreate("gt_UseNukeBW_Func");
+    TriggerAddEventUnitAbility(gt_UseNukeBW, null, AbilityCommand("GhostSCBWNuclearStrike", 0), c_abilEffectStageCast, false);
 }
 
 //--------------------------------------------------------------------------------------------------
-// Trigger: BWGhostTrainComplete
+// Trigger: TrainGhostBWComplete
 //--------------------------------------------------------------------------------------------------
-bool gt_BWGhostTrainComplete_Func (bool testConds, bool runActions) {
+bool gt_TrainGhostBWComplete_Func (bool testConds, bool runActions) {
     // Variable Declarations
     int lv__chargeCount;
     unit lv__ghost;
@@ -5167,9 +5168,9 @@ bool gt_BWGhostTrainComplete_Func (bool testConds, bool runActions) {
 }
 
 //--------------------------------------------------------------------------------------------------
-void gt_BWGhostTrainComplete_Init () {
-    gt_BWGhostTrainComplete = TriggerCreate("gt_BWGhostTrainComplete_Func");
-    TriggerAddEventUnitTrainProgress(gt_BWGhostTrainComplete, null, c_unitProgressStageComplete);
+void gt_TrainGhostBWComplete_Init () {
+    gt_TrainGhostBWComplete = TriggerCreate("gt_TrainGhostBWComplete_Func");
+    TriggerAddEventUnitTrainProgress(gt_TrainGhostBWComplete, null, c_unitProgressStageComplete);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -5786,14 +5787,14 @@ void InitTriggers () {
     gt_DecLurkerDen_Init();
     gt_AddGreaterSpire_Init();
     gt_DecGreaterSpire_Init();
-    gt_AddBWGreaterSpire_Init();
-    gt_DecBWGreaterSpire_Init();
+    gt_AddGreaterSpireBW_Init();
+    gt_DecGreaterSpireBW_Init();
     gt_AddNuke_Init();
     gt_UseNuke_Init();
     gt_TrainGhostComplete_Init();
-    gt_AddBWNuke_Init();
-    gt_UseBWNuke_Init();
-    gt_BWGhostTrainComplete_Init();
+    gt_AddNukeBW_Init();
+    gt_UseNukeBW_Init();
+    gt_TrainGhostBWComplete_Init();
     gt_AddMothership_Init();
     gt_DecMothership_Init();
     gt_BuildNexusComplete_Init();
