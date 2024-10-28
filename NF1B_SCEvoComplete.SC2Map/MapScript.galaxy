@@ -42,6 +42,11 @@ struct gs_SharedUnit {
     int lv_nuke;
 };
 
+struct gs_UnitGroup {
+    unitgroup lv_ghostGroup;
+    unitgroup lv_nexusGroup;
+};
+
 struct gs_TeamInfo {
     int lv_userNum;
     int lv_fighterNum;
@@ -55,8 +60,6 @@ struct gs_TeamInfo {
     fixed lv_supplyUsed;
     int lv_mineralText;
     int lv_vespeneText;
-    unitgroup lv_ghostGroup;
-    unitgroup lv_nexusGroup;
 };
 
 struct gs_PlayerGroupInfo {
@@ -90,6 +93,8 @@ gs_TeamMode gv_team1_teamMode;
 gs_TeamMode gv_team2_teamMode;
 gs_SharedUnit gv_team1_sharedUnit;
 gs_SharedUnit gv_team2_sharedUnit;
+gs_UnitGroup gv_team1_unitGroup;
+gs_UnitGroup gv_team2_unitGroup;
 gs_TeamInfo gv_team1_teamInfo;
 gs_TeamInfo gv_team2_teamInfo;
 gs_PlayerGroupInfo gv_team1_playerGroupInfo;
@@ -109,18 +114,18 @@ void InitGlobals () {
     gv_timer = TimerCreate();
     gv_team1_teamMode.lv_fighterMode = ge_FighterMode_NF1B;
     gv_team2_teamMode.lv_fighterMode = ge_FighterMode_NF1B;
+    gv_team1_unitGroup.lv_ghostGroup = UnitGroupEmpty();
+    gv_team1_unitGroup.lv_nexusGroup = UnitGroupEmpty();
+    gv_team2_unitGroup.lv_ghostGroup = UnitGroupEmpty();
+    gv_team2_unitGroup.lv_nexusGroup = UnitGroupEmpty();
     gv_team1_teamInfo.lv_fighterGroup = PlayerGroupEmpty();
     gv_team1_teamInfo.lv_color = Color(100,100,100);
     gv_team1_teamInfo.lv_mineralText = c_invalidDialogControlId;
     gv_team1_teamInfo.lv_vespeneText = c_invalidDialogControlId;
-    gv_team1_teamInfo.lv_ghostGroup = UnitGroupEmpty();
-    gv_team1_teamInfo.lv_nexusGroup = UnitGroupEmpty();
     gv_team2_teamInfo.lv_fighterGroup = PlayerGroupEmpty();
     gv_team2_teamInfo.lv_color = Color(100,100,100);
     gv_team2_teamInfo.lv_mineralText = c_invalidDialogControlId;
     gv_team2_teamInfo.lv_vespeneText = c_invalidDialogControlId;
-    gv_team2_teamInfo.lv_ghostGroup = UnitGroupEmpty();
-    gv_team2_teamInfo.lv_nexusGroup = UnitGroupEmpty();
     gv_team1_playerGroupInfo.lv_users = PlayerGroupEmpty();
     gv_team1_playerGroupInfo.lv_players = PlayerGroupEmpty();
     gv_team1_playerGroupInfo.lv_fightersWithNeutral = PlayerGroupEmpty();
@@ -267,15 +272,15 @@ trigger gt_AddGreaterSpire;
 trigger gt_DecGreaterSpire;
 trigger gt_AddGreaterSpireBW;
 trigger gt_DecGreaterSpireBW;
+trigger gt_TrainGhostComplete;
 trigger gt_AddNuke;
 trigger gt_UseNuke;
-trigger gt_TrainGhostComplete;
+trigger gt_TrainGhostBWComplete;
 trigger gt_AddNukeBW;
 trigger gt_UseNukeBW;
-trigger gt_TrainGhostBWComplete;
+trigger gt_BuildNexusComplete;
 trigger gt_AddMothership;
 trigger gt_DecMothership;
-trigger gt_BuildNexusComplete;
 trigger gt_ReleaseByBuilderCommand;
 trigger gt_ReleaseByFighterCommand;
 trigger gt_ReleaseAfterTrain;
@@ -965,14 +970,14 @@ bool auto_gf_InitNexusGroup_TriggerFunc (bool testConds, bool runActions) {
     for (;; autoF3E6B359_u -= 1) {
         autoF3E6B359_var = UnitGroupUnitFromEnd(autoF3E6B359_g, autoF3E6B359_u);
         if (autoF3E6B359_var == null) { break; }
-        UnitGroupAdd(gv_team1_teamInfo.lv_nexusGroup, autoF3E6B359_var);
+        UnitGroupAdd(gv_team1_unitGroup.lv_nexusGroup, autoF3E6B359_var);
     }
     auto5FFCC421_g = UnitGroup("Nexus", gv_team2_teamInfo.lv_builder, RegionEntireMap(), UnitFilter(0, 0, (1 << c_targetFilterMissile), (1 << (c_targetFilterDead - 32)) | (1 << (c_targetFilterHidden - 32))), 0);
     auto5FFCC421_u = UnitGroupCount(auto5FFCC421_g, c_unitCountAll);
     for (;; auto5FFCC421_u -= 1) {
         auto5FFCC421_var = UnitGroupUnitFromEnd(auto5FFCC421_g, auto5FFCC421_u);
         if (auto5FFCC421_var == null) { break; }
-        UnitGroupAdd(gv_team2_teamInfo.lv_nexusGroup, auto5FFCC421_var);
+        UnitGroupAdd(gv_team2_unitGroup.lv_nexusGroup, auto5FFCC421_var);
     }
     return true;
 }
@@ -4840,6 +4845,55 @@ void gt_DecGreaterSpireBW_Init () {
 }
 
 //--------------------------------------------------------------------------------------------------
+// Trigger: TrainGhostComplete
+//--------------------------------------------------------------------------------------------------
+bool gt_TrainGhostComplete_Func (bool testConds, bool runActions) {
+    // Variable Declarations
+    int lv__chargeCount;
+    unit lv__ghost;
+
+    // Automatic Variable Declarations
+    // Variable Initialization
+
+    // Conditions
+    if (testConds) {
+        if (!(((libNtve_gf_TriggeringProgressUnitType() == "Ghost") || (libNtve_gf_TriggeringProgressUnitType() == "GhostAlternate") || (libNtve_gf_TriggeringProgressUnitType() == "GhostNova")))) {
+            return false;
+        }
+    }
+
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    lv__ghost = EventUnitProgressUnit();
+    if ((UnitGetOwner(EventUnit()) == gv_team1_teamInfo.lv_builder)) {
+        UnitGroupAdd(gv_team1_unitGroup.lv_ghostGroup, lv__ghost);
+        if ((gv_team1_sharedUnit.lv_nuke >= 1)) {
+            lv__chargeCount -= gv_team1_sharedUnit.lv_nuke;
+            UnitAbilityAddChargeUsed(lv__ghost, "TacNukeStrike", "Abil/TacNukeStrike", lv__chargeCount);
+        }
+
+    }
+    else {
+        UnitGroupAdd(gv_team2_unitGroup.lv_ghostGroup, lv__ghost);
+        if ((gv_team2_sharedUnit.lv_nuke >= 1)) {
+            lv__chargeCount -= gv_team2_sharedUnit.lv_nuke;
+            UnitAbilityAddChargeUsed(lv__ghost, "TacNukeStrike", "Abil/TacNukeStrike", lv__chargeCount);
+        }
+
+    }
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void gt_TrainGhostComplete_Init () {
+    gt_TrainGhostComplete = TriggerCreate("gt_TrainGhostComplete_Func");
+    TriggerAddEventUnitTrainProgress(gt_TrainGhostComplete, null, c_unitProgressStageComplete);
+}
+
+//--------------------------------------------------------------------------------------------------
 // Trigger: AddNuke
 //--------------------------------------------------------------------------------------------------
 bool gt_AddNuke_Func (bool testConds, bool runActions) {
@@ -4869,7 +4923,7 @@ bool gt_AddNuke_Func (bool testConds, bool runActions) {
 
     if ((UnitGetOwner(EventUnit()) == gv_team1_teamInfo.lv_builder)) {
         gv_team1_sharedUnit.lv_nuke += 1;
-        auto9D32BF0A_g = gv_team1_teamInfo.lv_ghostGroup;
+        auto9D32BF0A_g = gv_team1_unitGroup.lv_ghostGroup;
         auto9D32BF0A_u = UnitGroupCount(auto9D32BF0A_g, c_unitCountAll);
         for (;; auto9D32BF0A_u -= 1) {
             lv__unit = UnitGroupUnitFromEnd(auto9D32BF0A_g, auto9D32BF0A_u);
@@ -4879,7 +4933,7 @@ bool gt_AddNuke_Func (bool testConds, bool runActions) {
     }
     else {
         gv_team2_sharedUnit.lv_nuke += 1;
-        autoDC8435F9_g = gv_team2_teamInfo.lv_ghostGroup;
+        autoDC8435F9_g = gv_team2_unitGroup.lv_ghostGroup;
         autoDC8435F9_u = UnitGroupCount(autoDC8435F9_g, c_unitCountAll);
         for (;; autoDC8435F9_u -= 1) {
             lv__unit = UnitGroupUnitFromEnd(autoDC8435F9_g, autoDC8435F9_u);
@@ -4923,7 +4977,7 @@ bool gt_UseNuke_Func (bool testConds, bool runActions) {
     if (((PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_fightersWithNeutral, lv__triggeringPlayer) == true))) {
         gv_team1_sharedUnit.lv_nuke -= 1;
         PlayerCreateEffectPoint(gv_team1_teamInfo.lv_builder, "NukeNF1B", Point(0.0, 0.0));
-        autoA880A39A_g = gv_team1_teamInfo.lv_ghostGroup;
+        autoA880A39A_g = gv_team1_unitGroup.lv_ghostGroup;
         autoA880A39A_u = UnitGroupCount(autoA880A39A_g, c_unitCountAll);
         for (;; autoA880A39A_u -= 1) {
             lv__unit = UnitGroupUnitFromEnd(autoA880A39A_g, autoA880A39A_u);
@@ -4937,7 +4991,7 @@ bool gt_UseNuke_Func (bool testConds, bool runActions) {
     else {
         gv_team2_sharedUnit.lv_nuke -= 1;
         PlayerCreateEffectPoint(gv_team2_teamInfo.lv_builder, "NukeNF1B", Point(0.0, 0.0));
-        autoB73DD721_g = gv_team2_teamInfo.lv_ghostGroup;
+        autoB73DD721_g = gv_team2_unitGroup.lv_ghostGroup;
         autoB73DD721_u = UnitGroupCount(autoB73DD721_g, c_unitCountAll);
         for (;; autoB73DD721_u -= 1) {
             lv__unit = UnitGroupUnitFromEnd(autoB73DD721_g, autoB73DD721_u);
@@ -4958,9 +5012,9 @@ void gt_UseNuke_Init () {
 }
 
 //--------------------------------------------------------------------------------------------------
-// Trigger: TrainGhostComplete
+// Trigger: TrainGhostBWComplete
 //--------------------------------------------------------------------------------------------------
-bool gt_TrainGhostComplete_Func (bool testConds, bool runActions) {
+bool gt_TrainGhostBWComplete_Func (bool testConds, bool runActions) {
     // Variable Declarations
     int lv__chargeCount;
     unit lv__ghost;
@@ -4970,7 +5024,7 @@ bool gt_TrainGhostComplete_Func (bool testConds, bool runActions) {
 
     // Conditions
     if (testConds) {
-        if (!(((libNtve_gf_TriggeringProgressUnitType() == "Ghost") || (libNtve_gf_TriggeringProgressUnitType() == "GhostAlternate") || (libNtve_gf_TriggeringProgressUnitType() == "GhostNova")))) {
+        if (!((libNtve_gf_TriggeringProgressUnitType() == "GhostSCBW"))) {
             return false;
         }
     }
@@ -4982,18 +5036,18 @@ bool gt_TrainGhostComplete_Func (bool testConds, bool runActions) {
 
     lv__ghost = EventUnitProgressUnit();
     if ((UnitGetOwner(EventUnit()) == gv_team1_teamInfo.lv_builder)) {
-        UnitGroupAdd(gv_team1_teamInfo.lv_ghostGroup, lv__ghost);
+        UnitGroupAdd(gv_team1_unitGroup.lv_ghostGroup, lv__ghost);
         if ((gv_team1_sharedUnit.lv_nuke >= 1)) {
             lv__chargeCount -= gv_team1_sharedUnit.lv_nuke;
-            UnitAbilityAddChargeUsed(lv__ghost, "TacNukeStrike", "Abil/TacNukeStrike", lv__chargeCount);
+            UnitAbilityAddChargeUsed(lv__ghost, "GhostSCBWNuclearStrike", "Abil/GhostSCBWNuclearStrike", lv__chargeCount);
         }
 
     }
     else {
-        UnitGroupAdd(gv_team2_teamInfo.lv_ghostGroup, lv__ghost);
+        UnitGroupAdd(gv_team2_unitGroup.lv_ghostGroup, lv__ghost);
         if ((gv_team2_sharedUnit.lv_nuke >= 1)) {
             lv__chargeCount -= gv_team2_sharedUnit.lv_nuke;
-            UnitAbilityAddChargeUsed(lv__ghost, "TacNukeStrike", "Abil/TacNukeStrike", lv__chargeCount);
+            UnitAbilityAddChargeUsed(lv__ghost, "GhostSCBWNuclearStrike", "Abil/GhostSCBWNuclearStrike", lv__chargeCount);
         }
 
     }
@@ -5001,9 +5055,9 @@ bool gt_TrainGhostComplete_Func (bool testConds, bool runActions) {
 }
 
 //--------------------------------------------------------------------------------------------------
-void gt_TrainGhostComplete_Init () {
-    gt_TrainGhostComplete = TriggerCreate("gt_TrainGhostComplete_Func");
-    TriggerAddEventUnitTrainProgress(gt_TrainGhostComplete, null, c_unitProgressStageComplete);
+void gt_TrainGhostBWComplete_Init () {
+    gt_TrainGhostBWComplete = TriggerCreate("gt_TrainGhostBWComplete_Func");
+    TriggerAddEventUnitTrainProgress(gt_TrainGhostBWComplete, null, c_unitProgressStageComplete);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -5036,7 +5090,7 @@ bool gt_AddNukeBW_Func (bool testConds, bool runActions) {
 
     if ((UnitGetOwner(EventUnit()) == gv_team1_teamInfo.lv_builder)) {
         gv_team1_sharedUnit.lv_nuke += 1;
-        auto20B3AADA_g = gv_team1_teamInfo.lv_ghostGroup;
+        auto20B3AADA_g = gv_team1_unitGroup.lv_ghostGroup;
         auto20B3AADA_u = UnitGroupCount(auto20B3AADA_g, c_unitCountAll);
         for (;; auto20B3AADA_u -= 1) {
             lv__unit = UnitGroupUnitFromEnd(auto20B3AADA_g, auto20B3AADA_u);
@@ -5046,7 +5100,7 @@ bool gt_AddNukeBW_Func (bool testConds, bool runActions) {
     }
     else {
         gv_team2_sharedUnit.lv_nuke += 1;
-        autoC2BB5654_g = gv_team2_teamInfo.lv_ghostGroup;
+        autoC2BB5654_g = gv_team2_unitGroup.lv_ghostGroup;
         autoC2BB5654_u = UnitGroupCount(autoC2BB5654_g, c_unitCountAll);
         for (;; autoC2BB5654_u -= 1) {
             lv__unit = UnitGroupUnitFromEnd(autoC2BB5654_g, autoC2BB5654_u);
@@ -5090,7 +5144,7 @@ bool gt_UseNukeBW_Func (bool testConds, bool runActions) {
     if (((PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_fightersWithNeutral, lv__triggeringPlayer) == true))) {
         gv_team1_sharedUnit.lv_nuke -= 1;
         PlayerCreateEffectPoint(gv_team1_teamInfo.lv_builder, "GhostSCBWNuclearStrike@CalldownDummyNF1B", Point(0.0, 0.0));
-        auto26360F9A_g = gv_team1_teamInfo.lv_ghostGroup;
+        auto26360F9A_g = gv_team1_unitGroup.lv_ghostGroup;
         auto26360F9A_u = UnitGroupCount(auto26360F9A_g, c_unitCountAll);
         for (;; auto26360F9A_u -= 1) {
             lv__unit = UnitGroupUnitFromEnd(auto26360F9A_g, auto26360F9A_u);
@@ -5104,7 +5158,7 @@ bool gt_UseNukeBW_Func (bool testConds, bool runActions) {
     else {
         gv_team2_sharedUnit.lv_nuke -= 1;
         PlayerCreateEffectPoint(gv_team2_teamInfo.lv_builder, "GhostSCBWNuclearStrike@CalldownDummyNF1B", Point(0.0, 0.0));
-        autoD1A42AF3_g = gv_team2_teamInfo.lv_ghostGroup;
+        autoD1A42AF3_g = gv_team2_unitGroup.lv_ghostGroup;
         autoD1A42AF3_u = UnitGroupCount(autoD1A42AF3_g, c_unitCountAll);
         for (;; autoD1A42AF3_u -= 1) {
             lv__unit = UnitGroupUnitFromEnd(autoD1A42AF3_g, autoD1A42AF3_u);
@@ -5125,19 +5179,18 @@ void gt_UseNukeBW_Init () {
 }
 
 //--------------------------------------------------------------------------------------------------
-// Trigger: TrainGhostBWComplete
+// Trigger: BuildNexusComplete
 //--------------------------------------------------------------------------------------------------
-bool gt_TrainGhostBWComplete_Func (bool testConds, bool runActions) {
+bool gt_BuildNexusComplete_Func (bool testConds, bool runActions) {
     // Variable Declarations
-    int lv__chargeCount;
-    unit lv__ghost;
+    unit lv__nexus;
 
     // Automatic Variable Declarations
     // Variable Initialization
 
     // Conditions
     if (testConds) {
-        if (!((libNtve_gf_TriggeringProgressUnitType() == "GhostSCBW"))) {
+        if (!((libNtve_gf_TriggeringProgressUnitType() == "Nexus"))) {
             return false;
         }
     }
@@ -5147,30 +5200,30 @@ bool gt_TrainGhostBWComplete_Func (bool testConds, bool runActions) {
         return true;
     }
 
-    lv__ghost = EventUnitProgressUnit();
-    if ((UnitGetOwner(EventUnit()) == gv_team1_teamInfo.lv_builder)) {
-        UnitGroupAdd(gv_team1_teamInfo.lv_ghostGroup, lv__ghost);
-        if ((gv_team1_sharedUnit.lv_nuke >= 1)) {
-            lv__chargeCount -= gv_team1_sharedUnit.lv_nuke;
-            UnitAbilityAddChargeUsed(lv__ghost, "GhostSCBWNuclearStrike", "Abil/GhostSCBWNuclearStrike", lv__chargeCount);
+    lv__nexus = EventUnitProgressUnit();
+    if ((UnitGetOwner(lv__nexus) == gv_team1_teamInfo.lv_builder)) {
+        UnitGroupAdd(gv_team1_unitGroup.lv_nexusGroup, lv__nexus);
+        if ((gv_team1_sharedUnit.lv_motherShip == true)) {
+            UnitAbilityEnable(lv__nexus, "NexusTrainMothership", false);
         }
 
     }
-    else {
-        UnitGroupAdd(gv_team2_teamInfo.lv_ghostGroup, lv__ghost);
-        if ((gv_team2_sharedUnit.lv_nuke >= 1)) {
-            lv__chargeCount -= gv_team2_sharedUnit.lv_nuke;
-            UnitAbilityAddChargeUsed(lv__ghost, "GhostSCBWNuclearStrike", "Abil/GhostSCBWNuclearStrike", lv__chargeCount);
+
+    if ((UnitGetOwner(lv__nexus) == gv_team2_teamInfo.lv_builder)) {
+        UnitGroupAdd(gv_team2_unitGroup.lv_nexusGroup, lv__nexus);
+        if ((gv_team2_sharedUnit.lv_motherShip == true)) {
+            UnitAbilityEnable(lv__nexus, "NexusTrainMothership", false);
         }
 
     }
+
     return true;
 }
 
 //--------------------------------------------------------------------------------------------------
-void gt_TrainGhostBWComplete_Init () {
-    gt_TrainGhostBWComplete = TriggerCreate("gt_TrainGhostBWComplete_Func");
-    TriggerAddEventUnitTrainProgress(gt_TrainGhostBWComplete, null, c_unitProgressStageComplete);
+void gt_BuildNexusComplete_Init () {
+    gt_BuildNexusComplete = TriggerCreate("gt_BuildNexusComplete_Func");
+    TriggerAddEventUnitConstructProgress(gt_BuildNexusComplete, null, c_unitProgressStageComplete);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -5192,7 +5245,7 @@ bool gt_AddMothership_Func (bool testConds, bool runActions) {
 
     if ((UnitGetOwner(EventUnit()) == gv_team1_teamInfo.lv_builder)) {
         gv_team1_sharedUnit.lv_motherShip = true;
-        autoECCBBFF2_g = gv_team1_teamInfo.lv_nexusGroup;
+        autoECCBBFF2_g = gv_team1_unitGroup.lv_nexusGroup;
         autoECCBBFF2_u = UnitGroupCount(autoECCBBFF2_g, c_unitCountAll);
         for (;; autoECCBBFF2_u -= 1) {
             autoECCBBFF2_var = UnitGroupUnitFromEnd(autoECCBBFF2_g, autoECCBBFF2_u);
@@ -5202,7 +5255,7 @@ bool gt_AddMothership_Func (bool testConds, bool runActions) {
     }
     else {
         gv_team2_sharedUnit.lv_motherShip = true;
-        autoD130C590_g = gv_team2_teamInfo.lv_nexusGroup;
+        autoD130C590_g = gv_team2_unitGroup.lv_nexusGroup;
         autoD130C590_u = UnitGroupCount(autoD130C590_g, c_unitCountAll);
         for (;; autoD130C590_u -= 1) {
             autoD130C590_var = UnitGroupUnitFromEnd(autoD130C590_g, autoD130C590_u);
@@ -5245,7 +5298,7 @@ bool gt_DecMothership_Func (bool testConds, bool runActions) {
 
     if ((PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_players, UnitGetOwner(EventUnit())) == true)) {
         gv_team1_sharedUnit.lv_motherShip = false;
-        autoAFB89D52_g = gv_team1_teamInfo.lv_nexusGroup;
+        autoAFB89D52_g = gv_team1_unitGroup.lv_nexusGroup;
         autoAFB89D52_u = UnitGroupCount(autoAFB89D52_g, c_unitCountAll);
         for (;; autoAFB89D52_u -= 1) {
             autoAFB89D52_var = UnitGroupUnitFromEnd(autoAFB89D52_g, autoAFB89D52_u);
@@ -5255,7 +5308,7 @@ bool gt_DecMothership_Func (bool testConds, bool runActions) {
     }
     else {
         gv_team2_sharedUnit.lv_motherShip = false;
-        auto5E3AEF13_g = gv_team2_teamInfo.lv_nexusGroup;
+        auto5E3AEF13_g = gv_team2_unitGroup.lv_nexusGroup;
         auto5E3AEF13_u = UnitGroupCount(auto5E3AEF13_g, c_unitCountAll);
         for (;; auto5E3AEF13_u -= 1) {
             auto5E3AEF13_var = UnitGroupUnitFromEnd(auto5E3AEF13_g, auto5E3AEF13_u);
@@ -5270,54 +5323,6 @@ bool gt_DecMothership_Func (bool testConds, bool runActions) {
 void gt_DecMothership_Init () {
     gt_DecMothership = TriggerCreate("gt_DecMothership_Func");
     TriggerAddEventUnitDied(gt_DecMothership, null);
-}
-
-//--------------------------------------------------------------------------------------------------
-// Trigger: BuildNexusComplete
-//--------------------------------------------------------------------------------------------------
-bool gt_BuildNexusComplete_Func (bool testConds, bool runActions) {
-    // Variable Declarations
-    unit lv__nexus;
-
-    // Automatic Variable Declarations
-    // Variable Initialization
-
-    // Conditions
-    if (testConds) {
-        if (!((libNtve_gf_TriggeringProgressUnitType() == "Nexus"))) {
-            return false;
-        }
-    }
-
-    // Actions
-    if (!runActions) {
-        return true;
-    }
-
-    lv__nexus = EventUnitProgressUnit();
-    if ((UnitGetOwner(lv__nexus) == gv_team1_teamInfo.lv_builder)) {
-        UnitGroupAdd(gv_team1_teamInfo.lv_nexusGroup, lv__nexus);
-        if ((gv_team1_sharedUnit.lv_motherShip == true)) {
-            UnitAbilityEnable(lv__nexus, "NexusTrainMothership", false);
-        }
-
-    }
-
-    if ((UnitGetOwner(lv__nexus) == gv_team2_teamInfo.lv_builder)) {
-        UnitGroupAdd(gv_team2_teamInfo.lv_nexusGroup, lv__nexus);
-        if ((gv_team2_sharedUnit.lv_motherShip == true)) {
-            UnitAbilityEnable(lv__nexus, "NexusTrainMothership", false);
-        }
-
-    }
-
-    return true;
-}
-
-//--------------------------------------------------------------------------------------------------
-void gt_BuildNexusComplete_Init () {
-    gt_BuildNexusComplete = TriggerCreate("gt_BuildNexusComplete_Func");
-    TriggerAddEventUnitConstructProgress(gt_BuildNexusComplete, null, c_unitProgressStageComplete);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -5789,15 +5794,15 @@ void InitTriggers () {
     gt_DecGreaterSpire_Init();
     gt_AddGreaterSpireBW_Init();
     gt_DecGreaterSpireBW_Init();
+    gt_TrainGhostComplete_Init();
     gt_AddNuke_Init();
     gt_UseNuke_Init();
-    gt_TrainGhostComplete_Init();
+    gt_TrainGhostBWComplete_Init();
     gt_AddNukeBW_Init();
     gt_UseNukeBW_Init();
-    gt_TrainGhostBWComplete_Init();
+    gt_BuildNexusComplete_Init();
     gt_AddMothership_Init();
     gt_DecMothership_Init();
-    gt_BuildNexusComplete_Init();
     gt_ReleaseByBuilderCommand_Init();
     gt_ReleaseByFighterCommand_Init();
     gt_ReleaseAfterTrain_Init();
