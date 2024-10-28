@@ -76,6 +76,7 @@ MapInfo/Team05/Name=2v2 top
 Param/Value/047E93E7=提示: 如果你的种族是星际2虫族，运营需要按两次S键（默认为S）来选择需要二阶段变异的单位。
 Param/Value/194069C0=热键
 Param/Value/2AB137AB=你的角色是<c val="ffff8a">控兵</c>，控制单位在战场上打赢敌人。
+Param/Value/393D2373=Detecting only one human player. Debug mode on.
 Param/Value/3C5BF2EE=你的角色是<c val="ffff8a">运营</c>，为控兵训练单位。
 Param/Value/3D947A37=The MIT License (MIT)<n/><n/>Copyright (c) 2016 Abraham Yunes<n/><n/>Permission is hereby granted, free of charge, to any person obtaining a copy<n/>of this software and associated documentation files (the "Software"), to deal<n/>in the Software without restriction, including without limitation the rights<n/>to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<n/>copies of the Software, and to permit persons to whom the Software is<n/>furnished to do so, subject to the following conditions:<n/><n/>The above copyright notice and this permission notice shall be included in all<n/>copies or substantial portions of the Software.<n/><n/>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<n/>IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<n/>FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<n/>AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<n/>LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<n/>OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<n/>SOFTWARE.
 Param/Value/5698279A=提示: 补给上限为400。
