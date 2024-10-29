@@ -62,7 +62,13 @@ struct gs_TeamInfo {
     int lv_vespeneText;
 };
 
-struct gs_PlayerGroupInfo {
+struct gs_PlayerProperty {
+    int lv_team;
+    int lv_role;
+    bool lv_hadBeenBuilder;
+};
+
+struct gs_PlayerGroup {
     playergroup lv_users;
     playergroup lv_players;
     playergroup lv_fightersWithNeutral;
@@ -97,14 +103,17 @@ gs_UnitGroup gv_team1_unitGroup;
 gs_UnitGroup gv_team2_unitGroup;
 gs_TeamInfo gv_team1_teamInfo;
 gs_TeamInfo gv_team2_teamInfo;
-gs_PlayerGroupInfo gv_team1_playerGroupInfo;
-gs_PlayerGroupInfo gv_team2_playerGroupInfo;
+gs_PlayerProperty[15] gv_playerProperty;
+gs_PlayerGroup gv_team1_playerGroup;
+gs_PlayerGroup gv_team2_playerGroup;
 int gv_racePanel;
 int gv_team1_resourcePanel;
 int gv_team2_resourcePanel;
 int gv_pv_releaseToChangeOwner;
 
 void InitGlobals () {
+    int init_i;
+
     gv_uiShowed = true;
     gv_userInfoPanel = c_invalidDialogId;
     gv_team1_UI.lv_builderIcon = c_invalidDialogControlId;
@@ -126,12 +135,15 @@ void InitGlobals () {
     gv_team2_teamInfo.lv_color = Color(100,100,100);
     gv_team2_teamInfo.lv_mineralText = c_invalidDialogControlId;
     gv_team2_teamInfo.lv_vespeneText = c_invalidDialogControlId;
-    gv_team1_playerGroupInfo.lv_users = PlayerGroupEmpty();
-    gv_team1_playerGroupInfo.lv_players = PlayerGroupEmpty();
-    gv_team1_playerGroupInfo.lv_fightersWithNeutral = PlayerGroupEmpty();
-    gv_team2_playerGroupInfo.lv_users = PlayerGroupEmpty();
-    gv_team2_playerGroupInfo.lv_players = PlayerGroupEmpty();
-    gv_team2_playerGroupInfo.lv_fightersWithNeutral = PlayerGroupEmpty();
+    for (init_i = 0; init_i <= 14; init_i += 1) {
+        gv_playerProperty[init_i].lv_role = ge_Role_Fighter;
+    }
+    gv_team1_playerGroup.lv_users = PlayerGroupEmpty();
+    gv_team1_playerGroup.lv_players = PlayerGroupEmpty();
+    gv_team1_playerGroup.lv_fightersWithNeutral = PlayerGroupEmpty();
+    gv_team2_playerGroup.lv_users = PlayerGroupEmpty();
+    gv_team2_playerGroup.lv_players = PlayerGroupEmpty();
+    gv_team2_playerGroup.lv_fightersWithNeutral = PlayerGroupEmpty();
     gv_racePanel = c_invalidDialogId;
     gv_team1_resourcePanel = c_invalidDialogId;
     gv_team2_resourcePanel = c_invalidDialogId;
@@ -169,6 +181,7 @@ void gf_SetStartingUnit ();
 void gf_SetUI ();
 void gf_SetFighterMode ();
 void gf_SetMeleeOptions ();
+void gf_SetPlayerProperty ();
 void gf_InitNexusGroup ();
 void gf_SetResource ();
 void gf_SetAlliance ();
@@ -402,7 +415,7 @@ bool gf_IsCanReleaseByBuilderUnitType (unit lp_unit) {
 int gf_GetTeamOfPlayer (int lp_player) {
     // Automatic Variable Declarations
     // Implementation
-    if ((PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_players, lp_player) == true)) {
+    if ((PlayerGroupHasPlayer(gv_team1_playerGroup.lv_players, lp_player) == true)) {
         return 1;
     }
     else {
@@ -674,24 +687,46 @@ void gf_SetSingleMultiPlayerMode () {
 }
 
 void gf_SetPlayerGroup () {
+    // Variable Declarations
+    int lv__player;
+
     // Automatic Variable Declarations
+    playergroup auto80095435_g;
+    playergroup auto575BAC2B_g;
+
+    // Variable Initialization
+
     // Implementation
     if ((gv_debug == true)) {
-        PlayerGroupAdd(gv_team1_playerGroupInfo.lv_users, 1);
-        PlayerGroupAdd(gv_team1_playerGroupInfo.lv_users, 2);
-        PlayerGroupAdd(gv_team1_playerGroupInfo.lv_users, 3);
-        PlayerGroupAdd(gv_team2_playerGroupInfo.lv_users, 4);
-        PlayerGroupAdd(gv_team2_playerGroupInfo.lv_users, 5);
-        PlayerGroupAdd(gv_team2_playerGroupInfo.lv_users, 6);
+        PlayerGroupAdd(gv_team1_playerGroup.lv_users, 1);
+        PlayerGroupAdd(gv_team1_playerGroup.lv_users, 2);
+        PlayerGroupAdd(gv_team1_playerGroup.lv_users, 3);
+        PlayerGroupAdd(gv_team2_playerGroup.lv_users, 4);
+        PlayerGroupAdd(gv_team2_playerGroup.lv_users, 5);
+        PlayerGroupAdd(gv_team2_playerGroup.lv_users, 6);
     }
     else {
-        libNtve_gf_AddPlayerGroupToPlayerGroup(GameAttributePlayersForTeam(1), gv_team1_playerGroupInfo.lv_users);
-        libNtve_gf_AddPlayerGroupToPlayerGroup(GameAttributePlayersForTeam(2), gv_team2_playerGroupInfo.lv_users);
+        libNtve_gf_AddPlayerGroupToPlayerGroup(GameAttributePlayersForTeam(1), gv_team1_playerGroup.lv_users);
+        libNtve_gf_AddPlayerGroupToPlayerGroup(GameAttributePlayersForTeam(2), gv_team2_playerGroup.lv_users);
     }
-    libNtve_gf_AddPlayerGroupToPlayerGroup(gv_team1_playerGroupInfo.lv_users, gv_team1_playerGroupInfo.lv_players);
-    PlayerGroupAdd(gv_team1_playerGroupInfo.lv_players, 13);
-    libNtve_gf_AddPlayerGroupToPlayerGroup(gv_team2_playerGroupInfo.lv_users, gv_team2_playerGroupInfo.lv_players);
-    PlayerGroupAdd(gv_team2_playerGroupInfo.lv_players, 14);
+    libNtve_gf_AddPlayerGroupToPlayerGroup(gv_team1_playerGroup.lv_users, gv_team1_playerGroup.lv_players);
+    PlayerGroupAdd(gv_team1_playerGroup.lv_players, 13);
+    libNtve_gf_AddPlayerGroupToPlayerGroup(gv_team2_playerGroup.lv_users, gv_team2_playerGroup.lv_players);
+    PlayerGroupAdd(gv_team2_playerGroup.lv_players, 14);
+    auto80095435_g = gv_team1_playerGroup.lv_players;
+    lv__player = -1;
+    while (true) {
+        lv__player = PlayerGroupNextPlayer(auto80095435_g, lv__player);
+        if (lv__player < 0) { break; }
+        gv_playerProperty[lv__player].lv_team = 1;
+    }
+    auto575BAC2B_g = gv_team2_playerGroup.lv_players;
+    lv__player = -1;
+    while (true) {
+        lv__player = PlayerGroupNextPlayer(auto575BAC2B_g, lv__player);
+        if (lv__player < 0) { break; }
+        gv_playerProperty[lv__player].lv_team = 2;
+    }
 }
 
 void gf_SetStartLocation () {
@@ -728,10 +763,10 @@ void gf_SetRoleForTeam1 () {
     lv__builderGroup = PlayerGroupEmpty();
 
     // Implementation
-    gv_team1_teamInfo.lv_userNum = PlayerGroupCount(gv_team1_playerGroupInfo.lv_users);
+    gv_team1_teamInfo.lv_userNum = PlayerGroupCount(gv_team1_playerGroup.lv_users);
     gv_team1_teamInfo.lv_fighterNum = gv_team1_teamInfo.lv_userNum;
     gv_team1_teamInfo.lv_fighterNum -= 1;
-    auto61B413DA_g = gv_team1_playerGroupInfo.lv_users;
+    auto61B413DA_g = gv_team1_playerGroup.lv_users;
     lv__player = -1;
     while (true) {
         lv__player = PlayerGroupNextPlayer(auto61B413DA_g, lv__player);
@@ -746,7 +781,7 @@ void gf_SetRoleForTeam1 () {
     lv__builderNum = PlayerGroupCount(lv__builderGroup);
     if ((lv__builderNum == 0)) {
         lv__random = RandomInt(1, gv_team1_teamInfo.lv_userNum);
-        lv__builder = PlayerGroupPlayer(gv_team1_playerGroupInfo.lv_users, lv__random);
+        lv__builder = PlayerGroupPlayer(gv_team1_playerGroup.lv_users, lv__random);
         gv_team1_teamInfo.lv_builder = lv__builder;
         PlayerGroupRemove(gv_team1_teamInfo.lv_fighterGroup, lv__builder);
     }
@@ -760,8 +795,8 @@ void gf_SetRoleForTeam1 () {
         PlayerGroupRemove(lv__builderGroup, lv__builder);
         libNtve_gf_AddPlayerGroupToPlayerGroup(lv__builderGroup, gv_team1_teamInfo.lv_fighterGroup);
     }
-    libNtve_gf_AddPlayerGroupToPlayerGroup(gv_team1_teamInfo.lv_fighterGroup, gv_team1_playerGroupInfo.lv_fightersWithNeutral);
-    PlayerGroupAdd(gv_team1_playerGroupInfo.lv_fightersWithNeutral, 13);
+    libNtve_gf_AddPlayerGroupToPlayerGroup(gv_team1_teamInfo.lv_fighterGroup, gv_team1_playerGroup.lv_fightersWithNeutral);
+    PlayerGroupAdd(gv_team1_playerGroup.lv_fightersWithNeutral, 13);
 }
 
 void gf_SetRoleForTeam2 () {
@@ -779,10 +814,10 @@ void gf_SetRoleForTeam2 () {
     lv__builderGroup = PlayerGroupEmpty();
 
     // Implementation
-    gv_team2_teamInfo.lv_userNum = PlayerGroupCount(gv_team2_playerGroupInfo.lv_users);
+    gv_team2_teamInfo.lv_userNum = PlayerGroupCount(gv_team2_playerGroup.lv_users);
     gv_team2_teamInfo.lv_fighterNum = gv_team2_teamInfo.lv_userNum;
     gv_team2_teamInfo.lv_fighterNum -= 1;
-    auto15D3362E_g = gv_team2_playerGroupInfo.lv_users;
+    auto15D3362E_g = gv_team2_playerGroup.lv_users;
     lv__player = -1;
     while (true) {
         lv__player = PlayerGroupNextPlayer(auto15D3362E_g, lv__player);
@@ -797,7 +832,7 @@ void gf_SetRoleForTeam2 () {
     lv__builderNum = PlayerGroupCount(lv__builderGroup);
     if ((lv__builderNum == 0)) {
         lv__random = RandomInt(1, gv_team2_teamInfo.lv_userNum);
-        lv__builder = PlayerGroupPlayer(gv_team2_playerGroupInfo.lv_users, lv__random);
+        lv__builder = PlayerGroupPlayer(gv_team2_playerGroup.lv_users, lv__random);
         gv_team2_teamInfo.lv_builder = lv__builder;
         PlayerGroupRemove(gv_team2_teamInfo.lv_fighterGroup, lv__builder);
     }
@@ -811,8 +846,8 @@ void gf_SetRoleForTeam2 () {
         PlayerGroupRemove(lv__builderGroup, lv__builder);
         libNtve_gf_AddPlayerGroupToPlayerGroup(lv__builderGroup, gv_team2_teamInfo.lv_fighterGroup);
     }
-    libNtve_gf_AddPlayerGroupToPlayerGroup(gv_team2_teamInfo.lv_fighterGroup, gv_team2_playerGroupInfo.lv_fightersWithNeutral);
-    PlayerGroupAdd(gv_team2_playerGroupInfo.lv_fightersWithNeutral, 14);
+    libNtve_gf_AddPlayerGroupToPlayerGroup(gv_team2_teamInfo.lv_fighterGroup, gv_team2_playerGroup.lv_fightersWithNeutral);
+    PlayerGroupAdd(gv_team2_playerGroup.lv_fightersWithNeutral, 14);
 }
 
 void gf_SetStartingUnit () {
@@ -831,7 +866,7 @@ void gf_SetStartingUnit () {
     gv_team1_teamInfo.lv_color = libNtve_gf_ConvertPlayerColorToColor(PlayerGetColorIndex(gv_team1_teamInfo.lv_builder, false));
     MeleeInitResourcesForPlayer(gv_team1_teamInfo.lv_builder, gv_team1_teamInfo.lv_race);
     MeleeInitUnitsForPlayer(gv_team1_teamInfo.lv_builder, gv_team1_teamInfo.lv_race, gv_team1_teamInfo.lv_startLocation);
-    autoDFB74190_g = gv_team1_playerGroupInfo.lv_fightersWithNeutral;
+    autoDFB74190_g = gv_team1_playerGroup.lv_fightersWithNeutral;
     lv__player = -1;
     while (true) {
         lv__player = PlayerGroupNextPlayer(autoDFB74190_g, lv__player);
@@ -845,7 +880,7 @@ void gf_SetStartingUnit () {
     gv_team2_teamInfo.lv_color = libNtve_gf_ConvertPlayerColorToColor(PlayerGetColorIndex(gv_team2_teamInfo.lv_builder, false));
     MeleeInitResourcesForPlayer(gv_team2_teamInfo.lv_builder, gv_team2_teamInfo.lv_race);
     MeleeInitUnitsForPlayer(gv_team2_teamInfo.lv_builder, gv_team2_teamInfo.lv_race, gv_team2_teamInfo.lv_startLocation);
-    autoF4337112_g = gv_team2_playerGroupInfo.lv_fightersWithNeutral;
+    autoF4337112_g = gv_team2_playerGroup.lv_fightersWithNeutral;
     lv__player = -1;
     while (true) {
         lv__player = PlayerGroupNextPlayer(autoF4337112_g, lv__player);
@@ -946,6 +981,15 @@ bool auto_gf_SetMeleeOptions_TriggerFunc (bool testConds, bool runActions) {
     return true;
 }
 
+void gf_SetPlayerProperty () {
+    // Automatic Variable Declarations
+    // Implementation
+    gv_playerProperty[gv_team1_teamInfo.lv_builder].lv_role = ge_Role_Builder;
+    gv_playerProperty[gv_team1_teamInfo.lv_builder].lv_hadBeenBuilder = true;
+    gv_playerProperty[gv_team2_teamInfo.lv_builder].lv_role = ge_Role_Builder;
+    gv_playerProperty[gv_team2_teamInfo.lv_builder].lv_hadBeenBuilder = true;
+}
+
 trigger auto_gf_InitNexusGroup_Trigger = null;
 
 void gf_InitNexusGroup () {
@@ -1024,28 +1068,28 @@ bool auto_gf_SetAlliance_TriggerFunc (bool testConds, bool runActions) {
     int auto3245329C_var;
 
     // Implementation
-    libNtve_gf_SetPlayerGroupAlliance(gv_team1_playerGroupInfo.lv_players, libNtve_ge_AllianceSetting_AllyWithSharedVision);
-    libNtve_gf_SetAllianceAspectForPlayerGroup(gv_team1_playerGroupInfo.lv_players, c_allianceIdPower, true);
-    libNtve_gf_SetAllianceAspectForPlayerGroup(gv_team1_playerGroupInfo.lv_players, c_allianceIdSpend, true);
-    autoA43E557F_g = gv_team1_playerGroupInfo.lv_users;
+    libNtve_gf_SetPlayerGroupAlliance(gv_team1_playerGroup.lv_players, libNtve_ge_AllianceSetting_AllyWithSharedVision);
+    libNtve_gf_SetAllianceAspectForPlayerGroup(gv_team1_playerGroup.lv_players, c_allianceIdPower, true);
+    libNtve_gf_SetAllianceAspectForPlayerGroup(gv_team1_playerGroup.lv_players, c_allianceIdSpend, true);
+    autoA43E557F_g = gv_team1_playerGroup.lv_users;
     autoA43E557F_var = -1;
     while (true) {
         autoA43E557F_var = PlayerGroupNextPlayer(autoA43E557F_g, autoA43E557F_var);
         if (autoA43E557F_var < 0) { break; }
         PlayerSetAlliance(13, c_allianceIdControl, autoA43E557F_var, true);
     }
-    libNtve_gf_SetPlayerGroupAlliance(gv_team2_playerGroupInfo.lv_players, libNtve_ge_AllianceSetting_AllyWithSharedVision);
-    libNtve_gf_SetAllianceAspectForPlayerGroup(gv_team2_playerGroupInfo.lv_players, c_allianceIdPower, true);
-    libNtve_gf_SetAllianceAspectForPlayerGroup(gv_team2_playerGroupInfo.lv_players, c_allianceIdSpend, true);
-    auto3245329C_g = gv_team2_playerGroupInfo.lv_users;
+    libNtve_gf_SetPlayerGroupAlliance(gv_team2_playerGroup.lv_players, libNtve_ge_AllianceSetting_AllyWithSharedVision);
+    libNtve_gf_SetAllianceAspectForPlayerGroup(gv_team2_playerGroup.lv_players, c_allianceIdPower, true);
+    libNtve_gf_SetAllianceAspectForPlayerGroup(gv_team2_playerGroup.lv_players, c_allianceIdSpend, true);
+    auto3245329C_g = gv_team2_playerGroup.lv_users;
     auto3245329C_var = -1;
     while (true) {
         auto3245329C_var = PlayerGroupNextPlayer(auto3245329C_g, auto3245329C_var);
         if (auto3245329C_var < 0) { break; }
         PlayerSetAlliance(14, c_allianceIdControl, auto3245329C_var, true);
     }
-    libNtve_gf_SetAllianceBetweenTwoPlayerGroups(gv_team1_playerGroupInfo.lv_players, gv_team2_playerGroupInfo.lv_players, libNtve_ge_AllianceSetting_Enemy);
-    libNtve_gf_SetAllianceBetweenTwoPlayerGroups(gv_team2_playerGroupInfo.lv_players, gv_team1_playerGroupInfo.lv_players, libNtve_ge_AllianceSetting_Enemy);
+    libNtve_gf_SetAllianceBetweenTwoPlayerGroups(gv_team1_playerGroup.lv_players, gv_team2_playerGroup.lv_players, libNtve_ge_AllianceSetting_Enemy);
+    libNtve_gf_SetAllianceBetweenTwoPlayerGroups(gv_team2_playerGroup.lv_players, gv_team1_playerGroup.lv_players, libNtve_ge_AllianceSetting_Enemy);
     libNtve_gf_SetAlliance(13, 15, libNtve_ge_AllianceSetting_Enemy);
     libNtve_gf_SetAlliance(14, 15, libNtve_ge_AllianceSetting_Enemy);
     return true;
@@ -1279,7 +1323,7 @@ bool auto_gf_SetUserPanel_TriggerFunc (bool testConds, bool runActions) {
     lv__x2 += 30;
     DialogCreate(lv__length, lv__width, c_anchorCenter, 0, 0, true);
     gv_userInfoPanel = DialogLastCreated();
-    autoAA8EB649_g = gv_team1_playerGroupInfo.lv_users;
+    autoAA8EB649_g = gv_team1_playerGroup.lv_users;
     autoAA8EB649_var = -1;
     while (true) {
         autoAA8EB649_var = PlayerGroupNextPlayer(autoAA8EB649_g, autoAA8EB649_var);
@@ -1289,7 +1333,7 @@ bool auto_gf_SetUserPanel_TriggerFunc (bool testConds, bool runActions) {
         lv__height += 40;
     }
     lv__height = 50;
-    auto20762A18_g = gv_team2_playerGroupInfo.lv_users;
+    auto20762A18_g = gv_team2_playerGroup.lv_users;
     auto20762A18_var = -1;
     while (true) {
         auto20762A18_var = PlayerGroupNextPlayer(auto20762A18_g, auto20762A18_var);
@@ -1406,20 +1450,23 @@ void gf_UpdateRole (int lp_team, int lp_oldBuilder, int lp_newBuilder) {
     auto4FBB1AC2_val = lp_team;
     if (auto4FBB1AC2_val == 1) {
         PlayerGroupAdd(gv_team1_teamInfo.lv_fighterGroup, lp_oldBuilder);
-        PlayerGroupAdd(gv_team1_playerGroupInfo.lv_fightersWithNeutral, lp_oldBuilder);
+        PlayerGroupAdd(gv_team1_playerGroup.lv_fightersWithNeutral, lp_oldBuilder);
         gv_team1_teamInfo.lv_builder = lp_newBuilder;
         PlayerGroupRemove(gv_team1_teamInfo.lv_fighterGroup, lp_newBuilder);
-        PlayerGroupRemove(gv_team1_playerGroupInfo.lv_fightersWithNeutral, lp_newBuilder);
+        PlayerGroupRemove(gv_team1_playerGroup.lv_fightersWithNeutral, lp_newBuilder);
     }
     else if (auto4FBB1AC2_val == 2) {
         PlayerGroupAdd(gv_team2_teamInfo.lv_fighterGroup, lp_oldBuilder);
-        PlayerGroupAdd(gv_team2_playerGroupInfo.lv_fightersWithNeutral, lp_oldBuilder);
+        PlayerGroupAdd(gv_team2_playerGroup.lv_fightersWithNeutral, lp_oldBuilder);
         gv_team2_teamInfo.lv_builder = lp_newBuilder;
         PlayerGroupRemove(gv_team2_teamInfo.lv_fighterGroup, lp_newBuilder);
-        PlayerGroupRemove(gv_team2_playerGroupInfo.lv_fightersWithNeutral, lp_newBuilder);
+        PlayerGroupRemove(gv_team2_playerGroup.lv_fightersWithNeutral, lp_newBuilder);
     }
     else {
     }
+    gv_playerProperty[lp_oldBuilder].lv_role = ge_Role_Fighter;
+    gv_playerProperty[lp_newBuilder].lv_role = ge_Role_Builder;
+    gv_playerProperty[lp_newBuilder].lv_hadBeenBuilder = true;
 }
 
 void gf_TransferResource (int lp_team, int lp_player_1, int lp_player_2) {
@@ -1722,7 +1769,7 @@ void gf_FighterDefeat (int lp_team) {
         gv_ggFlag = true;
         UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, StringExternal("Param/Value/6FD47613"));
         Wait(2.0, c_timeGame);
-        auto3FB7E512_g = gv_team1_playerGroupInfo.lv_users;
+        auto3FB7E512_g = gv_team1_playerGroup.lv_users;
         auto3FB7E512_var = -1;
         while (true) {
             auto3FB7E512_var = PlayerGroupNextPlayer(auto3FB7E512_g, auto3FB7E512_var);
@@ -1734,7 +1781,7 @@ void gf_FighterDefeat (int lp_team) {
         gv_ggFlag = true;
         UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, StringExternal("Param/Value/738A54F4"));
         Wait(2.0, c_timeGame);
-        auto8948B628_g = gv_team2_playerGroupInfo.lv_users;
+        auto8948B628_g = gv_team2_playerGroup.lv_users;
         auto8948B628_var = -1;
         while (true) {
             auto8948B628_var = PlayerGroupNextPlayer(auto8948B628_g, auto8948B628_var);
@@ -1981,7 +2028,7 @@ bool gt_Control_Func (bool testConds, bool runActions) {
             PlayerSetAlliance(lv__player, c_allianceIdVision, lv__triggeringPlayer, true);
             PlayerSetAlliance(lv__player, c_allianceIdSpend, lv__triggeringPlayer, true);
         }
-        if ((PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_users, lv__triggeringPlayer) == true)) {
+        if ((PlayerGroupHasPlayer(gv_team1_playerGroup.lv_users, lv__triggeringPlayer) == true)) {
             PlayerSetAlliance(14, c_allianceIdControl, lv__triggeringPlayer, true);
         }
         else {
@@ -2006,7 +2053,7 @@ bool gt_Control_Func (bool testConds, bool runActions) {
             PlayerSetAlliance(lv__player, c_allianceIdVision, lv__triggeringPlayer, false);
             PlayerSetAlliance(lv__player, c_allianceIdSpend, lv__triggeringPlayer, false);
         }
-        if ((PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_users, lv__triggeringPlayer) == true)) {
+        if ((PlayerGroupHasPlayer(gv_team1_playerGroup.lv_users, lv__triggeringPlayer) == true)) {
             PlayerSetAlliance(14, c_allianceIdControl, lv__triggeringPlayer, false);
         }
         else {
@@ -2057,20 +2104,20 @@ bool gt_GainControl_Func (bool testConds, bool runActions) {
         lv__unit = UnitGroupUnitFromEnd(auto8F238D2C_g, auto8F238D2C_u);
         if (lv__unit == null) { break; }
         lv__oldOwner = UnitGetOwner(lv__unit);
-        if ((PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_players, lv__player) == true) && (PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_players, lv__oldOwner) == true)) {
+        if ((PlayerGroupHasPlayer(gv_team1_playerGroup.lv_players, lv__player) == true) && (PlayerGroupHasPlayer(gv_team1_playerGroup.lv_players, lv__oldOwner) == true)) {
             gf_CloseSupplyShareTrigger(1);
             UnitSetOwner(lv__unit, lv__player, true);
             gf_MaintainSupplyUnchanged(lv__oldOwner, lv__player);
         }
-        else if ((PlayerGroupHasPlayer(gv_team2_playerGroupInfo.lv_players, lv__player) == true) && (PlayerGroupHasPlayer(gv_team2_playerGroupInfo.lv_players, lv__oldOwner) == true)) {
+        else if ((PlayerGroupHasPlayer(gv_team2_playerGroup.lv_players, lv__player) == true) && (PlayerGroupHasPlayer(gv_team2_playerGroup.lv_players, lv__oldOwner) == true)) {
             gf_CloseSupplyShareTrigger(2);
             UnitSetOwner(lv__unit, lv__player, true);
             gf_MaintainSupplyUnchanged(lv__oldOwner, lv__player);
         }
-        else if ((PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_players, lv__player) == true) && (PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_players, lv__oldOwner) == false)) {
+        else if ((PlayerGroupHasPlayer(gv_team1_playerGroup.lv_players, lv__player) == true) && (PlayerGroupHasPlayer(gv_team1_playerGroup.lv_players, lv__oldOwner) == false)) {
             UnitSetOwner(lv__unit, lv__player, true);
         }
-        else if ((PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_players, lv__player) == false) && (PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_players, lv__oldOwner) == false)) {
+        else if ((PlayerGroupHasPlayer(gv_team1_playerGroup.lv_players, lv__player) == false) && (PlayerGroupHasPlayer(gv_team1_playerGroup.lv_players, lv__oldOwner) == false)) {
             UnitSetOwner(lv__unit, lv__player, true);
         }
     }
@@ -2212,14 +2259,14 @@ bool gt_Race_Func (bool testConds, bool runActions) {
     }
     else {
     }
-    autoACDC1C99_g = gv_team1_playerGroupInfo.lv_players;
+    autoACDC1C99_g = gv_team1_playerGroup.lv_players;
     lv__player = -1;
     while (true) {
         lv__player = PlayerGroupNextPlayer(autoACDC1C99_g, lv__player);
         if (lv__player < 0) { break; }
         PlayerSetRace(lv__player, lv__race);
     }
-    autoC9899372_g = gv_team2_playerGroupInfo.lv_players;
+    autoC9899372_g = gv_team2_playerGroup.lv_players;
     lv__player = -1;
     while (true) {
         lv__player = PlayerGroupNextPlayer(autoC9899372_g, lv__player);
@@ -2693,6 +2740,7 @@ bool gt_AfterRoleSelection_Func (bool testConds, bool runActions) {
     gf_SetUI();
     gf_SetFighterMode();
     gf_SetMeleeOptions();
+    gf_SetPlayerProperty();
     gf_InitNexusGroup();
     gf_SetResource();
     gf_SetAlliance();
@@ -2870,11 +2918,11 @@ bool gt_TipSensorTower_Func (bool testConds, bool runActions) {
 
     if ((UnitGetOwner(EventUnitProgressUnit()) == gv_team1_teamInfo.lv_builder) && (gv_team1_tipSensorTowerFlag == false)) {
         gv_team1_tipSensorTowerFlag = true;
-        UIDisplayMessage(gv_team1_playerGroupInfo.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/7998EB08"));
+        UIDisplayMessage(gv_team1_playerGroup.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/7998EB08"));
     }
     else {
         gv_team2_tipSensorTowerFlag = true;
-        UIDisplayMessage(gv_team2_playerGroupInfo.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/BC76442D"));
+        UIDisplayMessage(gv_team2_playerGroup.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/BC76442D"));
     }
     return true;
 }
@@ -2935,15 +2983,15 @@ bool gt_TipZerg_Func (bool testConds, bool runActions) {
     }
 
     if (((gv_team1_teamInfo.lv_race == "Zerg") || (gv_team1_teamInfo.lv_race == "BWZe"))) {
-        UIDisplayMessage(gv_team1_playerGroupInfo.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/9F90689B"));
+        UIDisplayMessage(gv_team1_playerGroup.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/9F90689B"));
         Wait(10.0, c_timeReal);
-        UIDisplayMessage(gv_team1_playerGroupInfo.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/A34A344A"));
+        UIDisplayMessage(gv_team1_playerGroup.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/A34A344A"));
     }
 
     if (((gv_team2_teamInfo.lv_race == "Zerg") || (gv_team2_teamInfo.lv_race == "BWZe"))) {
-        UIDisplayMessage(gv_team2_playerGroupInfo.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/B9FAD2E2"));
+        UIDisplayMessage(gv_team2_playerGroup.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/B9FAD2E2"));
         Wait(10.0, c_timeReal);
-        UIDisplayMessage(gv_team2_playerGroupInfo.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/047E93E7"));
+        UIDisplayMessage(gv_team2_playerGroup.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/047E93E7"));
     }
 
     return true;
@@ -3140,9 +3188,9 @@ bool gt_FighterQuit_Func (bool testConds, bool runActions) {
     }
 
     lv__player = EventPlayer();
-    if ((PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_users, lv__player) == true)) {
-        PlayerGroupRemove(gv_team1_playerGroupInfo.lv_users, lv__player);
-        PlayerGroupRemove(gv_team1_playerGroupInfo.lv_fightersWithNeutral, lv__player);
+    if ((PlayerGroupHasPlayer(gv_team1_playerGroup.lv_users, lv__player) == true)) {
+        PlayerGroupRemove(gv_team1_playerGroup.lv_users, lv__player);
+        PlayerGroupRemove(gv_team1_playerGroup.lv_fightersWithNeutral, lv__player);
         PlayerGroupRemove(gv_team1_teamInfo.lv_fighterGroup, lv__player);
         gv_team1_teamInfo.lv_userNum -= 1;
         gv_team1_teamInfo.lv_fighterNum -= 1;
@@ -3156,8 +3204,8 @@ bool gt_FighterQuit_Func (bool testConds, bool runActions) {
 
     }
     else {
-        PlayerGroupRemove(gv_team2_playerGroupInfo.lv_users, lv__player);
-        PlayerGroupRemove(gv_team2_playerGroupInfo.lv_fightersWithNeutral, lv__player);
+        PlayerGroupRemove(gv_team2_playerGroup.lv_users, lv__player);
+        PlayerGroupRemove(gv_team2_playerGroup.lv_fightersWithNeutral, lv__player);
         PlayerGroupRemove(gv_team2_teamInfo.lv_fighterGroup, lv__player);
         gv_team2_teamInfo.lv_userNum -= 1;
         gv_team2_teamInfo.lv_fighterNum -= 1;
@@ -3329,7 +3377,7 @@ bool gt_Team1_FighterMineralUpdate_Func (bool testConds, bool runActions) {
 
     // Conditions
     if (testConds) {
-        if (!((PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_fightersWithNeutral, EventPlayer()) == true))) {
+        if (!((PlayerGroupHasPlayer(gv_team1_playerGroup.lv_fightersWithNeutral, EventPlayer()) == true))) {
             return false;
         }
     }
@@ -3379,7 +3427,7 @@ bool gt_Team1_FighterVespeneUpdate_Func (bool testConds, bool runActions) {
 
     // Conditions
     if (testConds) {
-        if (!((PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_fightersWithNeutral, EventPlayer()) == true))) {
+        if (!((PlayerGroupHasPlayer(gv_team1_playerGroup.lv_fightersWithNeutral, EventPlayer()) == true))) {
             return false;
         }
     }
@@ -3509,7 +3557,7 @@ bool gt_Team2_FighterMineralUpdate_Func (bool testConds, bool runActions) {
 
     // Conditions
     if (testConds) {
-        if (!((PlayerGroupHasPlayer(gv_team2_playerGroupInfo.lv_fightersWithNeutral, EventPlayer()) == true))) {
+        if (!((PlayerGroupHasPlayer(gv_team2_playerGroup.lv_fightersWithNeutral, EventPlayer()) == true))) {
             return false;
         }
     }
@@ -3559,7 +3607,7 @@ bool gt_Team2_FighterVespeneUpdate_Func (bool testConds, bool runActions) {
 
     // Conditions
     if (testConds) {
-        if (!((PlayerGroupHasPlayer(gv_team2_playerGroupInfo.lv_fightersWithNeutral, EventPlayer()) == true))) {
+        if (!((PlayerGroupHasPlayer(gv_team2_playerGroup.lv_fightersWithNeutral, EventPlayer()) == true))) {
             return false;
         }
     }
@@ -3619,7 +3667,7 @@ bool gt_Team1_BuilderMadeChange_Func (bool testConds, bool runActions) {
 
     gv_team1_teamInfo.lv_supplyMade = PlayerGetPropertyFixed(EventPlayer(), c_playerPropSuppliesMade);
     TriggerEnable(gt_Team1_FighterMadeChange, false);
-    auto087069CC_g = gv_team1_playerGroupInfo.lv_fightersWithNeutral;
+    auto087069CC_g = gv_team1_playerGroup.lv_fightersWithNeutral;
     auto087069CC_var = -1;
     while (true) {
         auto087069CC_var = PlayerGroupNextPlayer(auto087069CC_g, auto087069CC_var);
@@ -3671,7 +3719,7 @@ bool gt_Team1_BuilderUsedChange_Func (bool testConds, bool runActions) {
 
     gv_team1_teamInfo.lv_supplyUsed = PlayerGetPropertyFixed(EventPlayer(), c_playerPropSuppliesUsed);
     TriggerEnable(gt_Team1_FighterUsedChange, false);
-    auto9A2DBAF3_g = gv_team1_playerGroupInfo.lv_fightersWithNeutral;
+    auto9A2DBAF3_g = gv_team1_playerGroup.lv_fightersWithNeutral;
     auto9A2DBAF3_var = -1;
     while (true) {
         auto9A2DBAF3_var = PlayerGroupNextPlayer(auto9A2DBAF3_g, auto9A2DBAF3_var);
@@ -3711,7 +3759,7 @@ bool gt_Team1_FighterMadeChange_Func (bool testConds, bool runActions) {
 
     // Conditions
     if (testConds) {
-        if (!((PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_fightersWithNeutral, EventPlayer()) == true))) {
+        if (!((PlayerGroupHasPlayer(gv_team1_playerGroup.lv_fightersWithNeutral, EventPlayer()) == true))) {
             return false;
         }
     }
@@ -3724,7 +3772,7 @@ bool gt_Team1_FighterMadeChange_Func (bool testConds, bool runActions) {
     gv_team1_teamInfo.lv_supplyMade = PlayerGetPropertyFixed(EventPlayer(), c_playerPropSuppliesMade);
     TriggerEnable(gt_Team1_BuilderMadeChange, false);
     TriggerEnable(gt_Team1_FighterMadeChange, false);
-    auto47B6A1A0_g = gv_team1_playerGroupInfo.lv_players;
+    auto47B6A1A0_g = gv_team1_playerGroup.lv_players;
     auto47B6A1A0_var = -1;
     while (true) {
         auto47B6A1A0_var = PlayerGroupNextPlayer(auto47B6A1A0_g, auto47B6A1A0_var);
@@ -3765,7 +3813,7 @@ bool gt_Team1_FighterUsedChange_Func (bool testConds, bool runActions) {
 
     // Conditions
     if (testConds) {
-        if (!((PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_fightersWithNeutral, EventPlayer()) == true))) {
+        if (!((PlayerGroupHasPlayer(gv_team1_playerGroup.lv_fightersWithNeutral, EventPlayer()) == true))) {
             return false;
         }
     }
@@ -3778,7 +3826,7 @@ bool gt_Team1_FighterUsedChange_Func (bool testConds, bool runActions) {
     gv_team1_teamInfo.lv_supplyUsed = PlayerGetPropertyFixed(EventPlayer(), c_playerPropSuppliesUsed);
     TriggerEnable(gt_Team1_BuilderUsedChange, false);
     TriggerEnable(gt_Team1_FighterUsedChange, false);
-    auto3A62394B_g = gv_team1_playerGroupInfo.lv_players;
+    auto3A62394B_g = gv_team1_playerGroup.lv_players;
     auto3A62394B_var = -1;
     while (true) {
         auto3A62394B_var = PlayerGroupNextPlayer(auto3A62394B_g, auto3A62394B_var);
@@ -3831,7 +3879,7 @@ bool gt_Team2_BuilderMadeChange_Func (bool testConds, bool runActions) {
 
     gv_team2_teamInfo.lv_supplyMade = PlayerGetPropertyFixed(EventPlayer(), c_playerPropSuppliesMade);
     TriggerEnable(gt_Team2_FighterMadeChange, false);
-    auto6FF94E53_g = gv_team2_playerGroupInfo.lv_fightersWithNeutral;
+    auto6FF94E53_g = gv_team2_playerGroup.lv_fightersWithNeutral;
     auto6FF94E53_var = -1;
     while (true) {
         auto6FF94E53_var = PlayerGroupNextPlayer(auto6FF94E53_g, auto6FF94E53_var);
@@ -3883,7 +3931,7 @@ bool gt_Team2_BuilderUsedChange_Func (bool testConds, bool runActions) {
 
     gv_team2_teamInfo.lv_supplyUsed = PlayerGetPropertyFixed(EventPlayer(), c_playerPropSuppliesUsed);
     TriggerEnable(gt_Team2_FighterUsedChange, false);
-    autoF93ECF3B_g = gv_team2_playerGroupInfo.lv_fightersWithNeutral;
+    autoF93ECF3B_g = gv_team2_playerGroup.lv_fightersWithNeutral;
     autoF93ECF3B_var = -1;
     while (true) {
         autoF93ECF3B_var = PlayerGroupNextPlayer(autoF93ECF3B_g, autoF93ECF3B_var);
@@ -3923,7 +3971,7 @@ bool gt_Team2_FighterMadeChange_Func (bool testConds, bool runActions) {
 
     // Conditions
     if (testConds) {
-        if (!((PlayerGroupHasPlayer(gv_team2_playerGroupInfo.lv_fightersWithNeutral, EventPlayer()) == true))) {
+        if (!((PlayerGroupHasPlayer(gv_team2_playerGroup.lv_fightersWithNeutral, EventPlayer()) == true))) {
             return false;
         }
     }
@@ -3936,7 +3984,7 @@ bool gt_Team2_FighterMadeChange_Func (bool testConds, bool runActions) {
     gv_team2_teamInfo.lv_supplyMade = PlayerGetPropertyFixed(EventPlayer(), c_playerPropSuppliesMade);
     TriggerEnable(gt_Team2_BuilderMadeChange, false);
     TriggerEnable(gt_Team2_FighterMadeChange, false);
-    auto2CE8C1AD_g = gv_team2_playerGroupInfo.lv_players;
+    auto2CE8C1AD_g = gv_team2_playerGroup.lv_players;
     auto2CE8C1AD_var = -1;
     while (true) {
         auto2CE8C1AD_var = PlayerGroupNextPlayer(auto2CE8C1AD_g, auto2CE8C1AD_var);
@@ -3977,7 +4025,7 @@ bool gt_Team2_FighterUsedChange_Func (bool testConds, bool runActions) {
 
     // Conditions
     if (testConds) {
-        if (!((PlayerGroupHasPlayer(gv_team2_playerGroupInfo.lv_fightersWithNeutral, EventPlayer()) == true))) {
+        if (!((PlayerGroupHasPlayer(gv_team2_playerGroup.lv_fightersWithNeutral, EventPlayer()) == true))) {
             return false;
         }
     }
@@ -3990,7 +4038,7 @@ bool gt_Team2_FighterUsedChange_Func (bool testConds, bool runActions) {
     gv_team2_teamInfo.lv_supplyUsed = PlayerGetPropertyFixed(EventPlayer(), c_playerPropSuppliesUsed);
     TriggerEnable(gt_Team2_BuilderUsedChange, false);
     TriggerEnable(gt_Team2_FighterUsedChange, false);
-    auto95859B04_g = gv_team2_playerGroupInfo.lv_players;
+    auto95859B04_g = gv_team2_playerGroup.lv_players;
     auto95859B04_var = -1;
     while (true) {
         auto95859B04_var = PlayerGroupNextPlayer(auto95859B04_g, auto95859B04_var);
@@ -4081,7 +4129,7 @@ bool gt_ShareUpgrade_Func (bool testConds, bool runActions) {
 
     lv__upgrade = libNtve_gf_TriggeringProgressUpgrade();
     if ((UnitGetOwner(EventUnit()) == gv_team1_teamInfo.lv_builder)) {
-        autoE1216329_g = gv_team1_playerGroupInfo.lv_fightersWithNeutral;
+        autoE1216329_g = gv_team1_playerGroup.lv_fightersWithNeutral;
         autoE1216329_var = -1;
         while (true) {
             autoE1216329_var = PlayerGroupNextPlayer(autoE1216329_g, autoE1216329_var);
@@ -4090,7 +4138,7 @@ bool gt_ShareUpgrade_Func (bool testConds, bool runActions) {
         }
     }
     else {
-        autoC320A639_g = gv_team2_playerGroupInfo.lv_fightersWithNeutral;
+        autoC320A639_g = gv_team2_playerGroup.lv_fightersWithNeutral;
         autoC320A639_var = -1;
         while (true) {
             autoC320A639_var = PlayerGroupNextPlayer(autoC320A639_g, autoC320A639_var);
@@ -4132,7 +4180,7 @@ bool gt_AddArmory_Func (bool testConds, bool runActions) {
     if ((UnitGetOwner(EventUnitProgressUnit()) == gv_team1_teamInfo.lv_builder)) {
         gv_team1_sharedUnit.lv_armory += 1;
         if ((gv_team1_sharedUnit.lv_armory == 1)) {
-            autoDC167583_g = gv_team1_playerGroupInfo.lv_fightersWithNeutral;
+            autoDC167583_g = gv_team1_playerGroup.lv_fightersWithNeutral;
             autoDC167583_var = -1;
             while (true) {
                 autoDC167583_var = PlayerGroupNextPlayer(autoDC167583_g, autoDC167583_var);
@@ -4145,7 +4193,7 @@ bool gt_AddArmory_Func (bool testConds, bool runActions) {
     else {
         gv_team2_sharedUnit.lv_armory += 1;
         if ((gv_team2_sharedUnit.lv_armory == 1)) {
-            auto3BCB44A7_g = gv_team2_playerGroupInfo.lv_fightersWithNeutral;
+            auto3BCB44A7_g = gv_team2_playerGroup.lv_fightersWithNeutral;
             auto3BCB44A7_var = -1;
             while (true) {
                 auto3BCB44A7_var = PlayerGroupNextPlayer(auto3BCB44A7_g, auto3BCB44A7_var);
@@ -4189,7 +4237,7 @@ bool gt_DecArmory_Func (bool testConds, bool runActions) {
     if ((UnitGetOwner(EventUnit()) == gv_team1_teamInfo.lv_builder)) {
         gv_team1_sharedUnit.lv_armory -= 1;
         if ((gv_team1_sharedUnit.lv_armory == 0)) {
-            autoA46B3BBE_g = gv_team1_playerGroupInfo.lv_fightersWithNeutral;
+            autoA46B3BBE_g = gv_team1_playerGroup.lv_fightersWithNeutral;
             autoA46B3BBE_var = -1;
             while (true) {
                 autoA46B3BBE_var = PlayerGroupNextPlayer(autoA46B3BBE_g, autoA46B3BBE_var);
@@ -4202,7 +4250,7 @@ bool gt_DecArmory_Func (bool testConds, bool runActions) {
     else {
         gv_team2_sharedUnit.lv_armory -= 1;
         if ((gv_team2_sharedUnit.lv_armory == 0)) {
-            auto82FB00A8_g = gv_team2_playerGroupInfo.lv_fightersWithNeutral;
+            auto82FB00A8_g = gv_team2_playerGroup.lv_fightersWithNeutral;
             auto82FB00A8_var = -1;
             while (true) {
                 auto82FB00A8_var = PlayerGroupNextPlayer(auto82FB00A8_g, auto82FB00A8_var);
@@ -4246,7 +4294,7 @@ bool gt_AddBanelingNest_Func (bool testConds, bool runActions) {
     if ((UnitGetOwner(EventUnitProgressUnit()) == gv_team1_teamInfo.lv_builder)) {
         gv_team1_sharedUnit.lv_banelingNest += 1;
         if ((gv_team1_sharedUnit.lv_banelingNest == 1)) {
-            auto1634872C_g = gv_team1_playerGroupInfo.lv_fightersWithNeutral;
+            auto1634872C_g = gv_team1_playerGroup.lv_fightersWithNeutral;
             auto1634872C_var = -1;
             while (true) {
                 auto1634872C_var = PlayerGroupNextPlayer(auto1634872C_g, auto1634872C_var);
@@ -4259,7 +4307,7 @@ bool gt_AddBanelingNest_Func (bool testConds, bool runActions) {
     else {
         gv_team2_sharedUnit.lv_banelingNest += 1;
         if ((gv_team2_sharedUnit.lv_banelingNest == 1)) {
-            autoFB0C25C7_g = gv_team2_playerGroupInfo.lv_fightersWithNeutral;
+            autoFB0C25C7_g = gv_team2_playerGroup.lv_fightersWithNeutral;
             autoFB0C25C7_var = -1;
             while (true) {
                 autoFB0C25C7_var = PlayerGroupNextPlayer(autoFB0C25C7_g, autoFB0C25C7_var);
@@ -4303,7 +4351,7 @@ bool gt_DecBanelingNest_Func (bool testConds, bool runActions) {
     if ((UnitGetOwner(EventUnit()) == gv_team1_teamInfo.lv_builder)) {
         gv_team1_sharedUnit.lv_banelingNest -= 1;
         if ((gv_team1_sharedUnit.lv_banelingNest == 0)) {
-            autoBC7342D0_g = gv_team1_playerGroupInfo.lv_fightersWithNeutral;
+            autoBC7342D0_g = gv_team1_playerGroup.lv_fightersWithNeutral;
             autoBC7342D0_var = -1;
             while (true) {
                 autoBC7342D0_var = PlayerGroupNextPlayer(autoBC7342D0_g, autoBC7342D0_var);
@@ -4316,7 +4364,7 @@ bool gt_DecBanelingNest_Func (bool testConds, bool runActions) {
     else {
         gv_team2_sharedUnit.lv_banelingNest -= 1;
         if ((gv_team2_sharedUnit.lv_banelingNest == 0)) {
-            auto9501C1FA_g = gv_team2_playerGroupInfo.lv_fightersWithNeutral;
+            auto9501C1FA_g = gv_team2_playerGroup.lv_fightersWithNeutral;
             auto9501C1FA_var = -1;
             while (true) {
                 auto9501C1FA_var = PlayerGroupNextPlayer(auto9501C1FA_g, auto9501C1FA_var);
@@ -4360,7 +4408,7 @@ bool gt_AddRoachWarren_Func (bool testConds, bool runActions) {
     if ((UnitGetOwner(EventUnitProgressUnit()) == gv_team1_teamInfo.lv_builder)) {
         gv_team1_sharedUnit.lv_roachWarren += 1;
         if ((gv_team1_sharedUnit.lv_roachWarren == 1)) {
-            autoBD20EAB9_g = gv_team1_playerGroupInfo.lv_fightersWithNeutral;
+            autoBD20EAB9_g = gv_team1_playerGroup.lv_fightersWithNeutral;
             autoBD20EAB9_var = -1;
             while (true) {
                 autoBD20EAB9_var = PlayerGroupNextPlayer(autoBD20EAB9_g, autoBD20EAB9_var);
@@ -4373,7 +4421,7 @@ bool gt_AddRoachWarren_Func (bool testConds, bool runActions) {
     else {
         gv_team2_sharedUnit.lv_roachWarren += 1;
         if ((gv_team2_sharedUnit.lv_roachWarren == 1)) {
-            autoB5C902AE_g = gv_team2_playerGroupInfo.lv_fightersWithNeutral;
+            autoB5C902AE_g = gv_team2_playerGroup.lv_fightersWithNeutral;
             autoB5C902AE_var = -1;
             while (true) {
                 autoB5C902AE_var = PlayerGroupNextPlayer(autoB5C902AE_g, autoB5C902AE_var);
@@ -4417,7 +4465,7 @@ bool gt_DecRoachWarren_Func (bool testConds, bool runActions) {
     if ((UnitGetOwner(EventUnit()) == gv_team1_teamInfo.lv_builder)) {
         gv_team1_sharedUnit.lv_roachWarren -= 1;
         if ((gv_team1_sharedUnit.lv_roachWarren == 0)) {
-            auto722A23D8_g = gv_team1_playerGroupInfo.lv_fightersWithNeutral;
+            auto722A23D8_g = gv_team1_playerGroup.lv_fightersWithNeutral;
             auto722A23D8_var = -1;
             while (true) {
                 auto722A23D8_var = PlayerGroupNextPlayer(auto722A23D8_g, auto722A23D8_var);
@@ -4430,7 +4478,7 @@ bool gt_DecRoachWarren_Func (bool testConds, bool runActions) {
     else {
         gv_team2_sharedUnit.lv_roachWarren -= 1;
         if ((gv_team2_sharedUnit.lv_roachWarren == 0)) {
-            autoB01CAE77_g = gv_team2_playerGroupInfo.lv_fightersWithNeutral;
+            autoB01CAE77_g = gv_team2_playerGroup.lv_fightersWithNeutral;
             autoB01CAE77_var = -1;
             while (true) {
                 autoB01CAE77_var = PlayerGroupNextPlayer(autoB01CAE77_g, autoB01CAE77_var);
@@ -4467,7 +4515,7 @@ bool gt_AddLair_Func (bool testConds, bool runActions) {
     if ((UnitGetOwner(EventUnit()) == gv_team1_teamInfo.lv_builder)) {
         gv_team1_sharedUnit.lv_lair += 1;
         if ((gv_team1_sharedUnit.lv_lair == 1)) {
-            autoBFA4625E_g = gv_team1_playerGroupInfo.lv_fightersWithNeutral;
+            autoBFA4625E_g = gv_team1_playerGroup.lv_fightersWithNeutral;
             autoBFA4625E_var = -1;
             while (true) {
                 autoBFA4625E_var = PlayerGroupNextPlayer(autoBFA4625E_g, autoBFA4625E_var);
@@ -4481,7 +4529,7 @@ bool gt_AddLair_Func (bool testConds, bool runActions) {
     else {
         gv_team2_sharedUnit.lv_lair += 1;
         if ((gv_team2_sharedUnit.lv_lair == 1)) {
-            auto1F2FB09E_g = gv_team2_playerGroupInfo.lv_fightersWithNeutral;
+            auto1F2FB09E_g = gv_team2_playerGroup.lv_fightersWithNeutral;
             auto1F2FB09E_var = -1;
             while (true) {
                 auto1F2FB09E_var = PlayerGroupNextPlayer(auto1F2FB09E_g, auto1F2FB09E_var);
@@ -4526,7 +4574,7 @@ bool gt_DecLair_Func (bool testConds, bool runActions) {
     if ((UnitGetOwner(EventUnit()) == gv_team1_teamInfo.lv_builder)) {
         gv_team1_sharedUnit.lv_lair -= 1;
         if ((gv_team1_sharedUnit.lv_lair == 0)) {
-            autoD5B0E244_g = gv_team1_playerGroupInfo.lv_fightersWithNeutral;
+            autoD5B0E244_g = gv_team1_playerGroup.lv_fightersWithNeutral;
             autoD5B0E244_var = -1;
             while (true) {
                 autoD5B0E244_var = PlayerGroupNextPlayer(autoD5B0E244_g, autoD5B0E244_var);
@@ -4540,7 +4588,7 @@ bool gt_DecLair_Func (bool testConds, bool runActions) {
     else {
         gv_team2_sharedUnit.lv_lair -= 1;
         if ((gv_team2_sharedUnit.lv_lair == 0)) {
-            auto101D1A53_g = gv_team2_playerGroupInfo.lv_fightersWithNeutral;
+            auto101D1A53_g = gv_team2_playerGroup.lv_fightersWithNeutral;
             auto101D1A53_var = -1;
             while (true) {
                 auto101D1A53_var = PlayerGroupNextPlayer(auto101D1A53_g, auto101D1A53_var);
@@ -4585,7 +4633,7 @@ bool gt_AddLurkerDen_Func (bool testConds, bool runActions) {
     if ((UnitGetOwner(EventUnitProgressUnit()) == gv_team1_teamInfo.lv_builder)) {
         gv_team1_sharedUnit.lv_lurkerDen += 1;
         if ((gv_team1_sharedUnit.lv_lurkerDen == 1)) {
-            auto0B57E2EA_g = gv_team1_playerGroupInfo.lv_fightersWithNeutral;
+            auto0B57E2EA_g = gv_team1_playerGroup.lv_fightersWithNeutral;
             auto0B57E2EA_var = -1;
             while (true) {
                 auto0B57E2EA_var = PlayerGroupNextPlayer(auto0B57E2EA_g, auto0B57E2EA_var);
@@ -4598,7 +4646,7 @@ bool gt_AddLurkerDen_Func (bool testConds, bool runActions) {
     else {
         gv_team2_sharedUnit.lv_lurkerDen += 1;
         if ((gv_team2_sharedUnit.lv_lurkerDen == 1)) {
-            autoDD8AC918_g = gv_team2_playerGroupInfo.lv_fightersWithNeutral;
+            autoDD8AC918_g = gv_team2_playerGroup.lv_fightersWithNeutral;
             autoDD8AC918_var = -1;
             while (true) {
                 autoDD8AC918_var = PlayerGroupNextPlayer(autoDD8AC918_g, autoDD8AC918_var);
@@ -4642,7 +4690,7 @@ bool gt_DecLurkerDen_Func (bool testConds, bool runActions) {
     if ((UnitGetOwner(EventUnit()) == gv_team1_teamInfo.lv_builder)) {
         gv_team1_sharedUnit.lv_lurkerDen -= 1;
         if ((gv_team1_sharedUnit.lv_lurkerDen == 0)) {
-            autoB0BB9A99_g = gv_team1_playerGroupInfo.lv_fightersWithNeutral;
+            autoB0BB9A99_g = gv_team1_playerGroup.lv_fightersWithNeutral;
             autoB0BB9A99_var = -1;
             while (true) {
                 autoB0BB9A99_var = PlayerGroupNextPlayer(autoB0BB9A99_g, autoB0BB9A99_var);
@@ -4655,7 +4703,7 @@ bool gt_DecLurkerDen_Func (bool testConds, bool runActions) {
     else {
         gv_team2_sharedUnit.lv_lurkerDen -= 1;
         if ((gv_team2_sharedUnit.lv_lurkerDen == 0)) {
-            auto839F5BA6_g = gv_team2_playerGroupInfo.lv_fightersWithNeutral;
+            auto839F5BA6_g = gv_team2_playerGroup.lv_fightersWithNeutral;
             auto839F5BA6_var = -1;
             while (true) {
                 auto839F5BA6_var = PlayerGroupNextPlayer(auto839F5BA6_g, auto839F5BA6_var);
@@ -4692,7 +4740,7 @@ bool gt_AddGreaterSpire_Func (bool testConds, bool runActions) {
     if ((UnitGetOwner(EventUnit()) == gv_team1_teamInfo.lv_builder)) {
         gv_team1_sharedUnit.lv_greaterSpire += 1;
         if ((gv_team1_sharedUnit.lv_greaterSpire == 1)) {
-            autoCD758636_g = gv_team1_playerGroupInfo.lv_fightersWithNeutral;
+            autoCD758636_g = gv_team1_playerGroup.lv_fightersWithNeutral;
             autoCD758636_var = -1;
             while (true) {
                 autoCD758636_var = PlayerGroupNextPlayer(autoCD758636_g, autoCD758636_var);
@@ -4705,7 +4753,7 @@ bool gt_AddGreaterSpire_Func (bool testConds, bool runActions) {
     else {
         gv_team2_sharedUnit.lv_greaterSpire += 1;
         if ((gv_team2_sharedUnit.lv_greaterSpire == 1)) {
-            auto7480F6B9_g = gv_team2_playerGroupInfo.lv_fightersWithNeutral;
+            auto7480F6B9_g = gv_team2_playerGroup.lv_fightersWithNeutral;
             auto7480F6B9_var = -1;
             while (true) {
                 auto7480F6B9_var = PlayerGroupNextPlayer(auto7480F6B9_g, auto7480F6B9_var);
@@ -4749,7 +4797,7 @@ bool gt_DecGreaterSpire_Func (bool testConds, bool runActions) {
     if ((UnitGetOwner(EventUnit()) == gv_team1_teamInfo.lv_builder)) {
         gv_team1_sharedUnit.lv_greaterSpire -= 1;
         if ((gv_team1_sharedUnit.lv_greaterSpire == 0)) {
-            autoFB0C9109_g = gv_team1_playerGroupInfo.lv_fightersWithNeutral;
+            autoFB0C9109_g = gv_team1_playerGroup.lv_fightersWithNeutral;
             autoFB0C9109_var = -1;
             while (true) {
                 autoFB0C9109_var = PlayerGroupNextPlayer(autoFB0C9109_g, autoFB0C9109_var);
@@ -4762,7 +4810,7 @@ bool gt_DecGreaterSpire_Func (bool testConds, bool runActions) {
     else {
         gv_team2_sharedUnit.lv_greaterSpire -= 1;
         if ((gv_team2_sharedUnit.lv_greaterSpire == 0)) {
-            autoCD17B6FB_g = gv_team2_playerGroupInfo.lv_fightersWithNeutral;
+            autoCD17B6FB_g = gv_team2_playerGroup.lv_fightersWithNeutral;
             autoCD17B6FB_var = -1;
             while (true) {
                 autoCD17B6FB_var = PlayerGroupNextPlayer(autoCD17B6FB_g, autoCD17B6FB_var);
@@ -4799,7 +4847,7 @@ bool gt_AddGreaterSpireBW_Func (bool testConds, bool runActions) {
     if ((UnitGetOwner(EventUnit()) == gv_team1_teamInfo.lv_builder)) {
         gv_team1_sharedUnit.lv_greaterSpireBW += 1;
         if ((gv_team1_sharedUnit.lv_greaterSpireBW == 1)) {
-            auto34FEF6C7_g = gv_team1_playerGroupInfo.lv_fightersWithNeutral;
+            auto34FEF6C7_g = gv_team1_playerGroup.lv_fightersWithNeutral;
             auto34FEF6C7_var = -1;
             while (true) {
                 auto34FEF6C7_var = PlayerGroupNextPlayer(auto34FEF6C7_g, auto34FEF6C7_var);
@@ -4813,7 +4861,7 @@ bool gt_AddGreaterSpireBW_Func (bool testConds, bool runActions) {
     else {
         gv_team2_sharedUnit.lv_greaterSpireBW += 1;
         if ((gv_team2_sharedUnit.lv_greaterSpireBW == 1)) {
-            auto7277E04E_g = gv_team2_playerGroupInfo.lv_fightersWithNeutral;
+            auto7277E04E_g = gv_team2_playerGroup.lv_fightersWithNeutral;
             auto7277E04E_var = -1;
             while (true) {
                 auto7277E04E_var = PlayerGroupNextPlayer(auto7277E04E_g, auto7277E04E_var);
@@ -4858,7 +4906,7 @@ bool gt_DecGreaterSpireBW_Func (bool testConds, bool runActions) {
     if ((UnitGetOwner(EventUnit()) == gv_team1_teamInfo.lv_builder)) {
         gv_team1_sharedUnit.lv_greaterSpireBW -= 1;
         if ((gv_team1_sharedUnit.lv_greaterSpireBW == 0)) {
-            auto04EC120C_g = gv_team1_playerGroupInfo.lv_fightersWithNeutral;
+            auto04EC120C_g = gv_team1_playerGroup.lv_fightersWithNeutral;
             auto04EC120C_var = -1;
             while (true) {
                 auto04EC120C_var = PlayerGroupNextPlayer(auto04EC120C_g, auto04EC120C_var);
@@ -4872,7 +4920,7 @@ bool gt_DecGreaterSpireBW_Func (bool testConds, bool runActions) {
     else {
         gv_team2_sharedUnit.lv_greaterSpireBW -= 1;
         if ((gv_team2_sharedUnit.lv_greaterSpireBW == 0)) {
-            autoCF020829_g = gv_team2_playerGroupInfo.lv_fightersWithNeutral;
+            autoCF020829_g = gv_team2_playerGroup.lv_fightersWithNeutral;
             autoCF020829_var = -1;
             while (true) {
                 autoCF020829_var = PlayerGroupNextPlayer(autoCF020829_g, autoCF020829_var);
@@ -5022,7 +5070,7 @@ bool gt_UseNuke_Func (bool testConds, bool runActions) {
 
     lv__unit = EventUnit();
     lv__triggeringPlayer = UnitGetOwner(EventUnit());
-    if (((PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_fightersWithNeutral, lv__triggeringPlayer) == true))) {
+    if (((PlayerGroupHasPlayer(gv_team1_playerGroup.lv_fightersWithNeutral, lv__triggeringPlayer) == true))) {
         gv_team1_sharedUnit.lv_nuke -= 1;
         PlayerCreateEffectPoint(gv_team1_teamInfo.lv_builder, "NukeNF1B", Point(0.0, 0.0));
         autoA880A39A_g = gv_team1_unitGroup.lv_ghostGroup;
@@ -5189,7 +5237,7 @@ bool gt_UseNukeBW_Func (bool testConds, bool runActions) {
 
     lv__unit = EventUnit();
     lv__triggeringPlayer = UnitGetOwner(EventUnit());
-    if (((PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_fightersWithNeutral, lv__triggeringPlayer) == true))) {
+    if (((PlayerGroupHasPlayer(gv_team1_playerGroup.lv_fightersWithNeutral, lv__triggeringPlayer) == true))) {
         gv_team1_sharedUnit.lv_nuke -= 1;
         PlayerCreateEffectPoint(gv_team1_teamInfo.lv_builder, "GhostSCBWNuclearStrike@CalldownDummyNF1B", Point(0.0, 0.0));
         auto26360F9A_g = gv_team1_unitGroup.lv_ghostGroup;
@@ -5344,7 +5392,7 @@ bool gt_DecMothership_Func (bool testConds, bool runActions) {
         return true;
     }
 
-    if ((PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_players, UnitGetOwner(EventUnit())) == true)) {
+    if ((PlayerGroupHasPlayer(gv_team1_playerGroup.lv_players, UnitGetOwner(EventUnit())) == true)) {
         gv_team1_sharedUnit.lv_motherShip = false;
         autoAFB89D52_g = gv_team1_unitGroup.lv_nexusGroup;
         autoAFB89D52_u = UnitGroupCount(autoAFB89D52_g, c_unitCountAll);
@@ -5734,7 +5782,7 @@ bool gt_BuilderDefeat_Func (bool testConds, bool runActions) {
     if ((lv__player == gv_team1_teamInfo.lv_builder)) {
         UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, StringExternal("Param/Value/7C2BA5DC"));
         Wait(2.0, c_timeGame);
-        autoD9F94AB0_g = gv_team1_playerGroupInfo.lv_users;
+        autoD9F94AB0_g = gv_team1_playerGroup.lv_users;
         autoD9F94AB0_var = -1;
         while (true) {
             autoD9F94AB0_var = PlayerGroupNextPlayer(autoD9F94AB0_g, autoD9F94AB0_var);
@@ -5745,7 +5793,7 @@ bool gt_BuilderDefeat_Func (bool testConds, bool runActions) {
     else {
         UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, StringExternal("Param/Value/A283F7C2"));
         Wait(2.0, c_timeGame);
-        autoF6B95237_g = gv_team2_playerGroupInfo.lv_users;
+        autoF6B95237_g = gv_team2_playerGroup.lv_users;
         autoF6B95237_var = -1;
         while (true) {
             autoF6B95237_var = PlayerGroupNextPlayer(autoF6B95237_g, autoF6B95237_var);
