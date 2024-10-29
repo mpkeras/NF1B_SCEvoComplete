@@ -2298,9 +2298,9 @@ bool gt_BeFighter_Func (bool testConds, bool runActions) {
     }
 
     lv__oldBuilder = EventPlayer();
-    lv__team = gf_GetTeamOfPlayer(lv__oldBuilder);
-    lv__newBuilder = gf_RandomFighterFromTeam(lv__team);
-    if ((lv__newBuilder != lv__oldBuilder)) {
+    if ((gf_GetRoleOfPlayer(lv__oldBuilder) == ge_Role_Builder)) {
+        lv__team = gf_GetTeamOfPlayer(lv__oldBuilder);
+        lv__newBuilder = gf_RandomFighterFromTeam(lv__team);
         gf_UpdateRole(lv__team, lv__oldBuilder, lv__newBuilder);
         gf_UpdateFighterMode(lv__team);
         gf_OwnershipForChangeBuilder(lv__oldBuilder, lv__newBuilder);
