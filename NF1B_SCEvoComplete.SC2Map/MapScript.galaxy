@@ -178,7 +178,7 @@ void gf_UpdateBuilderIcon (int lp_newBuilder, int lp_team);
 void gf_UpdateBuilderName (int lp_newBuilder, int lp_team);
 void gf_DisplayBuilderInfo ();
 void gf_SetUserPanel ();
-void gf_OwnershipForChangeBuilder (int lp_team, int lp_oldBuilder, int lp_newBuilder);
+void gf_OwnershipForChangeBuilder (int lp_oldBuilder, int lp_newBuilder);
 void gf_UpdateRole (int lp_team, int lp_oldBuilder, int lp_newBuilder);
 void gf_TransferResource (int lp_team, int lp_player_1, int lp_player_2);
 void gf_UpdateResource (int lp_team, int lp_oldBuilder, int lp_newBuilder);
@@ -1300,14 +1300,16 @@ bool auto_gf_SetUserPanel_TriggerFunc (bool testConds, bool runActions) {
     return true;
 }
 
-void gf_OwnershipForChangeBuilder (int lp_team, int lp_oldBuilder, int lp_newBuilder) {
+void gf_OwnershipForChangeBuilder (int lp_oldBuilder, int lp_newBuilder) {
     // Variable Declarations
+    int lv__team;
     order lv__order;
     unit lv__unit;
     unitgroup lv__workerGroup;
     unitgroup lv__otherGroup;
     int lv__ownerForRelease;
     int lv__colorForRelease;
+    int lv__playerForOrder;
 
     // Automatic Variable Declarations
     unitgroup auto8D0E9D38_g;
@@ -1324,7 +1326,8 @@ void gf_OwnershipForChangeBuilder (int lp_team, int lp_oldBuilder, int lp_newBui
     lv__otherGroup = UnitGroupEmpty();
 
     // Implementation
-    if ((PlayerGroupHasPlayer(gv_team1_playerGroupInfo.lv_players, lp_newBuilder) == true)) {
+    lv__team = gf_GetTeamOfPlayer(lp_newBuilder);
+    if ((lv__team == 1)) {
         lv__ownerForRelease = gv_team1_teamMode.lv_ownerForRelease;
         lv__colorForRelease = gv_team1_teamMode.lv_colorForRelease;
     }
@@ -1332,8 +1335,8 @@ void gf_OwnershipForChangeBuilder (int lp_team, int lp_oldBuilder, int lp_newBui
         lv__ownerForRelease = gv_team2_teamMode.lv_ownerForRelease;
         lv__colorForRelease = gv_team2_teamMode.lv_colorForRelease;
     }
-    gf_CloseSupplyShareTrigger(lp_team);
-    auto8D0E9D38_g = UnitGroup(null, lp_oldBuilder, RegionEntireMap(), UnitFilter(0, 0, (1 << c_targetFilterMissile), (1 << (c_targetFilterDead - 32))), 0);
+    gf_CloseSupplyShareTrigger(lv__team);
+    auto8D0E9D38_g = UnitGroup(null, lp_oldBuilder, RegionEntireMap(), UnitFilter(0, 0, 0, 0), 0);
     auto8D0E9D38_u = UnitGroupCount(auto8D0E9D38_g, c_unitCountAll);
     for (;; auto8D0E9D38_u -= 1) {
         lv__unit = UnitGroupUnitFromEnd(auto8D0E9D38_g, auto8D0E9D38_u);
@@ -1345,13 +1348,13 @@ void gf_OwnershipForChangeBuilder (int lp_team, int lp_oldBuilder, int lp_newBui
             UnitGroupAdd(lv__otherGroup, lv__unit);
         }
     }
-    auto5CE33954_g = UnitGroup(null, lp_newBuilder, RegionEntireMap(), UnitFilter(0, 0, (1 << c_targetFilterMissile), (1 << (c_targetFilterDead - 32)) | (1 << (c_targetFilterHidden - 32))), 0);
+    auto5CE33954_g = UnitGroup(null, lp_newBuilder, RegionEntireMap(), UnitFilter(0, 0, 0, 0), 0);
     auto5CE33954_u = UnitGroupCount(auto5CE33954_g, c_unitCountAll);
     for (;; auto5CE33954_u -= 1) {
         lv__unit = UnitGroupUnitFromEnd(auto5CE33954_g, auto5CE33954_u);
         if (lv__unit == null) { break; }
-        UnitSetOwner(lv__unit, gv_team1_teamMode.lv_ownerForRelease, true);
-        UnitSetTeamColorIndex(lv__unit, gv_team1_teamMode.lv_colorForRelease);
+        UnitSetOwner(lv__unit, lv__ownerForRelease, true);
+        UnitSetTeamColorIndex(lv__unit, lv__colorForRelease);
     }
     auto69821EDD_g = lv__otherGroup;
     auto69821EDD_u = UnitGroupCount(auto69821EDD_g, c_unitCountAll);
@@ -1367,24 +1370,30 @@ void gf_OwnershipForChangeBuilder (int lp_team, int lp_oldBuilder, int lp_newBui
         if (lv__unit == null) { break; }
         lv__order = UnitOrder(lv__unit, 0);
         UnitSetOwner(lv__unit, lp_newBuilder, true);
-        if ((PlayerGetAlliance(lp_newBuilder, c_allianceIdControl, lp_oldBuilder) == true)) {
-            if (gf_IsMainBaseUnitType(OrderGetTargetUnit(lv__order))) {
-                gf_ReturnCargo(lv__unit);
+        if ((lv__order != null)) {
+            lv__playerForOrder = OrderGetPlayer(lv__order);
+            if (((lp_newBuilder == lv__playerForOrder) || (PlayerGetAlliance(lp_newBuilder, c_allianceIdControl, lv__playerForOrder) == true))) {
+                if (gf_IsMainBaseUnitType(OrderGetTargetUnit(lv__order))) {
+                    gf_ReturnCargo(lv__unit);
+                }
+                else {
+                    UnitIssueOrder(lv__unit, lv__order, c_orderQueueReplace);
+                }
             }
             else {
-                UnitIssueOrder(lv__unit, lv__order, c_orderQueueReplace);
+                PlayerSetAlliance(lp_newBuilder, c_allianceIdControl, lv__playerForOrder, true);
+                PlayerSetAlliance(lp_newBuilder, c_allianceIdControl, lp_oldBuilder, true);
+                if (gf_IsMainBaseUnitType(OrderGetTargetUnit(lv__order))) {
+                    gf_ReturnCargo(lv__unit);
+                }
+                else {
+                    UnitIssueOrder(lv__unit, lv__order, c_orderQueueReplace);
+                }
+                PlayerSetAlliance(lp_newBuilder, c_allianceIdControl, lv__playerForOrder, false);
+                PlayerSetAlliance(lp_newBuilder, c_allianceIdControl, lp_oldBuilder, false);
             }
         }
-        else {
-            PlayerSetAlliance(lp_newBuilder, c_allianceIdControl, lp_oldBuilder, true);
-            if (gf_IsMainBaseUnitType(OrderGetTargetUnit(lv__order))) {
-                gf_ReturnCargo(lv__unit);
-            }
-            else {
-                UnitIssueOrder(lv__unit, lv__order, c_orderQueueReplace);
-            }
-            PlayerSetAlliance(lp_newBuilder, c_allianceIdControl, lp_oldBuilder, false);
-        }
+
     }
 }
 
@@ -2249,7 +2258,7 @@ bool gt_BeBuilder_Func (bool testConds, bool runActions) {
     if ((lv__newBuilder != lv__oldBuilder)) {
         gf_UpdateRole(lv__team, lv__oldBuilder, lv__newBuilder);
         gf_UpdateFighterMode(lv__team);
-        gf_OwnershipForChangeBuilder(lv__team, lv__oldBuilder, lv__newBuilder);
+        gf_OwnershipForChangeBuilder(lv__oldBuilder, lv__newBuilder);
         gf_MaintainSupplyUnchanged(lv__oldBuilder, lv__newBuilder);
         gf_UpdateResource(lv__team, lv__oldBuilder, lv__newBuilder);
         gf_UpdateBuilderName(lv__newBuilder, lv__team);
@@ -2288,18 +2297,13 @@ bool gt_BeFighter_Func (bool testConds, bool runActions) {
         return true;
     }
 
-    lv__team = gf_GetTeamOfPlayer(EventPlayer());
     lv__oldBuilder = EventPlayer();
-    if ((lv__team == 1)) {
-        lv__newBuilder = gf_RandomFighterFromTeam(1);
-    }
-    else {
-        lv__newBuilder = gf_RandomFighterFromTeam(2);
-    }
+    lv__team = gf_GetTeamOfPlayer(lv__oldBuilder);
+    lv__newBuilder = gf_RandomFighterFromTeam(lv__team);
     if ((lv__newBuilder != lv__oldBuilder)) {
         gf_UpdateRole(lv__team, lv__oldBuilder, lv__newBuilder);
         gf_UpdateFighterMode(lv__team);
-        gf_OwnershipForChangeBuilder(lv__team, lv__oldBuilder, lv__newBuilder);
+        gf_OwnershipForChangeBuilder(lv__oldBuilder, lv__newBuilder);
         gf_MaintainSupplyUnchanged(lv__oldBuilder, lv__newBuilder);
         gf_UpdateResource(lv__team, lv__oldBuilder, lv__newBuilder);
         gf_UpdateBuilderName(lv__newBuilder, lv__team);
@@ -2989,7 +2993,7 @@ bool gt_ChangeBuilder_Func (bool testConds, bool runActions) {
     if ((lv__valid == true)) {
         gf_UpdateRole(lv__team, lv__oldBuilder, lv__newBuilder);
         gf_UpdateFighterMode(lv__team);
-        gf_OwnershipForChangeBuilder(lv__team, lv__oldBuilder, lv__newBuilder);
+        gf_OwnershipForChangeBuilder(lv__oldBuilder, lv__newBuilder);
         gf_MaintainSupplyUnchanged(lv__oldBuilder, lv__newBuilder);
         gf_UpdateResource(lv__team, lv__oldBuilder, lv__newBuilder);
         gf_UpdateBuilderName(lv__newBuilder, lv__team);
@@ -3048,7 +3052,7 @@ bool gt_GiveUpBuilderRole_Func (bool testConds, bool runActions) {
     lv__newBuilder = gf_RandomFighterFromTeam(lv__team);
     gf_UpdateRole(lv__team, lv__oldBuilder, lv__newBuilder);
     gf_UpdateFighterMode(lv__team);
-    gf_OwnershipForChangeBuilder(lv__team, lv__oldBuilder, lv__newBuilder);
+    gf_OwnershipForChangeBuilder(lv__oldBuilder, lv__newBuilder);
     gf_MaintainSupplyUnchanged(lv__oldBuilder, lv__newBuilder);
     gf_UpdateResource(lv__team, lv__oldBuilder, lv__newBuilder);
     gf_UpdateBuilderName(lv__newBuilder, lv__team);
