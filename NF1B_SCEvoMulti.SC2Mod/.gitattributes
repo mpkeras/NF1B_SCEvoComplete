@@ -1,0 +1,9 @@
+Base.SC2Data/GameData/*.xml linguist-detectable
+
+*.SC2Components linguist-detectable
+Attributes linguist-detectable
+DocumentInfo linguist-detectable
+
+*.SC2Components linguist-language=XML
+Attributes linguist-language=XML
+DocumentInfo linguist-language=XML
