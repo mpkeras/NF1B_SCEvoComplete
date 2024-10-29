@@ -207,6 +207,7 @@ trigger gt_Fog;
 trigger gt_Fast;
 trigger gt_Control;
 trigger gt_GainControl;
+trigger gt_RemoveUnit;
 trigger gt_Worker;
 trigger gt_Race;
 trigger gt_Color;
@@ -2080,6 +2081,49 @@ bool gt_GainControl_Func (bool testConds, bool runActions) {
 void gt_GainControl_Init () {
     gt_GainControl = TriggerCreate("gt_GainControl_Func");
     TriggerAddEventChatMessage(gt_GainControl, c_playerAny, ("-gain"), true);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Trigger: RemoveUnit
+//--------------------------------------------------------------------------------------------------
+bool gt_RemoveUnit_Func (bool testConds, bool runActions) {
+    // Variable Declarations
+    unit lv__unit;
+    int lv__player;
+
+    // Automatic Variable Declarations
+    unitgroup autoB357E9E8_g;
+    int autoB357E9E8_u;
+
+    // Variable Initialization
+
+    // Conditions
+    if (testConds) {
+        if (!((gv_debug == true))) {
+            return false;
+        }
+    }
+
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    lv__player = EventPlayer();
+    autoB357E9E8_g = UnitGroupSelected(lv__player);
+    autoB357E9E8_u = UnitGroupCount(autoB357E9E8_g, c_unitCountAll);
+    for (;; autoB357E9E8_u -= 1) {
+        lv__unit = UnitGroupUnitFromEnd(autoB357E9E8_g, autoB357E9E8_u);
+        if (lv__unit == null) { break; }
+        UnitRemove(lv__unit);
+    }
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void gt_RemoveUnit_Init () {
+    gt_RemoveUnit = TriggerCreate("gt_RemoveUnit_Func");
+    TriggerAddEventChatMessage(gt_RemoveUnit, c_playerAny, ("-rm"), true);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -5733,6 +5777,7 @@ void InitTriggers () {
     gt_Fast_Init();
     gt_Control_Init();
     gt_GainControl_Init();
+    gt_RemoveUnit_Init();
     gt_Worker_Init();
     gt_Race_Init();
     gt_Color_Init();
