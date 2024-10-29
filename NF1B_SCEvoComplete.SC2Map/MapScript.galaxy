@@ -65,7 +65,7 @@ struct gs_TeamInfo {
 struct gs_PlayerProperty {
     int lv_team;
     int lv_role;
-    bool lv_hadBeenBuilder;
+    bool lv_haveBeenBuilder;
 };
 
 struct gs_PlayerGroup {
@@ -167,6 +167,7 @@ int gf_GetColorForRelease (int lp_team);
 int gf_GetNeutralOfTeam (int lp_team);
 void gf_ReturnCargo (unit lp_unit);
 int gf_RandomFighterFromTeam (int lp_team);
+int gf_RandomFighterExcludeHaveBeenFromTeam (int lp_team);
 void gf_SetGameRace ();
 void gf_SetPlayerRaceToBW (int lp_player);
 void gf_SetPlayerRaceToSC2 (int lp_player);
@@ -537,6 +538,52 @@ int gf_RandomFighterFromTeam (int lp_team) {
     else {
     }
     return lv__fighter;
+}
+
+int gf_RandomFighterExcludeHaveBeenFromTeam (int lp_team) {
+    // Variable Declarations
+    int lv__fighterNum;
+    int lv__random;
+    int lv__fighter;
+    playergroup lv__fighterGroupExcludeHaveBeen;
+    int lv__player;
+
+    // Automatic Variable Declarations
+    int auto35E12C3D_val;
+    playergroup auto2D34FF5D_g;
+
+    // Variable Initialization
+    lv__fighterGroupExcludeHaveBeen = PlayerGroupEmpty();
+
+    // Implementation
+    auto35E12C3D_val = lp_team;
+    if (auto35E12C3D_val == 1) {
+        libNtve_gf_AddPlayerGroupToPlayerGroup(gv_team1_teamInfo.lv_fighterGroup, lv__fighterGroupExcludeHaveBeen);
+    }
+    else if (auto35E12C3D_val == 2) {
+        libNtve_gf_AddPlayerGroupToPlayerGroup(gv_team2_teamInfo.lv_fighterGroup, lv__fighterGroupExcludeHaveBeen);
+    }
+    else {
+    }
+    auto2D34FF5D_g = lv__fighterGroupExcludeHaveBeen;
+    lv__player = -1;
+    while (true) {
+        lv__player = PlayerGroupNextPlayer(auto2D34FF5D_g, lv__player);
+        if (lv__player < 0) { break; }
+        if ((gv_playerProperty[lv__player].lv_haveBeenBuilder == true)) {
+            PlayerGroupRemove(lv__fighterGroupExcludeHaveBeen, lv__player);
+        }
+
+    }
+    lv__fighterNum = PlayerGroupCount(lv__fighterGroupExcludeHaveBeen);
+    if ((lv__fighterNum >= 1)) {
+        lv__random = RandomInt(1, lv__fighterNum);
+        lv__fighter = PlayerGroupPlayer(lv__fighterGroupExcludeHaveBeen, lv__random);
+        return lv__fighter;
+    }
+    else {
+        return -1;
+    }
 }
 
 void gf_SetGameRace () {
@@ -985,9 +1032,9 @@ void gf_SetPlayerProperty () {
     // Automatic Variable Declarations
     // Implementation
     gv_playerProperty[gv_team1_teamInfo.lv_builder].lv_role = ge_Role_Builder;
-    gv_playerProperty[gv_team1_teamInfo.lv_builder].lv_hadBeenBuilder = true;
+    gv_playerProperty[gv_team1_teamInfo.lv_builder].lv_haveBeenBuilder = true;
     gv_playerProperty[gv_team2_teamInfo.lv_builder].lv_role = ge_Role_Builder;
-    gv_playerProperty[gv_team2_teamInfo.lv_builder].lv_hadBeenBuilder = true;
+    gv_playerProperty[gv_team2_teamInfo.lv_builder].lv_haveBeenBuilder = true;
 }
 
 trigger auto_gf_InitNexusGroup_Trigger = null;
@@ -1466,7 +1513,7 @@ void gf_UpdateRole (int lp_team, int lp_oldBuilder, int lp_newBuilder) {
     }
     gv_playerProperty[lp_oldBuilder].lv_role = ge_Role_Fighter;
     gv_playerProperty[lp_newBuilder].lv_role = ge_Role_Builder;
-    gv_playerProperty[lp_newBuilder].lv_hadBeenBuilder = true;
+    gv_playerProperty[lp_newBuilder].lv_haveBeenBuilder = true;
 }
 
 void gf_TransferResource (int lp_team, int lp_player_1, int lp_player_2) {
@@ -3141,13 +3188,16 @@ bool gt_GiveUpBuilderRole_Func (bool testConds, bool runActions) {
 
     lv__oldBuilder = EventPlayer();
     lv__team = gf_GetTeamOfPlayer(lv__oldBuilder);
-    lv__newBuilder = gf_RandomFighterFromTeam(lv__team);
-    gf_UpdateRole(lv__team, lv__oldBuilder, lv__newBuilder);
-    gf_UpdateFighterMode(lv__team);
-    gf_OwnershipForChangeBuilder(lv__oldBuilder, lv__newBuilder);
-    gf_MaintainSupplyUnchanged(lv__oldBuilder, lv__newBuilder);
-    gf_UpdateResource(lv__team, lv__oldBuilder, lv__newBuilder);
-    gf_UpdateBuilderName(lv__newBuilder, lv__team);
+    lv__newBuilder = gf_RandomFighterExcludeHaveBeenFromTeam(lv__team);
+    if ((lv__newBuilder != -1)) {
+        gf_UpdateRole(lv__team, lv__oldBuilder, lv__newBuilder);
+        gf_UpdateFighterMode(lv__team);
+        gf_OwnershipForChangeBuilder(lv__oldBuilder, lv__newBuilder);
+        gf_MaintainSupplyUnchanged(lv__oldBuilder, lv__newBuilder);
+        gf_UpdateResource(lv__team, lv__oldBuilder, lv__newBuilder);
+        gf_UpdateBuilderName(lv__newBuilder, lv__team);
+    }
+
     return true;
 }
 
