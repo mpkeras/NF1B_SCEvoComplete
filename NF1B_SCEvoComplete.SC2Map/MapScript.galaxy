@@ -188,7 +188,7 @@ void gf_SetResource ();
 void gf_SetAlliance ();
 void gf_SetSupplyLimit ();
 void gf_UpdateBuilderInfoPanel (int lp_newBuilder, int lp_team);
-void gf_UpdateBuilderIcon (int lp_newBuilder, int lp_team);
+void gf_UpdateBuilderIcon (int lp_team, string lp_race);
 void gf_UpdateBuilderName (int lp_newBuilder, int lp_team);
 void gf_DisplayBuilderInfo ();
 void gf_SetUserPanel ();
@@ -221,9 +221,9 @@ trigger gt_Fog;
 trigger gt_Fast;
 trigger gt_Control;
 trigger gt_GainControl;
+trigger gt_ChangeRace;
 trigger gt_RemoveUnit;
 trigger gt_Worker;
-trigger gt_Race;
 trigger gt_Color;
 trigger gt_BeBuilder;
 trigger gt_BeFighter;
@@ -1197,57 +1197,43 @@ void gf_UpdateBuilderInfoPanel (int lp_newBuilder, int lp_team) {
     // Automatic Variable Declarations
 }
 
-void gf_UpdateBuilderIcon (int lp_newBuilder, int lp_team) {
+void gf_UpdateBuilderIcon (int lp_team, string lp_race) {
+    // Variable Declarations
+    int lv__icon;
+
     // Automatic Variable Declarations
     string auto2AE6ADA5_val;
-    string autoE686B32B_val;
+
+    // Variable Initialization
+    lv__icon = c_invalidDialogControlId;
 
     // Implementation
     if ((lp_team == 1)) {
-        auto2AE6ADA5_val = gv_team1_teamInfo.lv_race;
-        if (auto2AE6ADA5_val == "Terr") {
-            libNtve_gf_SetDialogItemImage(gv_team1_UI.lv_builderIcon, "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_terran.dds", PlayerGroupAll());
-        }
-        else if (auto2AE6ADA5_val == "Zerg") {
-            libNtve_gf_SetDialogItemImage(gv_team1_UI.lv_builderIcon, "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_zerg.dds", PlayerGroupAll());
-        }
-        else if (auto2AE6ADA5_val == "Prot") {
-            libNtve_gf_SetDialogItemImage(gv_team1_UI.lv_builderIcon, "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_protoss.dds", PlayerGroupAll());
-        }
-        else if (auto2AE6ADA5_val == "BWTe") {
-            libNtve_gf_SetDialogItemImage(gv_team1_UI.lv_builderIcon, "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWterran.dds", PlayerGroupAll());
-        }
-        else if (auto2AE6ADA5_val == "BWZe") {
-            libNtve_gf_SetDialogItemImage(gv_team1_UI.lv_builderIcon, "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWzerg.dds", PlayerGroupAll());
-        }
-        else if (auto2AE6ADA5_val == "BWPr") {
-            libNtve_gf_SetDialogItemImage(gv_team1_UI.lv_builderIcon, "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWprotoss.dds", PlayerGroupAll());
-        }
-        else {
-        }
+        lv__icon = gv_team1_UI.lv_builderIcon;
     }
-    else if ((lp_team == 2)) {
-        autoE686B32B_val = gv_team2_teamInfo.lv_race;
-        if (autoE686B32B_val == "Terr") {
-            libNtve_gf_SetDialogItemImage(gv_team2_UI.lv_builderIcon, "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_terran.dds", PlayerGroupAll());
-        }
-        else if (autoE686B32B_val == "Zerg") {
-            libNtve_gf_SetDialogItemImage(gv_team2_UI.lv_builderIcon, "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_zerg.dds", PlayerGroupAll());
-        }
-        else if (autoE686B32B_val == "Prot") {
-            libNtve_gf_SetDialogItemImage(gv_team2_UI.lv_builderIcon, "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_protoss.dds", PlayerGroupAll());
-        }
-        else if (autoE686B32B_val == "BWTe") {
-            libNtve_gf_SetDialogItemImage(gv_team2_UI.lv_builderIcon, "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWterran.dds", PlayerGroupAll());
-        }
-        else if (autoE686B32B_val == "BWZe") {
-            libNtve_gf_SetDialogItemImage(gv_team2_UI.lv_builderIcon, "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWzerg.dds", PlayerGroupAll());
-        }
-        else if (autoE686B32B_val == "BWPr") {
-            libNtve_gf_SetDialogItemImage(gv_team2_UI.lv_builderIcon, "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWprotoss.dds", PlayerGroupAll());
-        }
-        else {
-        }
+    else {
+        lv__icon = gv_team2_UI.lv_builderIcon;
+    }
+    auto2AE6ADA5_val = lp_race;
+    if (auto2AE6ADA5_val == "Terr") {
+        libNtve_gf_SetDialogItemImage(lv__icon, "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_terran.dds", PlayerGroupAll());
+    }
+    else if (auto2AE6ADA5_val == "Zerg") {
+        libNtve_gf_SetDialogItemImage(lv__icon, "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_zerg.dds", PlayerGroupAll());
+    }
+    else if (auto2AE6ADA5_val == "Prot") {
+        libNtve_gf_SetDialogItemImage(lv__icon, "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_protoss.dds", PlayerGroupAll());
+    }
+    else if (auto2AE6ADA5_val == "BWTe") {
+        libNtve_gf_SetDialogItemImage(lv__icon, "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWterran.dds", PlayerGroupAll());
+    }
+    else if (auto2AE6ADA5_val == "BWZe") {
+        libNtve_gf_SetDialogItemImage(lv__icon, "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWzerg.dds", PlayerGroupAll());
+    }
+    else if (auto2AE6ADA5_val == "BWPr") {
+        libNtve_gf_SetDialogItemImage(lv__icon, "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWprotoss.dds", PlayerGroupAll());
+    }
+    else {
     }
 }
 
@@ -2178,6 +2164,113 @@ void gt_GainControl_Init () {
 }
 
 //--------------------------------------------------------------------------------------------------
+// Trigger: ChangeRace
+//--------------------------------------------------------------------------------------------------
+bool gt_ChangeRace_Func (bool testConds, bool runActions) {
+    // Variable Declarations
+    int lv__player;
+    int lv__team;
+    string lv__oldRace;
+    string lv__newRace;
+    unit lv__unit;
+
+    // Automatic Variable Declarations
+    string auto415B64FC_val;
+    unitgroup auto5A6ECBD7_g;
+    int auto5A6ECBD7_u;
+    playergroup autoC9899372_g;
+    playergroup autoACDC1C99_g;
+
+    // Variable Initialization
+
+    // Conditions
+    if (testConds) {
+        if (!((gv_debug == true))) {
+            return false;
+        }
+
+        if (!((gv_playerProperty[EventPlayer()].lv_role == ge_Role_Builder))) {
+            return false;
+        }
+    }
+
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    lv__player = EventPlayer();
+    lv__team = gf_GetTeamOfPlayer(lv__player);
+    lv__oldRace = PlayerRace(lv__player);
+    auto415B64FC_val = EventChatMessage(false);
+    if (auto415B64FC_val == "-r t") {
+        lv__newRace = "Terr";
+    }
+    else if (auto415B64FC_val == "-r z") {
+        lv__newRace = "Zerg";
+    }
+    else if (auto415B64FC_val == "-r p") {
+        lv__newRace = "Prot";
+    }
+    else if (auto415B64FC_val == "-r t1") {
+        lv__newRace = "BWTe";
+    }
+    else if (auto415B64FC_val == "-r z1") {
+        lv__newRace = "BWZe";
+    }
+    else if (auto415B64FC_val == "-r p1") {
+        lv__newRace = "BWPr";
+    }
+    else {
+    }
+    if ((lv__oldRace != lv__newRace)) {
+        auto5A6ECBD7_g = UnitGroup(null, lv__player, RegionEntireMap(), UnitFilter(0, 0, 0, 0), 0);
+        auto5A6ECBD7_u = UnitGroupCount(auto5A6ECBD7_g, c_unitCountAll);
+        for (;; auto5A6ECBD7_u -= 1) {
+            lv__unit = UnitGroupUnitFromEnd(auto5A6ECBD7_g, auto5A6ECBD7_u);
+            if (lv__unit == null) { break; }
+            UnitRemove(lv__unit);
+        }
+    }
+
+    if ((lv__team == 1)) {
+        gv_team1_teamInfo.lv_race = lv__newRace;
+        MeleeInitUnitsForPlayer(lv__player, lv__newRace, gv_team1_teamInfo.lv_startLocation);
+        autoACDC1C99_g = gv_team1_playerGroup.lv_players;
+        lv__player = -1;
+        while (true) {
+            lv__player = PlayerGroupNextPlayer(autoACDC1C99_g, lv__player);
+            if (lv__player < 0) { break; }
+            PlayerSetRace(lv__player, lv__newRace);
+        }
+    }
+    else {
+        gv_team2_teamInfo.lv_race = lv__newRace;
+        MeleeInitUnitsForPlayer(lv__player, lv__newRace, gv_team2_teamInfo.lv_startLocation);
+        autoC9899372_g = gv_team2_playerGroup.lv_players;
+        lv__player = -1;
+        while (true) {
+            lv__player = PlayerGroupNextPlayer(autoC9899372_g, lv__player);
+            if (lv__player < 0) { break; }
+            PlayerSetRace(lv__player, lv__newRace);
+        }
+    }
+    gf_UpdateBuilderIcon(lv__team, lv__newRace);
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void gt_ChangeRace_Init () {
+    gt_ChangeRace = TriggerCreate("gt_ChangeRace_Func");
+    TriggerAddEventChatMessage(gt_ChangeRace, c_playerAny, ("-r t"), true);
+    TriggerAddEventChatMessage(gt_ChangeRace, c_playerAny, ("-r z"), true);
+    TriggerAddEventChatMessage(gt_ChangeRace, c_playerAny, ("-r p"), true);
+    TriggerAddEventChatMessage(gt_ChangeRace, c_playerAny, ("-r t1"), true);
+    TriggerAddEventChatMessage(gt_ChangeRace, c_playerAny, ("-r z1"), true);
+    TriggerAddEventChatMessage(gt_ChangeRace, c_playerAny, ("-r p1"), true);
+}
+
+//--------------------------------------------------------------------------------------------------
 // Trigger: RemoveUnit
 //--------------------------------------------------------------------------------------------------
 bool gt_RemoveUnit_Func (bool testConds, bool runActions) {
@@ -2256,82 +2349,6 @@ bool gt_Worker_Func (bool testConds, bool runActions) {
 void gt_Worker_Init () {
     gt_Worker = TriggerCreate("gt_Worker_Func");
     TriggerAddEventChatMessage(gt_Worker, c_playerAny, ("-wor"), true);
-}
-
-//--------------------------------------------------------------------------------------------------
-// Trigger: Race
-//--------------------------------------------------------------------------------------------------
-bool gt_Race_Func (bool testConds, bool runActions) {
-    // Variable Declarations
-    int lv__player;
-    string lv__race;
-
-    // Automatic Variable Declarations
-    string auto415B64FC_val;
-    playergroup autoACDC1C99_g;
-    playergroup autoC9899372_g;
-
-    // Variable Initialization
-
-    // Conditions
-    if (testConds) {
-        if (!((gv_debug == true))) {
-            return false;
-        }
-    }
-
-    // Actions
-    if (!runActions) {
-        return true;
-    }
-
-    auto415B64FC_val = EventChatMessage(false);
-    if (auto415B64FC_val == "-r t") {
-        lv__race = "Terr";
-    }
-    else if (auto415B64FC_val == "-r z") {
-        lv__race = "Zerg";
-    }
-    else if (auto415B64FC_val == "-r p") {
-        lv__race = "Prot";
-    }
-    else if (auto415B64FC_val == "-r t1") {
-        lv__race = "BWTe";
-    }
-    else if (auto415B64FC_val == "-r z1") {
-        lv__race = "BWZe";
-    }
-    else if (auto415B64FC_val == "-r p1") {
-        lv__race = "BWPr";
-    }
-    else {
-    }
-    autoACDC1C99_g = gv_team1_playerGroup.lv_players;
-    lv__player = -1;
-    while (true) {
-        lv__player = PlayerGroupNextPlayer(autoACDC1C99_g, lv__player);
-        if (lv__player < 0) { break; }
-        PlayerSetRace(lv__player, lv__race);
-    }
-    autoC9899372_g = gv_team2_playerGroup.lv_players;
-    lv__player = -1;
-    while (true) {
-        lv__player = PlayerGroupNextPlayer(autoC9899372_g, lv__player);
-        if (lv__player < 0) { break; }
-        PlayerSetRace(lv__player, lv__race);
-    }
-    return true;
-}
-
-//--------------------------------------------------------------------------------------------------
-void gt_Race_Init () {
-    gt_Race = TriggerCreate("gt_Race_Func");
-    TriggerAddEventChatMessage(gt_Race, c_playerAny, ("-r t"), true);
-    TriggerAddEventChatMessage(gt_Race, c_playerAny, ("-r z"), true);
-    TriggerAddEventChatMessage(gt_Race, c_playerAny, ("-r p"), true);
-    TriggerAddEventChatMessage(gt_Race, c_playerAny, ("-r t1"), true);
-    TriggerAddEventChatMessage(gt_Race, c_playerAny, ("-r z1"), true);
-    TriggerAddEventChatMessage(gt_Race, c_playerAny, ("-r p1"), true);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -5875,9 +5892,9 @@ void InitTriggers () {
     gt_Fast_Init();
     gt_Control_Init();
     gt_GainControl_Init();
+    gt_ChangeRace_Init();
     gt_RemoveUnit_Init();
     gt_Worker_Init();
-    gt_Race_Init();
     gt_Color_Init();
     gt_BeBuilder_Init();
     gt_BeFighter_Init();
