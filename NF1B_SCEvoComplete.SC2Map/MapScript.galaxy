@@ -179,6 +179,7 @@ void gf_SetStartLocation ();
 void gf_SetRoleForTeam1 ();
 void gf_SetRoleForTeam2 ();
 void gf_SetStartingUnit ();
+void gf_SetTechRestrictionsForTeam (int lp_team);
 void gf_SetUI ();
 void gf_SetFighterMode ();
 void gf_SetMeleeOptions ();
@@ -941,6 +942,56 @@ void gf_SetStartingUnit () {
         PlayerSetRace(lv__player, gv_team2_teamInfo.lv_race);
         PlayerSetColorIndex(lv__player, gv_team2_teamInfo.lv_playerColor, true);
         CameraPan(lv__player, gv_team2_teamInfo.lv_startLocation, 0.0, -1, 10.0, false);
+    }
+}
+
+void gf_SetTechRestrictionsForTeam (int lp_team) {
+    // Variable Declarations
+    string lv__race;
+    int lv__player;
+    playergroup lv__fighterGroup;
+
+    // Automatic Variable Declarations
+    int autoB838EA86_val;
+    string autoF3C38F92_val;
+    playergroup auto652F3E92_g;
+    playergroup auto1E5A1BCE_g;
+
+    // Variable Initialization
+    lv__fighterGroup = PlayerGroupEmpty();
+
+    // Implementation
+    autoB838EA86_val = lp_team;
+    if (autoB838EA86_val == 1) {
+        lv__race = gv_team1_teamInfo.lv_race;
+        lv__fighterGroup = gv_team1_teamInfo.lv_fighterGroup;
+    }
+    else if (autoB838EA86_val == 2) {
+        lv__race = gv_team2_teamInfo.lv_race;
+        lv__fighterGroup = gv_team2_teamInfo.lv_fighterGroup;
+    }
+    else {
+    }
+    autoF3C38F92_val = lv__race;
+    if (autoF3C38F92_val == "Zerg") {
+        auto652F3E92_g = lv__fighterGroup;
+        lv__player = -1;
+        while (true) {
+            lv__player = PlayerGroupNextPlayer(auto652F3E92_g, lv__player);
+            if (lv__player < 0) { break; }
+            gf_DisallowZergMorph(lv__player);
+        }
+    }
+    else if (autoF3C38F92_val == "BWZe") {
+        auto1E5A1BCE_g = lv__fighterGroup;
+        lv__player = -1;
+        while (true) {
+            lv__player = PlayerGroupNextPlayer(auto1E5A1BCE_g, lv__player);
+            if (lv__player < 0) { break; }
+            gf_DisallowZergBWMorph(lv__player);
+        }
+    }
+    else {
     }
 }
 
@@ -2861,6 +2912,8 @@ bool gt_AfterRoleSelection_Func (bool testConds, bool runActions) {
         return true;
     }
 
+    gf_SetTechRestrictionsForTeam(1);
+    gf_SetTechRestrictionsForTeam(2);
     gf_SetUI();
     gf_SetFighterMode();
     gf_SetMeleeOptions();
