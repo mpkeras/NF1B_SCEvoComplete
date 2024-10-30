@@ -201,6 +201,12 @@ void gf_OpenResourceUpdateTrigger (int lp_team);
 void gf_OpenSupplyShareTrigger (int lp_team);
 void gf_CloseSupplyShareTrigger (int lp_team);
 void gf_MaintainSupplyUnchanged (int lp_oldOwner, int lp_newOwner);
+void gf_AllowZergMorph (int lp_player);
+void gf_DisallowZergMorph (int lp_player);
+void gf_AllowZergBWMorph (int lp_player);
+void gf_DisallowZergBWMorph (int lp_player);
+void gf_ZergMorph (int lp_player, bool lp_option);
+void gf_ZergBWMorph (int lp_player, bool lp_option);
 void gf_ChangeOwnershipAfterSelect (unit lp_unit, int lp_fighter);
 void gf_ChangeOwnershipAfterRelease (unit lp_unit);
 void gf_DisableAbilityForReleasedMainBase (unit lp_unit);
@@ -1656,6 +1662,53 @@ void gf_MaintainSupplyUnchanged (int lp_oldOwner, int lp_newOwner) {
     gf_OpenSupplyShareTrigger(lv__team);
 }
 
+void gf_AllowZergMorph (int lp_player) {
+    // Automatic Variable Declarations
+    // Implementation
+    TechTreeRestrictionsEnable(lp_player, false);
+    gf_ZergMorph(lp_player, true);
+}
+
+void gf_DisallowZergMorph (int lp_player) {
+    // Automatic Variable Declarations
+    // Implementation
+    TechTreeRestrictionsEnable(lp_player, true);
+    gf_ZergMorph(lp_player, false);
+}
+
+void gf_AllowZergBWMorph (int lp_player) {
+    // Automatic Variable Declarations
+    // Implementation
+    TechTreeRestrictionsEnable(lp_player, false);
+    gf_ZergBWMorph(lp_player, true);
+}
+
+void gf_DisallowZergBWMorph (int lp_player) {
+    // Automatic Variable Declarations
+    // Implementation
+    TechTreeRestrictionsEnable(lp_player, true);
+    gf_ZergBWMorph(lp_player, false);
+}
+
+void gf_ZergMorph (int lp_player, bool lp_option) {
+    // Automatic Variable Declarations
+    // Implementation
+    TechTreeAbilityAllow(lp_player, AbilityCommand("MorphToBaneling", 0), lp_option);
+    TechTreeAbilityAllow(lp_player, AbilityCommand("MorphToRavager", 0), lp_option);
+    TechTreeAbilityAllow(lp_player, AbilityCommand("MorphToOverseer", 0), lp_option);
+    TechTreeAbilityAllow(lp_player, AbilityCommand("MorphToTransportOverlord", 0), lp_option);
+    TechTreeAbilityAllow(lp_player, AbilityCommand("MorphToLurker", 0), lp_option);
+    TechTreeAbilityAllow(lp_player, AbilityCommand("MorphToBroodLord", 0), lp_option);
+}
+
+void gf_ZergBWMorph (int lp_player, bool lp_option) {
+    // Automatic Variable Declarations
+    // Implementation
+    TechTreeAbilityAllow(lp_player, AbilityCommand("LurkerSCBW@Morph", 0), lp_option);
+    TechTreeAbilityAllow(lp_player, AbilityCommand("GuardianSCBW@Morph", 0), lp_option);
+    TechTreeAbilityAllow(lp_player, AbilityCommand("DevourerSCBW@Morph", 0), lp_option);
+}
+
 void gf_ChangeOwnershipAfterSelect (unit lp_unit, int lp_fighter) {
     // Variable Declarations
     int lv__team;
@@ -1831,6 +1884,13 @@ void gf_FighterDefeat (int lp_team) {
 //--------------------------------------------------------------------------------------------------
 bool gt_temp_Func (bool testConds, bool runActions) {
     // Automatic Variable Declarations
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    TechTreeRestrictionsEnable(1, true);
+    TechTreeAbilityAllow(1, AbilityCommand("MorphToRavager", 0), false);
     return true;
 }
 
