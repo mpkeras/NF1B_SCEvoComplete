@@ -89,6 +89,7 @@ Trigger/Name/CB502B1F=bwNukeAdd
 Trigger/Name/D0E013A1=resourceUpdate2
 Trigger/Name/D114A5F2=singleMode
 Trigger/Name/D9C31760=addByConstructComplete
+Trigger/Name/DAA59898=EnableExperimental
 Trigger/Name/DB225738=fighterQuit
 Trigger/Name/DC9E9C9B=nexusBuildComplete
 Trigger/Name/DD3B88C2=unchangeByChangeOwner

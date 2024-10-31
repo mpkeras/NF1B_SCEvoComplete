@@ -2,7 +2,7 @@
 // 
 // Generated Map Script
 // 
-// Name:   N Fight 1 Builds (SC: Evo Complete)
+// Name:   N ?????? 1 ?????? (SC: Evo Complete) ?????????
 // 
 //==================================================================================================
 include "TriggerLibs/NativeLib"
@@ -2737,7 +2737,6 @@ bool gt_DisableExperimental_Func (bool testConds, bool runActions) {
 //--------------------------------------------------------------------------------------------------
 void gt_DisableExperimental_Init () {
     gt_DisableExperimental = TriggerCreate("gt_DisableExperimental_Func");
-    TriggerAddEventMapInit(gt_DisableExperimental);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -4290,6 +4289,7 @@ bool gt_ChangeMorphEnabledByBuilder_Func (bool testConds, bool runActions) {
                 gf_AllowZergMorph(lv__fighter);
             }
             gv_team1_teamMode.lv_morphEnabled = true;
+            UIDisplayMessage(gv_team1_playerGroup.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/C4B8A3B1"));
         }
         else {
             auto01E20BB5_g = gv_team1_playerGroup.lv_fightersWithNeutral;
@@ -4300,6 +4300,7 @@ bool gt_ChangeMorphEnabledByBuilder_Func (bool testConds, bool runActions) {
                 gf_DisallowZergMorph(lv__fighter);
             }
             gv_team1_teamMode.lv_morphEnabled = false;
+            UIDisplayMessage(gv_team1_playerGroup.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/BB913FD5"));
         }
     }
     else if (autoB8A9F704_val == 2) {
@@ -4312,6 +4313,7 @@ bool gt_ChangeMorphEnabledByBuilder_Func (bool testConds, bool runActions) {
                 gf_AllowZergMorph(lv__fighter);
             }
             gv_team2_teamMode.lv_morphEnabled = true;
+            UIDisplayMessage(gv_team2_playerGroup.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/63E821A7"));
         }
         else {
             autoED992C42_g = gv_team2_playerGroup.lv_fightersWithNeutral;
@@ -4322,6 +4324,7 @@ bool gt_ChangeMorphEnabledByBuilder_Func (bool testConds, bool runActions) {
                 gf_DisallowZergMorph(lv__fighter);
             }
             gv_team2_teamMode.lv_morphEnabled = false;
+            UIDisplayMessage(gv_team2_playerGroup.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/9623C488"));
         }
     }
     else {

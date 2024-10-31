@@ -75,20 +75,24 @@ Param/Value/45E37495=300
 Param/Value/514459C7=400
 Param/Value/56DB4C47=-d: Enable/Disable debug mod<n/><n/>-con: Enable/Disable shared control on other players' units<n/><n/>-gain: Change owner of selected units to current user<n/><n/>-res: Add 10000 of each Resource to the Available Resources<n/><n/>-fog: Disable/Enable Fog of War<n/><n/>-food: Disable/Enable the need for Supplies<n/><n/>-fast: Enable/Enable Fast Builds and Fast Upgrades<n/><n/>test: Equivalent to "-res" + "-fog" + "-food" + "-fast"<n/><n/>-wor: Create workers from all races<n/><n/>-bui: Become builder<n/><n/>-fig: Become Fighter<n/><n/>-nf: Setup "N Fight 1 Builds" mode<n/><n/>-1f: Setup "1 Fights 1 Builds" mode<n/><n/>-rm: Remove all selected units
 Param/Value/5ED931F6=Commands
+Param/Value/63E821A7=Warning: Now all fighters <c val="00ff00">can</c> use morph abilities of units under their control.
 Param/Value/6AE9E7D6=Your role is <c val="ffff8a">Fighter</c>, control the units to defeat the enemy on the battlefield.
 Param/Value/6FD47613=There's only one player left in team 1. Team 2 win.
 Param/Value/738A54F4=There's only one player left in team 2. Team 1 win.
 Param/Value/7998EB08=Tip: <c val="ffff8a">Sensor towers</c> have <c val="ffff8a">Scanner Sweep</c> Abilities and can be controlled directly by the fighter.
 Param/Value/7C2BA5DC=Team 1's builder surrendered. Team 2 win.
-Param/Value/9F90689B=Tip: The fighters' units cannot mutate units in their hand. All units that require a second phase mutation need to be trained by builders directly.
+Param/Value/9623C488=Warning: Now all fighters <c val="ff0000">can not</c> use morph abilities of units under their control.
+Param/Value/9F90689B=Tip: All units that require a second phase mutation can be trained by builders directly.
 Param/Value/A283F7C2=Team 2's builder surrendered. Team 1 win.
 Param/Value/A34A344A=Tip: If your race is SC2 Zerg, the builder need press the S button (default is S) twice to choose units which require a second phase mutation.
 Param/Value/AEE0382B=Tip: Check the top left corner for information of Races.
 Param/Value/B63FBAB8=200<n/>
-Param/Value/B9FAD2E2=Tip: The fighters' units cannot mutate units in their hand. All units that require a second phase mutation need to be trained by builders directly.
+Param/Value/B9FAD2E2=Tip: All units that require a second phase mutation can be trained by builders directly.
+Param/Value/BB913FD5=Warning: Now all fighters <c val="ff0000">can not</c> use morph abilities of units under their control.
 Param/Value/BC76442D=Tip: <c val="ffff8a">Sensor towers</c> have <c val="ffff8a">Scanner Sweep</c> Abilities and can be controlled directly by the fighter.
 Param/Value/C0AF10B1=0
 Param/Value/C2B87501=Detecting only one human player. Debug mode on.
+Param/Value/C4B8A3B1=Warning: Now all fighters <c val="00ff00">can</c> use morph abilities of units under their control.
 Param/Value/CA3F7518=Tip: If defeat is assured, the <c val="ffff8a">Builder</c> can surrender by simply exiting the game or entering "-gg".
 Param/Value/CAE6A306=Your role is <c val="ffff8a">Builder</c>, train units for the fighters.
 Param/Value/CEF41543=0
@@ -96,7 +100,7 @@ Param/Value/CF2DDDB5=Your role is <c val="ffff8a">Builder</c>, train units for t
 Param/Value/DA162D42=Debug Commands
 Param/Value/E33F8417=0
 Param/Value/E539788E=0
-Param/Value/F4D1DCD3=<c val="ffff8a">-r</c>: Release units (Builders can release SCBW Overlord, SCBW Command Center and SC2 Orbital Command)<n/><n/><c val="ffff8a">-o</c>: Gain Control on units which were released by builders previously (For builders use only)<n/><n/><c val="ffff8a">-gg</c>: Surrender (For builders use only)<n/><n/><c val="ffff8a">-b <id></c>: Change builder to player <id> (For builders use only. Can only be used within 1 minute of the start of the game)<n/><n/><c val="ffff8a">-b</c>: Change builder to a random player in fighters (For builders use only. Can only be used within 1 minute of the start of the game)
+Param/Value/F4D1DCD3=<c val="ffff8a">-r</c>: Release units (Builders can release SCBW Overlord, SCBW Command Center and SC2 Orbital Command)<n/><n/><c val="ffff8a">-o</c>: Gain Control on units which were released by builders previously (For builders use only)<n/><n/><c val="ffff8a">-gg</c>: Surrender (For builders use only)<n/><n/><c val="ffff8a">-b <id></c>: Change builder to player <id> (For builders use only. Can only be used within 1 minute of the start of the game)<n/><n/><c val="ffff8a">-b</c>: Change builder to a random player in fighters (For builders use only. Can only be used within 1 minute of the start of the game)<n/><n/><c val="ffff8a">-m</c>: Allow/Disallow fighters use morph abilities (For builders use only)
 Param/Value/FBEE3EC0=250
 Param/Value/FD733CCC=<c val="ffff8a">Ctrl+X</c>: Open/Close User Panel
 Variant001/ModeDesc=A mode inspired by the Archon Mode.
