@@ -28,6 +28,7 @@ struct gs_TeamMode {
     int lv_fighterMode;
     int lv_ownerForRelease;
     int lv_colorForRelease;
+    bool lv_morphEnabled;
 };
 
 struct gs_SharedUnit {
@@ -165,6 +166,7 @@ int gf_GetRoleOfPlayer (int lp_player);
 int gf_GetOwnerForRelease (int lp_team);
 int gf_GetColorForRelease (int lp_team);
 int gf_GetNeutralOfTeam (int lp_team);
+bool gf_GetMorphEnabledOfTeam (int lp_team);
 void gf_ReturnCargo (unit lp_unit);
 int gf_RandomFighterFromTeam (int lp_team);
 int gf_RandomFighterExcludeHaveBeenFromTeam (int lp_team);
@@ -194,6 +196,7 @@ void gf_UpdateBuilderName (int lp_newBuilder, int lp_team);
 void gf_DisplayBuilderInfo ();
 void gf_SetUserPanel ();
 void gf_OwnershipForChangeBuilder (int lp_oldBuilder, int lp_newBuilder);
+void gf_UpdateMorphForChangeBuilder (int lp_oldBuilder, int lp_newBuilder);
 void gf_UpdateRole (int lp_team, int lp_oldBuilder, int lp_newBuilder);
 void gf_TransferResource (int lp_team, int lp_player_1, int lp_player_2);
 void gf_UpdateResource (int lp_team, int lp_oldBuilder, int lp_newBuilder);
@@ -276,6 +279,7 @@ trigger gt_Team2_BuilderMadeChange;
 trigger gt_Team2_BuilderUsedChange;
 trigger gt_Team2_FighterMadeChange;
 trigger gt_Team2_FighterUsedChange;
+trigger gt_ChangeMorphEnabledByBuilder;
 trigger gt_ShareStructure;
 trigger gt_ShareUpgrade;
 trigger gt_AddArmory;
@@ -483,6 +487,23 @@ int gf_GetNeutralOfTeam (int lp_team) {
     }
     else {
         return 14;
+    }
+}
+
+bool gf_GetMorphEnabledOfTeam (int lp_team) {
+    // Automatic Variable Declarations
+    int auto2B22285A_val;
+
+    // Implementation
+    auto2B22285A_val = lp_team;
+    if (auto2B22285A_val == 1) {
+        return gv_team1_teamMode.lv_morphEnabled;
+    }
+    else if (auto2B22285A_val == 2) {
+        return gv_team2_teamMode.lv_morphEnabled;
+    }
+    else {
+        return false;
     }
 }
 
@@ -1507,6 +1528,24 @@ void gf_OwnershipForChangeBuilder (int lp_oldBuilder, int lp_newBuilder) {
     }
 }
 
+void gf_UpdateMorphForChangeBuilder (int lp_oldBuilder, int lp_newBuilder) {
+    // Variable Declarations
+    int lv__team;
+    bool lv__morphEnabled;
+
+    // Automatic Variable Declarations
+    // Variable Initialization
+
+    // Implementation
+    lv__team = gf_GetTeamOfPlayer(lp_newBuilder);
+    lv__morphEnabled = gf_GetMorphEnabledOfTeam(lv__team);
+    if ((lv__morphEnabled == false)) {
+        gf_DisallowZergMorph(lp_oldBuilder);
+        gf_AllowZergMorph(lp_newBuilder);
+    }
+
+}
+
 void gf_UpdateRole (int lp_team, int lp_oldBuilder, int lp_newBuilder) {
     // Automatic Variable Declarations
     int auto4FBB1AC2_val;
@@ -1840,12 +1879,7 @@ void gf_ChangeFighterMode (int lp_team, int lp_mode) {
 }
 
 void gf_UpdateFighterMode (int lp_team) {
-    // Variable Declarations
-    int lv__mode;
-
     // Automatic Variable Declarations
-    // Variable Initialization
-
     // Implementation
     if ((lp_team == 1)) {
         gf_ChangeFighterMode(1, gv_team1_teamMode.lv_fighterMode);
@@ -2482,8 +2516,7 @@ bool gt_BeBuilder_Func (bool testConds, bool runActions) {
     }
     if ((lv__newBuilder != lv__oldBuilder)) {
         gf_UpdateRole(lv__team, lv__oldBuilder, lv__newBuilder);
-        gf_AllowZergMorph(lv__newBuilder);
-        gf_DisallowZergMorph(lv__oldBuilder);
+        gf_UpdateMorphForChangeBuilder(lv__oldBuilder, lv__newBuilder);
         gf_UpdateFighterMode(lv__team);
         gf_OwnershipForChangeBuilder(lv__oldBuilder, lv__newBuilder);
         gf_MaintainSupplyUnchanged(lv__oldBuilder, lv__newBuilder);
@@ -2529,8 +2562,7 @@ bool gt_BeFighter_Func (bool testConds, bool runActions) {
         lv__team = gf_GetTeamOfPlayer(lv__oldBuilder);
         lv__newBuilder = gf_RandomFighterFromTeam(lv__team);
         gf_UpdateRole(lv__team, lv__oldBuilder, lv__newBuilder);
-        gf_AllowZergMorph(lv__newBuilder);
-        gf_DisallowZergMorph(lv__oldBuilder);
+        gf_UpdateMorphForChangeBuilder(lv__oldBuilder, lv__newBuilder);
         gf_UpdateFighterMode(lv__team);
         gf_OwnershipForChangeBuilder(lv__oldBuilder, lv__newBuilder);
         gf_MaintainSupplyUnchanged(lv__oldBuilder, lv__newBuilder);
@@ -3223,6 +3255,7 @@ bool gt_ChangeBuilder_Func (bool testConds, bool runActions) {
     }
     if ((lv__valid == true)) {
         gf_UpdateRole(lv__team, lv__oldBuilder, lv__newBuilder);
+        gf_UpdateMorphForChangeBuilder(lv__oldBuilder, lv__newBuilder);
         gf_AllowZergMorph(lv__newBuilder);
         gf_DisallowZergMorph(lv__oldBuilder);
         gf_UpdateFighterMode(lv__team);
@@ -3285,8 +3318,7 @@ bool gt_GiveUpBuilderRole_Func (bool testConds, bool runActions) {
     lv__newBuilder = gf_RandomFighterExcludeHaveBeenFromTeam(lv__team);
     if ((lv__newBuilder != -1)) {
         gf_UpdateRole(lv__team, lv__oldBuilder, lv__newBuilder);
-        gf_AllowZergMorph(lv__newBuilder);
-        gf_DisallowZergMorph(lv__oldBuilder);
+        gf_UpdateMorphForChangeBuilder(lv__oldBuilder, lv__newBuilder);
         gf_UpdateFighterMode(lv__team);
         gf_OwnershipForChangeBuilder(lv__oldBuilder, lv__newBuilder);
         gf_MaintainSupplyUnchanged(lv__oldBuilder, lv__newBuilder);
@@ -4213,6 +4245,94 @@ void gt_Team2_FighterUsedChange_Init () {
     TriggerAddEventPlayerPropChange(gt_Team2_FighterUsedChange, 12, c_playerPropSuppliesUsed);
     TriggerAddEventPlayerPropChange(gt_Team2_FighterUsedChange, 13, c_playerPropSuppliesUsed);
     TriggerAddEventPlayerPropChange(gt_Team2_FighterUsedChange, 14, c_playerPropSuppliesUsed);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Trigger: ChangeMorphEnabledByBuilder
+//--------------------------------------------------------------------------------------------------
+bool gt_ChangeMorphEnabledByBuilder_Func (bool testConds, bool runActions) {
+    // Variable Declarations
+    int lv__player;
+    int lv__team;
+    int lv__fighter;
+
+    // Automatic Variable Declarations
+    int autoB8A9F704_val;
+    playergroup auto01E20BB5_g;
+    playergroup auto3F23AED1_g;
+    playergroup autoED992C42_g;
+    playergroup auto98E383A0_g;
+
+    // Variable Initialization
+
+    // Conditions
+    if (testConds) {
+        if (!((gf_GetRoleOfPlayer(EventPlayer()) == ge_Role_Builder))) {
+            return false;
+        }
+    }
+
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    lv__player = EventPlayer();
+    lv__team = gf_GetTeamOfPlayer(lv__player);
+    autoB8A9F704_val = lv__team;
+    if (autoB8A9F704_val == 1) {
+        if ((gv_team1_teamMode.lv_morphEnabled == false)) {
+            auto3F23AED1_g = gv_team1_playerGroup.lv_fightersWithNeutral;
+            lv__fighter = -1;
+            while (true) {
+                lv__fighter = PlayerGroupNextPlayer(auto3F23AED1_g, lv__fighter);
+                if (lv__fighter < 0) { break; }
+                gf_AllowZergMorph(lv__fighter);
+            }
+            gv_team1_teamMode.lv_morphEnabled = true;
+        }
+        else {
+            auto01E20BB5_g = gv_team1_playerGroup.lv_fightersWithNeutral;
+            lv__fighter = -1;
+            while (true) {
+                lv__fighter = PlayerGroupNextPlayer(auto01E20BB5_g, lv__fighter);
+                if (lv__fighter < 0) { break; }
+                gf_DisallowZergMorph(lv__fighter);
+            }
+            gv_team1_teamMode.lv_morphEnabled = false;
+        }
+    }
+    else if (autoB8A9F704_val == 2) {
+        if ((gv_team2_teamMode.lv_morphEnabled == false)) {
+            auto98E383A0_g = gv_team2_playerGroup.lv_fightersWithNeutral;
+            lv__fighter = -1;
+            while (true) {
+                lv__fighter = PlayerGroupNextPlayer(auto98E383A0_g, lv__fighter);
+                if (lv__fighter < 0) { break; }
+                gf_AllowZergMorph(lv__fighter);
+            }
+            gv_team2_teamMode.lv_morphEnabled = true;
+        }
+        else {
+            autoED992C42_g = gv_team2_playerGroup.lv_fightersWithNeutral;
+            lv__fighter = -1;
+            while (true) {
+                lv__fighter = PlayerGroupNextPlayer(autoED992C42_g, lv__fighter);
+                if (lv__fighter < 0) { break; }
+                gf_DisallowZergMorph(lv__fighter);
+            }
+            gv_team2_teamMode.lv_morphEnabled = false;
+        }
+    }
+    else {
+    }
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void gt_ChangeMorphEnabledByBuilder_Init () {
+    gt_ChangeMorphEnabledByBuilder = TriggerCreate("gt_ChangeMorphEnabledByBuilder_Func");
+    TriggerAddEventChatMessage(gt_ChangeMorphEnabledByBuilder, c_playerAny, ("-m"), true);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -6021,6 +6141,7 @@ void InitTriggers () {
     gt_Team2_BuilderUsedChange_Init();
     gt_Team2_FighterMadeChange_Init();
     gt_Team2_FighterUsedChange_Init();
+    gt_ChangeMorphEnabledByBuilder_Init();
     gt_ShareStructure_Init();
     gt_ShareUpgrade_Init();
     gt_AddArmory_Init();
