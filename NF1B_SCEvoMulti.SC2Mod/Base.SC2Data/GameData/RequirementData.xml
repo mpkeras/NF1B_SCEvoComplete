@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Catalog>
-    <CRequirement id="DisabledInNF1B">
-        <EditorCategories value="Race:Zerg,TechType:Ability"/>
-        <NodeArray index="Use" Link="Eq405072845601"/>
-    </CRequirement>
-</Catalog>

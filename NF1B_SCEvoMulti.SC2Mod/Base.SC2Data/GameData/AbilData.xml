@@ -32,18 +32,6 @@
     <CAbilTransport id="MedivacTransport">
         <TargetFilters value="Visible;Self,Neutral,Enemy,Buried,UnderConstruction,Dead,Hidden"/>
     </CAbilTransport>
-    <CAbilMorph id="MorphToBaneling">
-        <CmdButtonArray index="Execute" Requirements="DisabledInNF1B"/>
-    </CAbilMorph>
-    <CAbilMorph id="MorphToBroodLord">
-        <CmdButtonArray index="Execute" Requirements="DisabledInNF1B"/>
-    </CAbilMorph>
-    <CAbilMorph id="MorphToLurker">
-        <CmdButtonArray index="Execute" Requirements="DisabledInNF1B"/>
-    </CAbilMorph>
-    <CAbilMorph id="MorphToRavager">
-        <CmdButtonArray index="Execute" Requirements="DisabledInNF1B"/>
-    </CAbilMorph>
     <CAbilEffectTarget id="MothershipCoreMassRecall">
         <TargetFilters index="0" value="-;Neutral,Enemy"/>
     </CAbilEffectTarget>
@@ -82,9 +70,6 @@
     <CAbilTransport id="ShuttleSCBW@Transport">
         <TargetFilters value="Visible;Neutral,Enemy,Buried,UnderConstruction,Dead,Hidden"/>
     </CAbilTransport>
-    <CAbilMorph id="DevourerSCBW@Morph">
-        <CmdButtonArray index="Execute" Requirements="DisabledInNF1B"/>
-    </CAbilMorph>
     <CAbilEffectTarget id="GhostSCBWNuclearStrike">
         <Effect index="0" value="GhostSCBWNuclearStrike@CalldownSwitch"/>
         <Cost>
@@ -99,9 +84,6 @@
         <CalldownEffect value="GhostSCBWNuclearStrike@CalldownSwitch"/>
         <CmdButtonArray index="Execute" Requirements=""/>
     </CAbilEffectTarget>
-    <CAbilMorph id="GuardianSCBW@Morph">
-        <CmdButtonArray index="Execute" Requirements="DisabledInNF1B"/>
-    </CAbilMorph>
     <CAbilTrain id="LarvaSCBW@Train">
         <InfoArray index="Train28" Time="11.5">
             <Button DefaultButtonFace="DevourerSCBWE" Requirements="DevourerSCBW"/>
@@ -116,9 +98,6 @@
             <Unit value="LurkerSCBW"/>
         </InfoArray>
     </CAbilTrain>
-    <CAbilMorph id="LurkerSCBW@Morph">
-        <CmdButtonArray index="Execute" Requirements="DisabledInNF1B"/>
-    </CAbilMorph>
     <CAbilArmMagazine id="NukeSCBWArm">
         <CalldownEffect value="GhostSCBWNuclearStrike@CalldownDummyNF1B"/>
     </CAbilArmMagazine>

@@ -24,4 +24,3 @@ Effect/Name/GhostSCBWNuclearStrike@CalldownNF1B=Calldown NF1B
 Effect/Name/GhostSCBWNuclearStrike@CalldownSwitchNF1B=Calldown Switch NF1B
 Effect/Name/NukeNF1B=Nuke NF1B
 Effect/Name/NukePersistentNF1B=Nuke Persistent NF1B
-RequirementNode/Tooltip/Eq405072845601=Disabled In NF1B

@@ -6,6 +6,4 @@ Button/EditorSuffix/DevourerSCBWE=(E)
 Button/EditorSuffix/LurkerMPA=(A)
 Button/EditorSuffix/LurkerSCBWA=(A)
 Button/EditorSuffix/RavagerR=(R)
-Requirement/Name/DisabledInNF1B=Disabled In NF1B
 RequirementNode/Name/1=1
-RequirementNode/Name/Eq405072845601=0 == {Disabled In NF1B}1
