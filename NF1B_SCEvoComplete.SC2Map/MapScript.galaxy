@@ -1689,49 +1689,19 @@ void gf_MaintainSupplyUnchanged (int lp_oldOwner, int lp_newOwner) {
 }
 
 void gf_AllowZergMorph (int lp_player) {
-    // Variable Declarations
-    string lv__race;
-
     // Automatic Variable Declarations
-    string autoB72EB766_val;
-
-    // Variable Initialization
-
     // Implementation
-    lv__race = PlayerRace(lp_player);
     TechTreeRestrictionsEnable(lp_player, false);
-    autoB72EB766_val = lv__race;
-    if (autoB72EB766_val == "Zerg") {
-        gf_ZergMorph(lp_player, true);
-    }
-    else if (autoB72EB766_val == "BWZe") {
-        gf_ZergBWMorph(lp_player, true);
-    }
-    else {
-    }
+    gf_ZergMorph(lp_player, true);
+    gf_ZergBWMorph(lp_player, true);
 }
 
 void gf_DisallowZergMorph (int lp_player) {
-    // Variable Declarations
-    string lv__race;
-
     // Automatic Variable Declarations
-    string auto16CBC2F3_val;
-
-    // Variable Initialization
-
     // Implementation
-    lv__race = PlayerRace(lp_player);
     TechTreeRestrictionsEnable(lp_player, true);
-    auto16CBC2F3_val = lv__race;
-    if (auto16CBC2F3_val == "Zerg") {
-        gf_ZergMorph(lp_player, false);
-    }
-    else if (auto16CBC2F3_val == "BWZe") {
-        gf_ZergBWMorph(lp_player, false);
-    }
-    else {
-    }
+    gf_ZergMorph(lp_player, false);
+    gf_ZergBWMorph(lp_player, false);
 }
 
 void gf_ZergMorph (int lp_player, bool lp_option) {
@@ -2516,6 +2486,8 @@ bool gt_BeBuilder_Func (bool testConds, bool runActions) {
     }
     if ((lv__newBuilder != lv__oldBuilder)) {
         gf_UpdateRole(lv__team, lv__oldBuilder, lv__newBuilder);
+        gf_AllowZergMorph(lv__newBuilder);
+        gf_DisallowZergMorph(lv__oldBuilder);
         gf_UpdateFighterMode(lv__team);
         gf_OwnershipForChangeBuilder(lv__oldBuilder, lv__newBuilder);
         gf_MaintainSupplyUnchanged(lv__oldBuilder, lv__newBuilder);
@@ -2561,6 +2533,8 @@ bool gt_BeFighter_Func (bool testConds, bool runActions) {
         lv__team = gf_GetTeamOfPlayer(lv__oldBuilder);
         lv__newBuilder = gf_RandomFighterFromTeam(lv__team);
         gf_UpdateRole(lv__team, lv__oldBuilder, lv__newBuilder);
+        gf_AllowZergMorph(lv__newBuilder);
+        gf_DisallowZergMorph(lv__oldBuilder);
         gf_UpdateFighterMode(lv__team);
         gf_OwnershipForChangeBuilder(lv__oldBuilder, lv__newBuilder);
         gf_MaintainSupplyUnchanged(lv__oldBuilder, lv__newBuilder);
@@ -3253,6 +3227,8 @@ bool gt_ChangeBuilder_Func (bool testConds, bool runActions) {
     }
     if ((lv__valid == true)) {
         gf_UpdateRole(lv__team, lv__oldBuilder, lv__newBuilder);
+        gf_AllowZergMorph(lv__newBuilder);
+        gf_DisallowZergMorph(lv__oldBuilder);
         gf_UpdateFighterMode(lv__team);
         gf_OwnershipForChangeBuilder(lv__oldBuilder, lv__newBuilder);
         gf_MaintainSupplyUnchanged(lv__oldBuilder, lv__newBuilder);
@@ -3313,6 +3289,8 @@ bool gt_GiveUpBuilderRole_Func (bool testConds, bool runActions) {
     lv__newBuilder = gf_RandomFighterExcludeHaveBeenFromTeam(lv__team);
     if ((lv__newBuilder != -1)) {
         gf_UpdateRole(lv__team, lv__oldBuilder, lv__newBuilder);
+        gf_AllowZergMorph(lv__newBuilder);
+        gf_DisallowZergMorph(lv__oldBuilder);
         gf_UpdateFighterMode(lv__team);
         gf_OwnershipForChangeBuilder(lv__oldBuilder, lv__newBuilder);
         gf_MaintainSupplyUnchanged(lv__oldBuilder, lv__newBuilder);
