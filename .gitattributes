@@ -1,0 +1,16 @@
+NF1B_SCEvoComplete.SC2Map/*.galaxy linguist-language=C++
+NF1B_SCEvoComplete.SC2Map/BankList.xml linguist-detectable
+NF1B_SCEvoComplete.SC2Map/*.SC2Components linguist-detectable
+NF1B_SCEvoComplete.SC2Map/Attributes linguist-detectable
+NF1B_SCEvoComplete.SC2Map/DocumentInfo linguist-detectable
+NF1B_SCEvoComplete.SC2Map/*.SC2Components linguist-language=XML
+NF1B_SCEvoComplete.SC2Map/Attributes linguist-language=XML
+NF1B_SCEvoComplete.SC2Map/DocumentInfo linguist-language=XML
+
+NF1B_SCEvoMulti.SC2Mod/Base.SC2Data/GameData/*.xml linguist-detectable
+NF1B_SCEvoMulti.SC2Mod/*.SC2Components linguist-detectable
+NF1B_SCEvoMulti.SC2Mod/Attributes linguist-detectable
+NF1B_SCEvoMulti.SC2Mod/DocumentInfo linguist-detectable
+NF1B_SCEvoMulti.SC2Mod/*.SC2Components linguist-language=XML
+NF1B_SCEvoMulti.SC2Mod/Attributes linguist-language=XML
+NF1B_SCEvoMulti.SC2Mod/DocumentInfo linguist-language=XML
