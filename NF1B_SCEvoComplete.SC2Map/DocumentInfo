@@ -9,23 +9,6 @@
     <Dependencies>
         <Value>bnet:NF1B_SCEvoMulti/0.0/236353,file:Mods\NF1B_SCEvoComplete\NF1B_SCEvoMulti.SC2Mod</Value>
     </Dependencies>
-    <Screenshot>
-        <File>
-            <Value>init.jpg</Value>
-            <Value>neutral.jpg</Value>
-            <Value>rocks.jpg</Value>
-        </File>
-        <CaptionId>
-            <Value>1</Value>
-            <Value>2</Value>
-            <Value>3</Value>
-        </CaptionId>
-        <Flags>
-            <Value> </Value>
-            <Value> </Value>
-            <Value> </Value>
-        </Flags>
-    </Screenshot>
     <PatchNote>
         <Version>
             <Value>0.1</Value>
