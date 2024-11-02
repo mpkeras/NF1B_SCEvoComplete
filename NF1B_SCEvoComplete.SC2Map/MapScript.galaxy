@@ -2,7 +2,7 @@
 // 
 // Generated Map Script
 // 
-// Name:   N???1??? (SC: Evo Complete) ???????????????
+// Name:   N Fight 1 Builds (SC: Evo Complete)
 // 
 //==================================================================================================
 include "TriggerLibs/NativeLib"
@@ -770,8 +770,18 @@ void gf_SetPlayerGroup () {
     // Variable Initialization
 
     // Implementation
-    libNtve_gf_AddPlayerGroupToPlayerGroup(GameAttributePlayersForTeam(1), gv_team1_playerGroup.lv_users);
-    libNtve_gf_AddPlayerGroupToPlayerGroup(GameAttributePlayersForTeam(2), gv_team2_playerGroup.lv_users);
+    if ((GameIsOnline() == true)) {
+        libNtve_gf_AddPlayerGroupToPlayerGroup(GameAttributePlayersForTeam(1), gv_team1_playerGroup.lv_users);
+        libNtve_gf_AddPlayerGroupToPlayerGroup(GameAttributePlayersForTeam(2), gv_team2_playerGroup.lv_users);
+    }
+    else {
+        PlayerGroupAdd(gv_team1_playerGroup.lv_users, 1);
+        PlayerGroupAdd(gv_team1_playerGroup.lv_users, 2);
+        PlayerGroupAdd(gv_team1_playerGroup.lv_users, 3);
+        PlayerGroupAdd(gv_team2_playerGroup.lv_users, 4);
+        PlayerGroupAdd(gv_team2_playerGroup.lv_users, 5);
+        PlayerGroupAdd(gv_team2_playerGroup.lv_users, 6);
+    }
     libNtve_gf_AddPlayerGroupToPlayerGroup(gv_team1_playerGroup.lv_users, gv_team1_playerGroup.lv_players);
     PlayerGroupAdd(gv_team1_playerGroup.lv_players, 13);
     libNtve_gf_AddPlayerGroupToPlayerGroup(gv_team2_playerGroup.lv_users, gv_team2_playerGroup.lv_players);
