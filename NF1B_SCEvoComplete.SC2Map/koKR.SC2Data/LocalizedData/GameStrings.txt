@@ -83,6 +83,7 @@ MapInfo/Team03/Name=exp1v1 bot
 MapInfo/Team04/Name=2v2 Bottom
 MapInfo/Team05/Name=2v2 top
 Param/Value/194069C0=단축키
+Param/Value/2266D75E=경고: 두 팀이 같은 종족입니다. 팀 중 하나의 빌더는 "-r <t1 | z1 | p1 | t2 | z2 | p2>"를 입력하여 10초 안에 자신의 종족을 변경할 수 있습니다.
 Param/Value/2ECA9760=팁: 2단계 돌연변이가 필요한 모든 유닛은 빌더가 직접 훈련할 수 있습니다.
 Param/Value/3955DDB3=경고: 1팀이 종족을 변경했습니다!
 Param/Value/3E880340=팁: <c val="ffff8a">센서 타워</c>에는 <c val="ffff8a">스캐너 스윕</c> 능력이 있으며, 전투기가 직접 제어할 수 있습니다.

@@ -93,7 +93,7 @@ int gv_userInfoPanel;
 gs_UI gv_team1_UI;
 gs_UI gv_team2_UI;
 timer gv_timer;
-bool gv_changeRaceFlag;
+bool gv_changeRaceEnabled;
 bool gv_ggFlag;
 bool gv_team1_tipSensorTowerFlag;
 bool gv_team2_tipSensorTowerFlag;
@@ -183,6 +183,7 @@ void gf_SetStartLocation ();
 void gf_SetRoleForTeam1 ();
 void gf_SetRoleForTeam2 ();
 void gf_SetStartingUnit ();
+void gf_SetChangeRaceFlag ();
 void gf_SetTechRestrictions (int lp_team);
 void gf_SetUI ();
 void gf_SetFighterMode ();
@@ -197,6 +198,7 @@ void gf_UpdateBuilderIcon (int lp_team, string lp_race);
 void gf_UpdateBuilderName (int lp_newBuilder, int lp_team);
 void gf_DisplayBuilderInfo ();
 void gf_SetUserPanel ();
+void gf_TipSameRace ();
 void gf_OwnershipForChangeBuilder (int lp_oldBuilder, int lp_newBuilder);
 void gf_UpdateMorphForChangeBuilder (int lp_oldBuilder, int lp_newBuilder);
 void gf_UpdateRole (int lp_team, int lp_oldBuilder, int lp_newBuilder);
@@ -978,6 +980,16 @@ void gf_SetStartingUnit () {
     }
 }
 
+void gf_SetChangeRaceFlag () {
+    // Automatic Variable Declarations
+    // Implementation
+    if ((gv_team1_teamInfo.lv_race == gv_team2_teamInfo.lv_race)) {
+        gv_changeRaceEnabled = true;
+        gf_TipSameRace();
+    }
+
+}
+
 void gf_SetTechRestrictions (int lp_team) {
     // Variable Declarations
     int lv__player;
@@ -1443,6 +1455,12 @@ bool auto_gf_SetUserPanel_TriggerFunc (bool testConds, bool runActions) {
         lv__height += 40;
     }
     return true;
+}
+
+void gf_TipSameRace () {
+    // Automatic Variable Declarations
+    // Implementation
+    UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, StringExternal("Param/Value/2266D75E"));
 }
 
 void gf_OwnershipForChangeBuilder (int lp_oldBuilder, int lp_newBuilder) {
@@ -2913,6 +2931,7 @@ bool gt_AfterRoleSelection_Func (bool testConds, bool runActions) {
         return true;
     }
 
+    gf_SetChangeRaceFlag();
     gf_SetTechRestrictions(1);
     gf_SetUI();
     gf_SetFighterMode();
@@ -3237,11 +3256,11 @@ bool gt_ChangeRace_Func (bool testConds, bool runActions) {
             return false;
         }
 
-        if (!((TimerGetElapsed(gv_timer) <= 10.0))) {
+        if (!((TimerGetElapsed(gv_timer) <= 12.0))) {
             return false;
         }
 
-        if (!((gv_changeRaceFlag == false))) {
+        if (!((gv_changeRaceEnabled == true))) {
             return false;
         }
     }
@@ -3278,7 +3297,7 @@ bool gt_ChangeRace_Func (bool testConds, bool runActions) {
         lv__newRace = lv__oldRace;
     }
     if ((lv__oldRace != lv__newRace)) {
-        gv_changeRaceFlag = true;
+        gv_changeRaceEnabled = false;
         auto66A73243_g = UnitGroup(null, lv__player, RegionPlayableMap(), UnitFilter(0, 0, 0, 0), 0);
         auto66A73243_u = UnitGroupCount(auto66A73243_g, c_unitCountAll);
         for (;; auto66A73243_u -= 1) {

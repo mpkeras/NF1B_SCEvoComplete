@@ -69,6 +69,7 @@ MapInfo/Team05/Name=2v2 top
 Param/Value/0F43ABCC=200<n/>
 Param/Value/194069C0=Hotkeys
 Param/Value/1AC85A47=Tip: Press F12 for help
+Param/Value/2266D75E=Warning: Two teams have the same race. One of the teams' builder can change their race by typing "-r <t1 | z1 | p1 | t2 | z2 | p2>" in 12 seconds.
 Param/Value/297E2BE5=350
 Param/Value/2D322F0D=400
 Param/Value/2ECA9760=Tip: All units that require a second phase mutation can be trained by builders directly.
