@@ -93,6 +93,7 @@ int gv_userInfoPanel;
 gs_UI gv_team1_UI;
 gs_UI gv_team2_UI;
 timer gv_timer;
+bool gv_changeRaceFlag;
 bool gv_ggFlag;
 bool gv_team1_tipSensorTowerFlag;
 bool gv_team2_tipSensorTowerFlag;
@@ -166,6 +167,7 @@ int gf_GetRoleOfPlayer (int lp_player);
 int gf_GetOwnerForRelease (int lp_team);
 int gf_GetColorForRelease (int lp_team);
 int gf_GetNeutralOfTeam (int lp_team);
+point gf_GetStartLocationOfTeam (int lp_team);
 bool gf_GetMorphEnabledOfTeam (int lp_team);
 void gf_ReturnCargo (unit lp_unit);
 int gf_RandomFighterFromTeam (int lp_team);
@@ -229,7 +231,7 @@ trigger gt_Fog;
 trigger gt_Fast;
 trigger gt_Control;
 trigger gt_GainControl;
-trigger gt_ChangeRace;
+trigger gt_ChangeRaceForDebug;
 trigger gt_RemoveUnit;
 trigger gt_Worker;
 trigger gt_Color;
@@ -258,6 +260,7 @@ trigger gt_TipSensorTower;
 trigger gt_TipRace;
 trigger gt_TipHelp;
 trigger gt_TipZerg;
+trigger gt_ChangeRace;
 trigger gt_ChangeBuilder;
 trigger gt_GiveUpBuilderRole;
 trigger gt_FighterQuit;
@@ -487,6 +490,17 @@ int gf_GetNeutralOfTeam (int lp_team) {
     }
     else {
         return 14;
+    }
+}
+
+point gf_GetStartLocationOfTeam (int lp_team) {
+    // Automatic Variable Declarations
+    // Implementation
+    if ((lp_team == 1)) {
+        return gv_team1_teamInfo.lv_startLocation;
+    }
+    else {
+        return gv_team2_teamInfo.lv_startLocation;
     }
 }
 
@@ -2265,9 +2279,9 @@ void gt_GainControl_Init () {
 }
 
 //--------------------------------------------------------------------------------------------------
-// Trigger: ChangeRace
+// Trigger: ChangeRaceForDebug
 //--------------------------------------------------------------------------------------------------
-bool gt_ChangeRace_Func (bool testConds, bool runActions) {
+bool gt_ChangeRaceForDebug_Func (bool testConds, bool runActions) {
     // Variable Declarations
     int lv__player;
     int lv__team;
@@ -2357,14 +2371,14 @@ bool gt_ChangeRace_Func (bool testConds, bool runActions) {
 }
 
 //--------------------------------------------------------------------------------------------------
-void gt_ChangeRace_Init () {
-    gt_ChangeRace = TriggerCreate("gt_ChangeRace_Func");
-    TriggerAddEventChatMessage(gt_ChangeRace, c_playerAny, ("-r t"), true);
-    TriggerAddEventChatMessage(gt_ChangeRace, c_playerAny, ("-r z"), true);
-    TriggerAddEventChatMessage(gt_ChangeRace, c_playerAny, ("-r p"), true);
-    TriggerAddEventChatMessage(gt_ChangeRace, c_playerAny, ("-r t1"), true);
-    TriggerAddEventChatMessage(gt_ChangeRace, c_playerAny, ("-r z1"), true);
-    TriggerAddEventChatMessage(gt_ChangeRace, c_playerAny, ("-r p1"), true);
+void gt_ChangeRaceForDebug_Init () {
+    gt_ChangeRaceForDebug = TriggerCreate("gt_ChangeRaceForDebug_Func");
+    TriggerAddEventChatMessage(gt_ChangeRaceForDebug, c_playerAny, ("-r t"), true);
+    TriggerAddEventChatMessage(gt_ChangeRaceForDebug, c_playerAny, ("-r z"), true);
+    TriggerAddEventChatMessage(gt_ChangeRaceForDebug, c_playerAny, ("-r p"), true);
+    TriggerAddEventChatMessage(gt_ChangeRaceForDebug, c_playerAny, ("-r t1"), true);
+    TriggerAddEventChatMessage(gt_ChangeRaceForDebug, c_playerAny, ("-r z1"), true);
+    TriggerAddEventChatMessage(gt_ChangeRaceForDebug, c_playerAny, ("-r p1"), true);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -3186,6 +3200,135 @@ bool gt_TipZerg_Func (bool testConds, bool runActions) {
 void gt_TipZerg_Init () {
     gt_TipZerg = TriggerCreate("gt_TipZerg_Func");
     TriggerAddEventTimeElapsed(gt_TipZerg, 60.0, c_timeReal);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Trigger: ChangeRace
+//--------------------------------------------------------------------------------------------------
+bool gt_ChangeRace_Func (bool testConds, bool runActions) {
+    // Variable Declarations
+    int lv__player;
+    int lv__team;
+    string lv__oldRace;
+    string lv__newRace;
+    unit lv__unit;
+    point lv__startLoacation;
+    text lv__team1_warningText;
+    text lv__team2_warningText;
+
+    // Automatic Variable Declarations
+    string auto4C934AD9_val;
+    unitgroup auto66A73243_g;
+    int auto66A73243_u;
+    playergroup auto67972DB5_g;
+    playergroup autoB01EF66E_g;
+
+    // Variable Initialization
+    lv__team1_warningText = StringExternal("Param/Value/3955DDB3");
+    lv__team2_warningText = StringExternal("Param/Value/53838379");
+
+    // Conditions
+    if (testConds) {
+        if (!((gv_debug == false))) {
+            return false;
+        }
+
+        if (!((gf_GetRoleOfPlayer(EventPlayer()) == ge_Role_Builder))) {
+            return false;
+        }
+
+        if (!((TimerGetElapsed(gv_timer) <= 10.0))) {
+            return false;
+        }
+
+        if (!((gv_changeRaceFlag == false))) {
+            return false;
+        }
+    }
+
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    lv__player = EventPlayer();
+    lv__team = gf_GetTeamOfPlayer(lv__player);
+    lv__oldRace = PlayerRace(lv__player);
+    lv__startLoacation = gf_GetStartLocationOfTeam(lv__team);
+    auto4C934AD9_val = EventChatMessage(false);
+    if (auto4C934AD9_val == "-r t2") {
+        lv__newRace = "Terr";
+    }
+    else if (auto4C934AD9_val == "-r z2") {
+        lv__newRace = "Zerg";
+    }
+    else if (auto4C934AD9_val == "-r p2") {
+        lv__newRace = "Prot";
+    }
+    else if (auto4C934AD9_val == "-r t1") {
+        lv__newRace = "BWTe";
+    }
+    else if (auto4C934AD9_val == "-r z1") {
+        lv__newRace = "BWZe";
+    }
+    else if (auto4C934AD9_val == "-r p1") {
+        lv__newRace = "BWPr";
+    }
+    else {
+        lv__newRace = lv__oldRace;
+    }
+    if ((lv__oldRace != lv__newRace)) {
+        gv_changeRaceFlag = true;
+        auto66A73243_g = UnitGroup(null, lv__player, RegionPlayableMap(), UnitFilter(0, 0, 0, 0), 0);
+        auto66A73243_u = UnitGroupCount(auto66A73243_g, c_unitCountAll);
+        for (;; auto66A73243_u -= 1) {
+            lv__unit = UnitGroupUnitFromEnd(auto66A73243_g, auto66A73243_u);
+            if (lv__unit == null) { break; }
+            UnitRemove(lv__unit);
+        }
+        if (((lv__oldRace == "Zerg") || (lv__oldRace == "BWZe")) && (lv__newRace != "Zerg") && (lv__newRace != "BWZe")) {
+            CreepModify(lv__startLoacation, 14.0, false, false);
+        }
+
+        MeleeInitUnitsForPlayer(lv__player, lv__newRace, lv__startLoacation);
+        if ((lv__team == 1)) {
+            gv_team1_teamInfo.lv_race = lv__newRace;
+            autoB01EF66E_g = gv_team1_playerGroup.lv_players;
+            lv__player = -1;
+            while (true) {
+                lv__player = PlayerGroupNextPlayer(autoB01EF66E_g, lv__player);
+                if (lv__player < 0) { break; }
+                PlayerSetRace(lv__player, lv__newRace);
+            }
+            UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, lv__team1_warningText);
+        }
+        else {
+            CreepModify(gv_team2_teamInfo.lv_startLocation, 14.0, false, false);
+            gv_team2_teamInfo.lv_race = lv__newRace;
+            auto67972DB5_g = gv_team2_playerGroup.lv_players;
+            lv__player = -1;
+            while (true) {
+                lv__player = PlayerGroupNextPlayer(auto67972DB5_g, lv__player);
+                if (lv__player < 0) { break; }
+                PlayerSetRace(lv__player, lv__newRace);
+            }
+            UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, lv__team2_warningText);
+        }
+        gf_UpdateBuilderIcon(lv__team, lv__newRace);
+    }
+
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void gt_ChangeRace_Init () {
+    gt_ChangeRace = TriggerCreate("gt_ChangeRace_Func");
+    TriggerAddEventChatMessage(gt_ChangeRace, c_playerAny, ("-r t2"), true);
+    TriggerAddEventChatMessage(gt_ChangeRace, c_playerAny, ("-r z2"), true);
+    TriggerAddEventChatMessage(gt_ChangeRace, c_playerAny, ("-r p2"), true);
+    TriggerAddEventChatMessage(gt_ChangeRace, c_playerAny, ("-r t1"), true);
+    TriggerAddEventChatMessage(gt_ChangeRace, c_playerAny, ("-r z1"), true);
+    TriggerAddEventChatMessage(gt_ChangeRace, c_playerAny, ("-r p1"), true);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -6113,7 +6256,7 @@ void InitTriggers () {
     gt_Fast_Init();
     gt_Control_Init();
     gt_GainControl_Init();
-    gt_ChangeRace_Init();
+    gt_ChangeRaceForDebug_Init();
     gt_RemoveUnit_Init();
     gt_Worker_Init();
     gt_Color_Init();
@@ -6142,6 +6285,7 @@ void InitTriggers () {
     gt_TipRace_Init();
     gt_TipHelp_Init();
     gt_TipZerg_Init();
+    gt_ChangeRace_Init();
     gt_ChangeBuilder_Init();
     gt_GiveUpBuilderRole_Init();
     gt_FighterQuit_Init();
