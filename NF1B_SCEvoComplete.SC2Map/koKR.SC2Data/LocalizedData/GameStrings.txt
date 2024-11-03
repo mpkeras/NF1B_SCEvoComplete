@@ -82,35 +82,28 @@ MapInfo/Team02/Name=exp1v1 top
 MapInfo/Team03/Name=exp1v1 bot
 MapInfo/Team04/Name=2v2 Bottom
 MapInfo/Team05/Name=2v2 top
-Param/Value/047E93E7=팁: 종족이 SC2 Zerg 인 경우, 두 번째 단계 돌연변이가 필요한 유닛을 선택하려면 빌더가 S 버튼(기본값은 S)을 두 번 눌러야 합니다.
 Param/Value/194069C0=단축키
-Param/Value/2AB137AB=당신의 역할은 전장에서 유닛을 조종하여 적을 물리치는 <c val=“ffff8a”>전사</c>입니다.
-Param/Value/3C5BF2EE=당신의 역할은 <c val=“ffff8a”>빌더</c>로, 전투기를 훈련시키는 것입니다.
+Param/Value/2ECA9760=팁: 2단계 돌연변이가 필요한 모든 유닛은 빌더가 직접 훈련할 수 있습니다.
+Param/Value/3E880340=팁: <c val="ffff8a">센서 타워</c>에는 <c val="ffff8a">스캐너 스윕</c> 능력이 있으며, 전투기가 직접 제어할 수 있습니다.
+Param/Value/47E2A1E9=팁: 종족이 SC2 Zerg 인 경우, 두 번째 단계 돌연변이가 필요한 유닛을 선택하려면 빌더가 S 버튼(기본값은 S)을 두 번 눌러야 합니다.
 Param/Value/5698279A=팁: 공급 한도는 400개입니다.
 Param/Value/5ED931F6=명령
-Param/Value/63E821A7=경고: 이제 모든 <c val="00ff00">전투원이</c> 돌연변이 기술을 사용할 수 있습니다.
 Param/Value/6FD47613=1팀에 남은 플레이어가 한 명뿐입니다. 팀 2 승리.
 Param/Value/738A54F4=2팀에 남은 플레이어가 한 명뿐입니다. 팀 1 승리.
-Param/Value/7998EB08=팁: <c val=“ffff8a”>센서 타워</c>에는 <c val=“ffff8a”>스캐너 스윕</c> 능력이 있으며, 전투기가 직접 제어할 수 있습니다.
-Param/Value/7BA683E0=당신의 역할은 <c val=“ffff8a”>빌더</c>로, 전투기를 훈련시키는 것입니다.
 Param/Value/7C2BA5DC=팀 1의 빌더가 항복했습니다. 2팀이 승리합니다.
-Param/Value/9623C488=경고: 이제 모든 <c val="ff0000">전투원은</c> 돌연변이 기술을 사용할 수 없습니다.
-Param/Value/9F90689B=팁: 2단계 돌연변이가 필요한 모든 유닛은 빌더가 직접 훈련할 수 있습니다.
+Param/Value/7DDEAD17=당신의 역할은 전장에서 유닛을 조종하여 적을 물리치는 <c val="ffff8a">전사</c>입니다.
+Param/Value/8827AB6A=경고: 이제 모든 <c val="ff0000">전투원은</c> 돌연변이 기술을 사용할 수 없습니다.
 Param/Value/A283F7C2=팀 2의 빌더가 항복했습니다. 1팀이 승리합니다.
-Param/Value/A34A344A=팁: 종족이 SC2 Zerg 인 경우, 두 번째 단계 돌연변이가 필요한 유닛을 선택하려면 빌더가 S 버튼(기본값은 S)을 두 번 눌러야 합니다.
 Param/Value/AEE0382B=팁: 왼쪽 상단에서 레이스에 대한 정보를 확인하세요.
-Param/Value/B902116F=당신의 역할은 전장에서 유닛을 조종하여 적을 물리치는 <c val=“ffff8a”>전사</c>입니다.
-Param/Value/B9FAD2E2=팁: 2단계 돌연변이가 필요한 모든 유닛은 빌더가 직접 훈련할 수 있습니다.
 Param/Value/BA4EC2BF=LICENSE for SC: Evo Complete
-Param/Value/BB913FD5=경고: 이제 모든 <c val="ff0000">전투원은</c> 돌연변이 기술을 사용할 수 없습니다.
-Param/Value/BC76442D=팁: <c val=“ffff8a”>센서 타워</c>에는 <c val=“ffff8a”>스캐너 스윕</c> 능력이 있으며, 전투기가 직접 제어할 수 있습니다.
 Param/Value/C0AF10B1=0
 Param/Value/C2B87501=한 명의 인간 플레이어만 감지. 디버그 모드가 켜져 있습니다.
-Param/Value/C4B8A3B1=경고: 이제 모든 <c val="00ff00">전투원이</c> 돌연변이 기술을 사용할 수 있습니다.
 Param/Value/CA3F7518=팁: 패배가 확실시되면 <c val=“ffff8a”>빌더</c>는 게임을 종료하거나 “-gg”를 입력하여 항복할 수 있습니다.
+Param/Value/CBBA441F=경고: 이제 모든 <c val="00ff00">전투원이</c> 돌연변이 기술을 사용할 수 있습니다.
 Param/Value/CEF41543=0
 Param/Value/E33F8417=0
 Param/Value/E539788E=0
+Param/Value/EB75841A=당신의 역할은 <c val="ffff8a">빌더</c>로, 전투기를 훈련시키는 것입니다.
 Param/Value/F4D1DCD3=<c val="ffff8a">-r/-R</c>: 유닛 해제(빌더는 SCBW 오버로드, SCBW 커맨드 센터 및 SC2 궤도 명령을 출시할 수 있습니다.)<n/><n/><c val="ffff8a">-o</c>: 이전에 빌더가 출시한 유닛에 대한 통제권 획득(빌더 전용)<n/><n/><c val="ffff8a">-gg/-GG</c>: 항복(빌더 전용)<n/><n/><c val="ffff8a">-b <id></c>: 빌더를 플레이어 <id>로 변경(빌더 전용, 게임 시작 후 1분 이내에만 사용할 수 있습니다)<n/><n/><c val="ffff8a">-b</c>: 전투기에서 빌더를 무작위 플레이어로 변경(빌더 전용, 게임 시작 후 1분 이내에만 사용할 수 있습니다)<n/><n/><c val="ffff8a">-m</c>: 전투원의 돌연변이 기술 사용 허용/금지(빌더 전용)
 Param/Value/FD733CCC=<c val="ffff8a">Ctrl+X</c>: 사용자 패널 열기/닫기
 Variant001/ModeDesc=아콘 모드에서 영감을 받은 모드입니다.

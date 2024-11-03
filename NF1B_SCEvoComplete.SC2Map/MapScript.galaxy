@@ -1932,13 +1932,6 @@ void gf_FighterDefeat (int lp_team) {
 //--------------------------------------------------------------------------------------------------
 bool gt_temp_Func (bool testConds, bool runActions) {
     // Automatic Variable Declarations
-    // Actions
-    if (!runActions) {
-        return true;
-    }
-
-    TechTreeRestrictionsEnable(1, true);
-    TechTreeAbilityAllow(1, AbilityCommand("MorphToRavager", 0), false);
     return true;
 }
 
@@ -2967,16 +2960,24 @@ void gt_HidePanel_Init () {
 // Trigger: TipRole
 //--------------------------------------------------------------------------------------------------
 bool gt_TipRole_Func (bool testConds, bool runActions) {
+    // Variable Declarations
+    text lv__tipBuilderText;
+    text lv__tipFighterText;
+
     // Automatic Variable Declarations
+    // Variable Initialization
+    lv__tipBuilderText = StringExternal("Param/Value/EB75841A");
+    lv__tipFighterText = StringExternal("Param/Value/7DDEAD17");
+
     // Actions
     if (!runActions) {
         return true;
     }
 
-    UIDisplayMessage(PlayerGroupSingle(gv_team1_teamInfo.lv_builder), c_messageAreaSubtitle, StringExternal("Param/Value/CF2DDDB5"));
-    UIDisplayMessage(gv_team1_teamInfo.lv_fighterGroup, c_messageAreaSubtitle, StringExternal("Param/Value/6AE9E7D6"));
-    UIDisplayMessage(PlayerGroupSingle(gv_team2_teamInfo.lv_builder), c_messageAreaSubtitle, StringExternal("Param/Value/CAE6A306"));
-    UIDisplayMessage(gv_team2_teamInfo.lv_fighterGroup, c_messageAreaSubtitle, StringExternal("Param/Value/10816450"));
+    UIDisplayMessage(PlayerGroupSingle(gv_team1_teamInfo.lv_builder), c_messageAreaSubtitle, lv__tipBuilderText);
+    UIDisplayMessage(gv_team1_teamInfo.lv_fighterGroup, c_messageAreaSubtitle, lv__tipFighterText);
+    UIDisplayMessage(PlayerGroupSingle(gv_team2_teamInfo.lv_builder), c_messageAreaSubtitle, lv__tipBuilderText);
+    UIDisplayMessage(gv_team2_teamInfo.lv_fighterGroup, c_messageAreaSubtitle, lv__tipFighterText);
     return true;
 }
 
@@ -3069,7 +3070,13 @@ void gt_TipGG_Init () {
 // Trigger: TipSensorTower
 //--------------------------------------------------------------------------------------------------
 bool gt_TipSensorTower_Func (bool testConds, bool runActions) {
+    // Variable Declarations
+    text lv__tipText;
+
     // Automatic Variable Declarations
+    // Variable Initialization
+    lv__tipText = StringExternal("Param/Value/3E880340");
+
     // Conditions
     if (testConds) {
         if (!((libNtve_gf_TriggeringProgressUnitType() == "EngineeringBay"))) {
@@ -3088,11 +3095,11 @@ bool gt_TipSensorTower_Func (bool testConds, bool runActions) {
 
     if ((UnitGetOwner(EventUnitProgressUnit()) == gv_team1_teamInfo.lv_builder) && (gv_team1_tipSensorTowerFlag == false)) {
         gv_team1_tipSensorTowerFlag = true;
-        UIDisplayMessage(gv_team1_playerGroup.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/7998EB08"));
+        UIDisplayMessage(gv_team1_playerGroup.lv_users, c_messageAreaSubtitle, lv__tipText);
     }
     else {
         gv_team2_tipSensorTowerFlag = true;
-        UIDisplayMessage(gv_team2_playerGroup.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/BC76442D"));
+        UIDisplayMessage(gv_team2_playerGroup.lv_users, c_messageAreaSubtitle, lv__tipText);
     }
     return true;
 }
@@ -3146,22 +3153,30 @@ void gt_TipHelp_Init () {
 // Trigger: TipZerg
 //--------------------------------------------------------------------------------------------------
 bool gt_TipZerg_Func (bool testConds, bool runActions) {
+    // Variable Declarations
+    text lv__tipZergText;
+    text lv__tipZergSC2Text;
+
     // Automatic Variable Declarations
+    // Variable Initialization
+    lv__tipZergText = StringExternal("Param/Value/2ECA9760");
+    lv__tipZergSC2Text = StringExternal("Param/Value/47E2A1E9");
+
     // Actions
     if (!runActions) {
         return true;
     }
 
     if (((gv_team1_teamInfo.lv_race == "Zerg") || (gv_team1_teamInfo.lv_race == "BWZe"))) {
-        UIDisplayMessage(gv_team1_playerGroup.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/9F90689B"));
+        UIDisplayMessage(gv_team1_playerGroup.lv_users, c_messageAreaSubtitle, lv__tipZergText);
         Wait(10.0, c_timeReal);
-        UIDisplayMessage(gv_team1_playerGroup.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/A34A344A"));
+        UIDisplayMessage(gv_team1_playerGroup.lv_users, c_messageAreaSubtitle, lv__tipZergSC2Text);
     }
 
     if (((gv_team2_teamInfo.lv_race == "Zerg") || (gv_team2_teamInfo.lv_race == "BWZe"))) {
-        UIDisplayMessage(gv_team2_playerGroup.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/B9FAD2E2"));
+        UIDisplayMessage(gv_team2_playerGroup.lv_users, c_messageAreaSubtitle, lv__tipZergText);
         Wait(10.0, c_timeReal);
-        UIDisplayMessage(gv_team2_playerGroup.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/047E93E7"));
+        UIDisplayMessage(gv_team2_playerGroup.lv_users, c_messageAreaSubtitle, lv__tipZergSC2Text);
     }
 
     return true;
@@ -4254,6 +4269,8 @@ bool gt_ChangeMorphEnabledByBuilder_Func (bool testConds, bool runActions) {
     int lv__player;
     int lv__team;
     int lv__fighter;
+    text lv__enableText;
+    text lv__disableText;
 
     // Automatic Variable Declarations
     int autoB8A9F704_val;
@@ -4263,6 +4280,8 @@ bool gt_ChangeMorphEnabledByBuilder_Func (bool testConds, bool runActions) {
     playergroup auto98E383A0_g;
 
     // Variable Initialization
+    lv__enableText = StringExternal("Param/Value/CBBA441F");
+    lv__disableText = StringExternal("Param/Value/8827AB6A");
 
     // Conditions
     if (testConds) {
@@ -4289,7 +4308,7 @@ bool gt_ChangeMorphEnabledByBuilder_Func (bool testConds, bool runActions) {
                 gf_AllowZergMorph(lv__fighter);
             }
             gv_team1_teamMode.lv_morphEnabled = true;
-            UIDisplayMessage(gv_team1_playerGroup.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/C4B8A3B1"));
+            UIDisplayMessage(gv_team1_playerGroup.lv_users, c_messageAreaSubtitle, lv__enableText);
         }
         else {
             auto01E20BB5_g = gv_team1_playerGroup.lv_fightersWithNeutral;
@@ -4300,7 +4319,7 @@ bool gt_ChangeMorphEnabledByBuilder_Func (bool testConds, bool runActions) {
                 gf_DisallowZergMorph(lv__fighter);
             }
             gv_team1_teamMode.lv_morphEnabled = false;
-            UIDisplayMessage(gv_team1_playerGroup.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/BB913FD5"));
+            UIDisplayMessage(gv_team1_playerGroup.lv_users, c_messageAreaSubtitle, lv__disableText);
         }
     }
     else if (autoB8A9F704_val == 2) {
@@ -4313,7 +4332,7 @@ bool gt_ChangeMorphEnabledByBuilder_Func (bool testConds, bool runActions) {
                 gf_AllowZergMorph(lv__fighter);
             }
             gv_team2_teamMode.lv_morphEnabled = true;
-            UIDisplayMessage(gv_team2_playerGroup.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/63E821A7"));
+            UIDisplayMessage(gv_team2_playerGroup.lv_users, c_messageAreaSubtitle, lv__enableText);
         }
         else {
             autoED992C42_g = gv_team2_playerGroup.lv_fightersWithNeutral;
@@ -4324,7 +4343,7 @@ bool gt_ChangeMorphEnabledByBuilder_Func (bool testConds, bool runActions) {
                 gf_DisallowZergMorph(lv__fighter);
             }
             gv_team2_teamMode.lv_morphEnabled = false;
-            UIDisplayMessage(gv_team2_playerGroup.lv_users, c_messageAreaSubtitle, StringExternal("Param/Value/9623C488"));
+            UIDisplayMessage(gv_team2_playerGroup.lv_users, c_messageAreaSubtitle, lv__disableText);
         }
     }
     else {

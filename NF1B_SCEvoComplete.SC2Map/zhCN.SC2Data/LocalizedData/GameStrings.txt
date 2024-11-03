@@ -78,34 +78,27 @@ MapInfo/Team02/Name=exp1v1 top
 MapInfo/Team03/Name=exp1v1 bot
 MapInfo/Team04/Name=2v2 Bottom
 MapInfo/Team05/Name=2v2 top
-Param/Value/047E93E7=提示: 如果你的种族是星际2虫族，运营玩家需要按两次S键（默认为S）来选择需要二阶段变异的单位。
 Param/Value/194069C0=热键
-Param/Value/2AB137AB=你的角色是<c val="ffff8a">控兵</c>，控制单位在战场上打赢敌人。
-Param/Value/3C5BF2EE=你的角色是<c val="ffff8a">运营</c>，为控兵训练单位。
+Param/Value/2ECA9760=提示: 所有需要二阶段变异的单位可以由运营玩家直接训练。
+Param/Value/3E880340=提示: <c val="ffff8a">感应塔</c>拥有<c val="ffff8a">扫描</c>技能且能被控兵直接控制。
+Param/Value/47E2A1E9=提示: 如果你的种族是星际2虫族，运营玩家需要按两次S键（默认为S）来选择需要二阶段变异的单位。
 Param/Value/5698279A=提示: 补给上限为400。
 Param/Value/5ED931F6=命令
-Param/Value/63E821A7=警告：所有控兵玩家现在<c val="00ff00">可以</c>使用变异技能。
 Param/Value/6FD47613=队伍1只剩下一名玩家。队伍2获胜。
 Param/Value/738A54F4=队伍2只剩下一名玩家。队伍1获胜。
-Param/Value/7998EB08=提示: <c val="ffff8a">感应塔</c>拥有<c val="ffff8a">扫描</c>技能且能被控兵直接控制。
-Param/Value/7BA683E0=你的角色是<c val="ffff8a">运营</c>，为控兵训练单位。
 Param/Value/7C2BA5DC=队伍1的运营投降。队伍2获胜。
-Param/Value/9623C488=警告：所有控兵玩家现在<c val="ff0000">不能</c>使用变异技能。
-Param/Value/9F90689B=提示: 所有需要二阶段变异的单位可以由运营玩家直接训练。
+Param/Value/7DDEAD17=你的角色是<c val="ffff8a">控兵</c>，控制单位在战场上打赢敌人。
+Param/Value/8827AB6A=警告：所有控兵玩家现在<c val="ff0000">不能</c>使用变异技能。
 Param/Value/A283F7C2=队伍2的运营投降。队伍1获胜。
-Param/Value/A34A344A=提示: 如果你的种族是星际2虫族，运营玩家需要按两次S键（默认为S）来选择需要二阶段变异的单位。
 Param/Value/AEE0382B=提示: 查看左上角以获得种族信息。
-Param/Value/B902116F=你的角色是<c val="ffff8a">控兵</c>，控制单位在战场上打赢敌人。
-Param/Value/B9FAD2E2=提示: 所有需要二阶段变异的单位可以由运营玩家直接训练。
-Param/Value/BB913FD5=警告：所有控兵玩家现在<c val="ff0000">不能</c>使用变异技能。
-Param/Value/BC76442D=提示: <c val="ffff8a">感应塔</c>拥有<c val="ffff8a">扫描</c>技能且能被控兵直接控制。
 Param/Value/C0AF10B1=0
 Param/Value/C2B87501=检测到只有一名人类玩家，开启调试模式。
-Param/Value/C4B8A3B1=警告：所有控兵玩家现在<c val="00ff00">可以</c>使用变异技能。
 Param/Value/CA3F7518=提示: 如果败局已定，运营可以通过直接退出游戏或输入“-gg”来投降。
+Param/Value/CBBA441F=警告：所有控兵玩家现在<c val="00ff00">可以</c>使用变异技能。
 Param/Value/CEF41543=0
 Param/Value/E33F8417=0
 Param/Value/E539788E=0
+Param/Value/EB75841A=你的角色是<c val="ffff8a">运营</c>，为控兵训练单位。
 Param/Value/F4D1DCD3=<c val="ffff8a">-r/-R</c>: 释放单位（运营玩家可以释放星际1王虫、星际1指挥中心和星际2轨道控制中心）<n/><n/><c val="ffff8a">-o</c>: 对运营玩家之前释放的单位重新获取控制（仅限运营玩家使用）<n/><n/><c val="ffff8a">-gg/-GG</c>: 投降（仅限运营玩家使用）<n/><n/><c val="ffff8a">-b <id></c>: 更换运营为指定<id>玩家（仅限运营玩家使用，只能在游戏开始1分钟内使用）<n/><n/><c val="ffff8a">-b</c>: 更换运营为本队伍的随机控兵玩家（仅限运营玩家使用，只能在游戏开始1分钟内使用）<n/><n/><c val="ffff8a">-m</c>: 允许/禁止控兵玩家使用变异技能（仅限运营玩家使用）
 Param/Value/FD733CCC=<c val="ffff8a">Ctrl+X</c>: 打开玩家面板
 Variant001/ModeDesc=受执政官模式启发的模式
