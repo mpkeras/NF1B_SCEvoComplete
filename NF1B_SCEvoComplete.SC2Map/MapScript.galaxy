@@ -169,6 +169,7 @@ int gf_GetColorForRelease (int lp_team);
 int gf_GetNeutralOfTeam (int lp_team);
 point gf_GetStartLocationOfTeam (int lp_team);
 bool gf_GetMorphEnabledOfTeam (int lp_team);
+int gf_GetBuilderOfTeam (int lp_team);
 void gf_ReturnCargo (unit lp_unit);
 int gf_RandomFighterFromTeam (int lp_team);
 int gf_RandomFighterExcludeHaveBeenFromTeam (int lp_team);
@@ -520,6 +521,23 @@ bool gf_GetMorphEnabledOfTeam (int lp_team) {
     }
     else {
         return false;
+    }
+}
+
+int gf_GetBuilderOfTeam (int lp_team) {
+    // Automatic Variable Declarations
+    int auto5A7BD3DD_val;
+
+    // Implementation
+    auto5A7BD3DD_val = lp_team;
+    if (auto5A7BD3DD_val == 1) {
+        return gv_team1_teamInfo.lv_builder;
+    }
+    else if (auto5A7BD3DD_val == 2) {
+        return gv_team2_teamInfo.lv_builder;
+    }
+    else {
+        return -1;
     }
 }
 
@@ -2306,13 +2324,15 @@ bool gt_ChangeRaceForDebug_Func (bool testConds, bool runActions) {
     string lv__oldRace;
     string lv__newRace;
     unit lv__unit;
+    point lv__startLoacation;
+    int lv__builder;
 
     // Automatic Variable Declarations
-    string auto415B64FC_val;
-    unitgroup auto5A6ECBD7_g;
-    int auto5A6ECBD7_u;
-    playergroup autoC9899372_g;
-    playergroup autoACDC1C99_g;
+    string auto72E22ADE_val;
+    unitgroup auto91D6906F_g;
+    int auto91D6906F_u;
+    playergroup autoAD3A531F_g;
+    playergroup auto8C17AAF4_g;
 
     // Variable Initialization
 
@@ -2331,69 +2351,78 @@ bool gt_ChangeRaceForDebug_Func (bool testConds, bool runActions) {
     lv__player = EventPlayer();
     lv__team = gf_GetTeamOfPlayer(lv__player);
     lv__oldRace = PlayerRace(lv__player);
-    auto415B64FC_val = EventChatMessage(false);
-    if (auto415B64FC_val == "-r t") {
+    lv__startLoacation = gf_GetStartLocationOfTeam(lv__team);
+    lv__builder = gf_GetBuilderOfTeam(lv__team);
+    auto72E22ADE_val = EventChatMessage(false);
+    if (auto72E22ADE_val == "-r t2") {
         lv__newRace = "Terr";
     }
-    else if (auto415B64FC_val == "-r z") {
+    else if (auto72E22ADE_val == "-r z2") {
         lv__newRace = "Zerg";
     }
-    else if (auto415B64FC_val == "-r p") {
+    else if (auto72E22ADE_val == "-r p2") {
         lv__newRace = "Prot";
     }
-    else if (auto415B64FC_val == "-r t1") {
+    else if (auto72E22ADE_val == "-r t1") {
         lv__newRace = "BWTe";
     }
-    else if (auto415B64FC_val == "-r z1") {
+    else if (auto72E22ADE_val == "-r z1") {
         lv__newRace = "BWZe";
     }
-    else if (auto415B64FC_val == "-r p1") {
+    else if (auto72E22ADE_val == "-r p1") {
         lv__newRace = "BWPr";
     }
     else {
+        lv__newRace = lv__oldRace;
     }
     if ((lv__oldRace != lv__newRace)) {
-        auto5A6ECBD7_g = UnitGroup(null, lv__player, RegionEntireMap(), UnitFilter(0, 0, 0, 0), 0);
-        auto5A6ECBD7_u = UnitGroupCount(auto5A6ECBD7_g, c_unitCountAll);
-        for (;; auto5A6ECBD7_u -= 1) {
-            lv__unit = UnitGroupUnitFromEnd(auto5A6ECBD7_g, auto5A6ECBD7_u);
+        auto91D6906F_g = UnitGroup(null, lv__builder, RegionPlayableMap(), UnitFilter(0, 0, 0, 0), 0);
+        auto91D6906F_u = UnitGroupCount(auto91D6906F_g, c_unitCountAll);
+        for (;; auto91D6906F_u -= 1) {
+            lv__unit = UnitGroupUnitFromEnd(auto91D6906F_g, auto91D6906F_u);
             if (lv__unit == null) { break; }
             UnitRemove(lv__unit);
         }
+        if (((lv__oldRace == "Zerg") || (lv__oldRace == "BWZe")) && (lv__newRace != "Zerg") && (lv__newRace != "BWZe")) {
+            CreepModify(lv__startLoacation, 14.0, false, false);
+        }
+        else if ((lv__oldRace != "Zerg") && (lv__oldRace != "BWZe") && ((lv__newRace == "Zerg") || (lv__newRace == "BWZe"))) {
+            CreepModify(lv__startLoacation, 13.0, true, false);
+        }
+        MeleeInitUnitsForPlayer(lv__builder, lv__newRace, lv__startLoacation);
+        if ((lv__team == 1)) {
+            gv_team1_teamInfo.lv_race = lv__newRace;
+            auto8C17AAF4_g = gv_team1_playerGroup.lv_players;
+            lv__player = -1;
+            while (true) {
+                lv__player = PlayerGroupNextPlayer(auto8C17AAF4_g, lv__player);
+                if (lv__player < 0) { break; }
+                PlayerSetRace(lv__player, lv__newRace);
+            }
+        }
+        else {
+            CreepModify(gv_team2_teamInfo.lv_startLocation, 14.0, false, false);
+            gv_team2_teamInfo.lv_race = lv__newRace;
+            autoAD3A531F_g = gv_team2_playerGroup.lv_players;
+            lv__player = -1;
+            while (true) {
+                lv__player = PlayerGroupNextPlayer(autoAD3A531F_g, lv__player);
+                if (lv__player < 0) { break; }
+                PlayerSetRace(lv__player, lv__newRace);
+            }
+        }
+        gf_UpdateBuilderIcon(lv__team, lv__newRace);
     }
 
-    if ((lv__team == 1)) {
-        gv_team1_teamInfo.lv_race = lv__newRace;
-        MeleeInitUnitsForPlayer(lv__player, lv__newRace, gv_team1_teamInfo.lv_startLocation);
-        autoACDC1C99_g = gv_team1_playerGroup.lv_players;
-        lv__player = -1;
-        while (true) {
-            lv__player = PlayerGroupNextPlayer(autoACDC1C99_g, lv__player);
-            if (lv__player < 0) { break; }
-            PlayerSetRace(lv__player, lv__newRace);
-        }
-    }
-    else {
-        gv_team2_teamInfo.lv_race = lv__newRace;
-        MeleeInitUnitsForPlayer(lv__player, lv__newRace, gv_team2_teamInfo.lv_startLocation);
-        autoC9899372_g = gv_team2_playerGroup.lv_players;
-        lv__player = -1;
-        while (true) {
-            lv__player = PlayerGroupNextPlayer(autoC9899372_g, lv__player);
-            if (lv__player < 0) { break; }
-            PlayerSetRace(lv__player, lv__newRace);
-        }
-    }
-    gf_UpdateBuilderIcon(lv__team, lv__newRace);
     return true;
 }
 
 //--------------------------------------------------------------------------------------------------
 void gt_ChangeRaceForDebug_Init () {
     gt_ChangeRaceForDebug = TriggerCreate("gt_ChangeRaceForDebug_Func");
-    TriggerAddEventChatMessage(gt_ChangeRaceForDebug, c_playerAny, ("-r t"), true);
-    TriggerAddEventChatMessage(gt_ChangeRaceForDebug, c_playerAny, ("-r z"), true);
-    TriggerAddEventChatMessage(gt_ChangeRaceForDebug, c_playerAny, ("-r p"), true);
+    TriggerAddEventChatMessage(gt_ChangeRaceForDebug, c_playerAny, ("-r t2"), true);
+    TriggerAddEventChatMessage(gt_ChangeRaceForDebug, c_playerAny, ("-r z2"), true);
+    TriggerAddEventChatMessage(gt_ChangeRaceForDebug, c_playerAny, ("-r p2"), true);
     TriggerAddEventChatMessage(gt_ChangeRaceForDebug, c_playerAny, ("-r t1"), true);
     TriggerAddEventChatMessage(gt_ChangeRaceForDebug, c_playerAny, ("-r z1"), true);
     TriggerAddEventChatMessage(gt_ChangeRaceForDebug, c_playerAny, ("-r p1"), true);
@@ -3305,9 +3334,6 @@ bool gt_ChangeRace_Func (bool testConds, bool runActions) {
             if (lv__unit == null) { break; }
             UnitRemove(lv__unit);
         }
-        if (true) {
-        }
-
         if (((lv__oldRace == "Zerg") || (lv__oldRace == "BWZe")) && (lv__newRace != "Zerg") && (lv__newRace != "BWZe")) {
             CreepModify(lv__startLoacation, 14.0, false, false);
         }
