@@ -9204,7 +9204,7 @@
     </Element>
     <Element Type="Param" Id="F15243CE">
         <ParameterDef Type="ParamDef" Library="Ntve" Id="BEA948EA"/>
-        <Value>&quot;[bnet:NF1B_SCEvoMulti/0.0/236353,file:Mods\\NF1B_SCEvoMulti.SC2Mod]1&quot;</Value>
+        <Value>&quot;[bnet:NF1B_SCEvoMulti/0.0/236353,file:Mods\\NF1B_SCEvoComplete\\NF1B_SCEvoMulti.SC2Mod]1&quot;</Value>
         <ValueType Type="attributeplayer"/>
         <DisplayText>Game Race</DisplayText>
     </Element>
@@ -9473,7 +9473,7 @@
     </Element>
     <Element Type="Param" Id="1A250AFA">
         <ParameterDef Type="ParamDef" Library="Ntve" Id="BEA948EA"/>
-        <Value>&quot;[bnet:NF1B_SCEvoMulti/0.0/236353,file:Mods\\NF1B_SCEvoMulti.SC2Mod]1&quot;</Value>
+        <Value>&quot;[bnet:NF1B_SCEvoMulti/0.0/236353,file:Mods\\NF1B_SCEvoComplete\\NF1B_SCEvoMulti.SC2Mod]1&quot;</Value>
         <ValueType Type="attributeplayer"/>
         <DisplayText>Game Race</DisplayText>
     </Element>
@@ -14132,7 +14132,7 @@
     </Element>
     <Element Type="Param" Id="24C20756">
         <ParameterDef Type="ParamDef" Library="Ntve" Id="6CB812B6"/>
-        <Value>&quot;[bnet:NF1B_SCEvoMulti/0.0/236353,file:Mods\\NF1B_SCEvoMulti.SC2Mod]3&quot;</Value>
+        <Value>&quot;[bnet:NF1B_SCEvoMulti/0.0/236353,file:Mods\\NF1B_SCEvoComplete\\NF1B_SCEvoMulti.SC2Mod]3&quot;</Value>
         <ValueType Type="attributegame"/>
         <DisplayText>Supply Limit</DisplayText>
     </Element>
