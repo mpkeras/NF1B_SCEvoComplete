@@ -3305,10 +3305,15 @@ bool gt_ChangeRace_Func (bool testConds, bool runActions) {
             if (lv__unit == null) { break; }
             UnitRemove(lv__unit);
         }
+        if (true) {
+        }
+
         if (((lv__oldRace == "Zerg") || (lv__oldRace == "BWZe")) && (lv__newRace != "Zerg") && (lv__newRace != "BWZe")) {
             CreepModify(lv__startLoacation, 14.0, false, false);
         }
-
+        else if ((lv__oldRace != "Zerg") && (lv__oldRace != "BWZe") && ((lv__newRace == "Zerg") || (lv__newRace == "BWZe"))) {
+            CreepModify(lv__startLoacation, 13.0, true, false);
+        }
         MeleeInitUnitsForPlayer(lv__player, lv__newRace, lv__startLoacation);
         if ((lv__team == 1)) {
             gv_team1_teamInfo.lv_race = lv__newRace;
