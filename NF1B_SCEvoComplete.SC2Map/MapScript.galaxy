@@ -112,6 +112,8 @@ int gv_racePanel;
 int gv_team1_resourcePanel;
 int gv_team2_resourcePanel;
 int gv_pv_releaseToChangeOwner;
+bool gv_dialogUserPanel;
+int gv_buttonUserPanel;
 
 void InitGlobals () {
     int init_i;
@@ -150,6 +152,7 @@ void InitGlobals () {
     gv_team1_resourcePanel = c_invalidDialogId;
     gv_team2_resourcePanel = c_invalidDialogId;
     gv_pv_releaseToChangeOwner = 1;
+    gv_buttonUserPanel = c_invalidDialogControlId;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -198,6 +201,7 @@ void gf_UpdateBuilderInfoPanel (int lp_newBuilder, int lp_team);
 void gf_UpdateBuilderIcon (int lp_team, string lp_race);
 void gf_UpdateBuilderName (int lp_newBuilder, int lp_team);
 void gf_DisplayBuilderInfo ();
+void gf_SetButtonUserPanel ();
 void gf_SetUserPanel ();
 void gf_TipSameRace ();
 void gf_OwnershipForChangeBuilder (int lp_oldBuilder, int lp_newBuilder);
@@ -252,8 +256,7 @@ trigger gt_MapInitialization;
 trigger gt_BeforeRoleSelection;
 trigger gt_DuringRoleSelection;
 trigger gt_AfterRoleSelection;
-trigger gt_ShowPanel;
-trigger gt_HidePanel;
+trigger gt_ClickDialogItem;
 trigger gt_TipRole;
 trigger gt_TipCommands;
 trigger gt_TipHotkeys;
@@ -1049,6 +1052,7 @@ bool auto_gf_SetUI_TriggerFunc (bool testConds, bool runActions) {
     // Automatic Variable Declarations
     // Implementation
     gf_DisplayBuilderInfo();
+    gf_SetButtonUserPanel();
     gf_SetUserPanel();
     return true;
 }
@@ -1416,6 +1420,17 @@ bool auto_gf_DisplayBuilderInfo_TriggerFunc (bool testConds, bool runActions) {
     return true;
 }
 
+void gf_SetButtonUserPanel () {
+    // Automatic Variable Declarations
+    // Implementation
+    DialogCreate(60, 60, c_anchorTopRight, 0, 45, true);
+    DialogSetVisible(DialogLastCreated(), PlayerGroupAll(), true);
+    DialogSetImageVisible(DialogLastCreated(), false);
+    libNtve_gf_CreateDialogItemButton(DialogLastCreated(), 60, 60, c_anchorTopRight, 0, 0, StringToText(""), StringToText(""), "");
+    gv_buttonUserPanel = DialogControlLastCreated();
+    DialogControlSetVisible(DialogControlLastCreated(), PlayerGroupAll(), true);
+}
+
 trigger auto_gf_SetUserPanel_Trigger = null;
 
 void gf_SetUserPanel () {
@@ -1448,10 +1463,10 @@ bool auto_gf_SetUserPanel_TriggerFunc (bool testConds, bool runActions) {
     // Implementation
     lv__x1 = lv__length;
     lv__x1 /= 2;
-    lv__x1 += 50;
+    lv__x1 += 30;
     lv__x2 = lv__x1;
     lv__x2 += 30;
-    DialogCreate(lv__length, lv__width, c_anchorCenter, 0, 0, true);
+    DialogCreate(lv__length, lv__width, c_anchorTopRight, 50, 45, true);
     gv_userInfoPanel = DialogLastCreated();
     autoAA8EB649_g = gv_team1_playerGroup.lv_users;
     autoAA8EB649_var = -1;
@@ -2979,43 +2994,39 @@ void gt_AfterRoleSelection_Init () {
 }
 
 //--------------------------------------------------------------------------------------------------
-// Trigger: ShowPanel
+// Trigger: ClickDialogItem
 //--------------------------------------------------------------------------------------------------
-bool gt_ShowPanel_Func (bool testConds, bool runActions) {
+bool gt_ClickDialogItem_Func (bool testConds, bool runActions) {
     // Automatic Variable Declarations
+    // Conditions
+    if (testConds) {
+        if (!((EventDialogControl() == gv_buttonUserPanel))) {
+            return false;
+        }
+    }
+
     // Actions
     if (!runActions) {
         return true;
     }
 
-    DialogSetVisible(gv_userInfoPanel, PlayerGroupAll(), true);
-    return true;
-}
-
-//--------------------------------------------------------------------------------------------------
-void gt_ShowPanel_Init () {
-    gt_ShowPanel = TriggerCreate("gt_ShowPanel_Func");
-    TriggerAddEventKeyPressed(gt_ShowPanel, c_playerAny, c_keyX, true, c_keyModifierStateExclude, c_keyModifierStateRequire, c_keyModifierStateExclude);
-}
-
-//--------------------------------------------------------------------------------------------------
-// Trigger: HidePanel
-//--------------------------------------------------------------------------------------------------
-bool gt_HidePanel_Func (bool testConds, bool runActions) {
-    // Automatic Variable Declarations
-    // Actions
-    if (!runActions) {
-        return true;
+    if ((gv_dialogUserPanel == false)) {
+        DialogSetVisible(gv_userInfoPanel, PlayerGroupAll(), true);
+        DialogControlFadeTransparency(gv_buttonUserPanel, PlayerGroupAll(), 0.0, 50.0);
+        gv_dialogUserPanel = true;
     }
-
-    DialogSetVisible(gv_userInfoPanel, PlayerGroupAll(), false);
+    else {
+        DialogSetVisible(gv_userInfoPanel, PlayerGroupAll(), false);
+        DialogControlFadeTransparency(gv_buttonUserPanel, PlayerGroupAll(), 0.0, 0.0);
+        gv_dialogUserPanel = false;
+    }
     return true;
 }
 
 //--------------------------------------------------------------------------------------------------
-void gt_HidePanel_Init () {
-    gt_HidePanel = TriggerCreate("gt_HidePanel_Func");
-    TriggerAddEventKeyPressed(gt_HidePanel, c_playerAny, c_keyX, false, c_keyModifierStateExclude, c_keyModifierStateRequire, c_keyModifierStateExclude);
+void gt_ClickDialogItem_Init () {
+    gt_ClickDialogItem = TriggerCreate("gt_ClickDialogItem_Func");
+    TriggerAddEventDialogControl(gt_ClickDialogItem, c_playerAny, c_invalidDialogControlId, c_triggerControlEventTypeClick);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -6324,8 +6335,7 @@ void InitTriggers () {
     gt_BeforeRoleSelection_Init();
     gt_DuringRoleSelection_Init();
     gt_AfterRoleSelection_Init();
-    gt_ShowPanel_Init();
-    gt_HidePanel_Init();
+    gt_ClickDialogItem_Init();
     gt_TipRole_Init();
     gt_TipCommands_Init();
     gt_TipHotkeys_Init();
