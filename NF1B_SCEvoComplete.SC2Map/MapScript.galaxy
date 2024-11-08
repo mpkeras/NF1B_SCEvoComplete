@@ -2,7 +2,7 @@
 // 
 // Generated Map Script
 // 
-// Name:   N Fight 1 Builds (SC: Evo Complete)
+// Name:   N ?????? 1 ?????? (SC: Evo Complete) ?????????
 // 
 //==================================================================================================
 include "TriggerLibs/NativeLib"
@@ -126,6 +126,7 @@ int gv_buttonPlayer9;
 int gv_buttonPlayer10;
 int gv_buttonPlayer11;
 int gv_buttonPlayer12;
+text gv_textSetToBuilder;
 
 void InitGlobals () {
     int init_i;
@@ -177,6 +178,7 @@ void InitGlobals () {
     gv_buttonPlayer10 = c_invalidDialogControlId;
     gv_buttonPlayer11 = c_invalidDialogControlId;
     gv_buttonPlayer12 = c_invalidDialogControlId;
+    gv_textSetToBuilder = StringExternal("Param/Value/FB05FBA9");
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -191,6 +193,7 @@ bool gf_IsSharedGroupedUnitType (unit lp_unit);
 bool gf_IsCanReleaseByBuilderUnitType (unit lp_unit);
 int gf_GetTeamOfPlayer (int lp_player);
 int gf_GetRoleOfPlayer (int lp_player);
+int gf_GetButtonOfPlayer (int lp_player);
 int gf_GetOwnerForRelease (int lp_team);
 int gf_GetColorForRelease (int lp_team);
 int gf_GetNeutralOfTeam (int lp_team);
@@ -229,6 +232,8 @@ void gf_SetUserPanel ();
 void gf_SetButtonUserPanel ();
 void gf_ClickButtonUserPanel ();
 void gf_SetButtonPlayer ();
+void gf_ClickButtonPlayer (int lp_oldBuilder, int lp_newBuilder);
+void gf_UpdateButtonPlayer (int lp_oldBuilder, int lp_newBuilder);
 void gf_BindButton (int lp_player);
 void gf_TipSameRace ();
 void gf_OwnershipForChangeBuilder (int lp_oldBuilder, int lp_newBuilder);
@@ -490,6 +495,53 @@ int gf_GetRoleOfPlayer (int lp_player) {
     }
     else {
         return ge_Role_Fighter;
+    }
+}
+
+int gf_GetButtonOfPlayer (int lp_player) {
+    // Automatic Variable Declarations
+    int auto4DBF79CF_val;
+
+    // Implementation
+    auto4DBF79CF_val = lp_player;
+    if (auto4DBF79CF_val == 1) {
+        return gv_buttonPlayer1;
+    }
+    else if (auto4DBF79CF_val == 2) {
+        return gv_buttonPlayer2;
+    }
+    else if (auto4DBF79CF_val == 3) {
+        return gv_buttonPlayer3;
+    }
+    else if (auto4DBF79CF_val == 4) {
+        return gv_buttonPlayer4;
+    }
+    else if (auto4DBF79CF_val == 5) {
+        return gv_buttonPlayer5;
+    }
+    else if (auto4DBF79CF_val == 6) {
+        return gv_buttonPlayer6;
+    }
+    else if (auto4DBF79CF_val == 7) {
+        return gv_buttonPlayer7;
+    }
+    else if (auto4DBF79CF_val == 8) {
+        return gv_buttonPlayer8;
+    }
+    else if (auto4DBF79CF_val == 9) {
+        return gv_buttonPlayer9;
+    }
+    else if (auto4DBF79CF_val == 10) {
+        return gv_buttonPlayer10;
+    }
+    else if (auto4DBF79CF_val == 11) {
+        return gv_buttonPlayer11;
+    }
+    else if (auto4DBF79CF_val == 12) {
+        return gv_buttonPlayer12;
+    }
+    else {
+        return c_invalidDialogControlId;
     }
 }
 
@@ -1080,7 +1132,7 @@ bool auto_gf_SetUI_TriggerFunc (bool testConds, bool runActions) {
     // Implementation
     gf_DisplayBuilderInfo();
     gf_SetButtonUserPanel();
-    gf_SetButtonPlayer();
+    gf_SetUserPanel();
     return true;
 }
 
@@ -1449,6 +1501,8 @@ bool auto_gf_DisplayBuilderInfo_TriggerFunc (bool testConds, bool runActions) {
 
 void gf_SetUserPanel () {
     // Automatic Variable Declarations
+    // Implementation
+    gf_SetButtonPlayer();
 }
 
 void gf_SetButtonUserPanel () {
@@ -1520,7 +1574,7 @@ bool auto_gf_SetButtonPlayer_TriggerFunc (bool testConds, bool runActions) {
         autoAA8EB649_var = PlayerGroupNextPlayer(autoAA8EB649_g, autoAA8EB649_var);
         if (autoAA8EB649_var < 0) { break; }
         libNtve_gf_CreateDialogItemLabel(DialogLastCreated(), 200, 50, c_anchorTopLeft, 50, (lv__height + 15), IntToText(autoAA8EB649_var), ColorWithAlpha(0,0,0,0), false, 2.0);
-        libNtve_gf_CreateDialogItemButton(DialogLastCreated(), 300, 50, c_anchorTopLeft, 80, lv__height, StringToText(""), PlayerName(autoAA8EB649_var), "");
+        libNtve_gf_CreateDialogItemButton(DialogLastCreated(), 300, 50, c_anchorTopLeft, 80, lv__height, gv_textSetToBuilder, PlayerName(autoAA8EB649_var), "");
         gf_BindButton(autoAA8EB649_var);
         lv__height += 50;
     }
@@ -1531,11 +1585,53 @@ bool auto_gf_SetButtonPlayer_TriggerFunc (bool testConds, bool runActions) {
         auto20762A18_var = PlayerGroupNextPlayer(auto20762A18_g, auto20762A18_var);
         if (auto20762A18_var < 0) { break; }
         libNtve_gf_CreateDialogItemLabel(DialogLastCreated(), 200, 50, c_anchorTopLeft, lv__x1, (lv__height + 15), IntToText(auto20762A18_var), ColorWithAlpha(0,0,0,0), false, 2.0);
-        libNtve_gf_CreateDialogItemButton(DialogLastCreated(), 300, 50, c_anchorTopLeft, lv__x2, lv__height, StringToText(""), PlayerName(auto20762A18_var), "");
+        libNtve_gf_CreateDialogItemButton(DialogLastCreated(), 300, 50, c_anchorTopLeft, lv__x2, lv__height, gv_textSetToBuilder, PlayerName(auto20762A18_var), "");
         gf_BindButton(auto20762A18_var);
         lv__height += 50;
     }
     return true;
+}
+
+void gf_ClickButtonPlayer (int lp_oldBuilder, int lp_newBuilder) {
+    // Variable Declarations
+    int lv__team;
+
+    // Automatic Variable Declarations
+    // Variable Initialization
+
+    // Implementation
+    lv__team = gf_GetTeamOfPlayer(lp_newBuilder);
+    if (((gf_GetBuilderOfTeam(lv__team) != lp_oldBuilder) || (lp_oldBuilder == lp_newBuilder))) {
+        return ;
+    }
+
+    gf_UpdateButtonPlayer(lp_oldBuilder, lp_newBuilder);
+    gf_UpdateRole(lv__team, lp_oldBuilder, lp_newBuilder);
+    gf_UpdateMorphForChangeBuilder(lp_oldBuilder, lp_newBuilder);
+    gf_AllowZergMorph(lp_newBuilder);
+    gf_DisallowZergMorph(lp_oldBuilder);
+    gf_UpdateFighterMode(lv__team);
+    gf_OwnershipForChangeBuilder(lp_oldBuilder, lp_newBuilder);
+    gf_MaintainSupplyUnchanged(lp_oldBuilder, lp_newBuilder);
+    gf_UpdateResource(lv__team, lp_oldBuilder, lp_newBuilder);
+    gf_UpdateBuilderName(lp_newBuilder, lv__team);
+}
+
+void gf_UpdateButtonPlayer (int lp_oldBuilder, int lp_newBuilder) {
+    // Variable Declarations
+    int lv__oldDialogItem;
+    int lv__newDialogItem;
+
+    // Automatic Variable Declarations
+    // Variable Initialization
+    lv__oldDialogItem = c_invalidDialogControlId;
+    lv__newDialogItem = c_invalidDialogControlId;
+
+    // Implementation
+    lv__oldDialogItem = gf_GetButtonOfPlayer(lp_oldBuilder);
+    lv__newDialogItem = gf_GetButtonOfPlayer(lp_newBuilder);
+    DialogControlFadeTransparency(lv__oldDialogItem, PlayerGroupAll(), 0.0, 0.0);
+    DialogControlFadeTransparency(lv__newDialogItem, PlayerGroupAll(), 0.0, 50.0);
 }
 
 void gf_BindButton (int lp_player) {
@@ -2683,6 +2779,7 @@ bool gt_BeBuilder_Func (bool testConds, bool runActions) {
         lv__oldBuilder = gv_team2_teamInfo.lv_builder;
     }
     if ((lv__newBuilder != lv__oldBuilder)) {
+        gf_UpdateButtonPlayer(lv__oldBuilder, lv__newBuilder);
         gf_UpdateRole(lv__team, lv__oldBuilder, lv__newBuilder);
         gf_UpdateMorphForChangeBuilder(lv__oldBuilder, lv__newBuilder);
         gf_UpdateFighterMode(lv__team);
@@ -2729,6 +2826,7 @@ bool gt_BeFighter_Func (bool testConds, bool runActions) {
     if ((gf_GetRoleOfPlayer(lv__oldBuilder) == ge_Role_Builder)) {
         lv__team = gf_GetTeamOfPlayer(lv__oldBuilder);
         lv__newBuilder = gf_RandomFighterFromTeam(lv__team);
+        gf_UpdateButtonPlayer(lv__oldBuilder, lv__newBuilder);
         gf_UpdateRole(lv__team, lv__oldBuilder, lv__newBuilder);
         gf_UpdateMorphForChangeBuilder(lv__oldBuilder, lv__newBuilder);
         gf_UpdateFighterMode(lv__team);
@@ -3098,10 +3196,9 @@ void gt_AfterRoleSelection_Init () {
 bool gt_ClickDialogItem_Func (bool testConds, bool runActions) {
     // Variable Declarations
     int lv__dialogItem;
+    int lv__player;
 
     // Automatic Variable Declarations
-    int autoA8E09819_val;
-
     // Variable Initialization
     lv__dialogItem = c_invalidDialogControlId;
 
@@ -3111,12 +3208,27 @@ bool gt_ClickDialogItem_Func (bool testConds, bool runActions) {
     }
 
     lv__dialogItem = EventDialogControl();
-    autoA8E09819_val = lv__dialogItem;
-    if (autoA8E09819_val == gv_buttonUserPanel) {
+    lv__player = EventPlayer();
+    if ((lv__dialogItem == gv_buttonUserPanel)) {
         gf_ClickButtonUserPanel();
     }
-    else {
-        return true;
+    else if ((lv__dialogItem == gv_buttonPlayer1)) {
+        gf_ClickButtonPlayer(lv__player, 1);
+    }
+    else if ((lv__dialogItem == gv_buttonPlayer2)) {
+        gf_ClickButtonPlayer(lv__player, 2);
+    }
+    else if ((lv__dialogItem == gv_buttonPlayer3)) {
+        gf_ClickButtonPlayer(lv__player, 3);
+    }
+    else if ((lv__dialogItem == gv_buttonPlayer4)) {
+        gf_ClickButtonPlayer(lv__player, 4);
+    }
+    else if ((lv__dialogItem == gv_buttonPlayer5)) {
+        gf_ClickButtonPlayer(lv__player, 5);
+    }
+    else if ((lv__dialogItem == gv_buttonPlayer6)) {
+        gf_ClickButtonPlayer(lv__player, 6);
     }
     return true;
 }
@@ -3570,6 +3682,7 @@ bool gt_ChangeBuilder_Func (bool testConds, bool runActions) {
         lv__valid = true;
     }
     if ((lv__valid == true)) {
+        gf_UpdateButtonPlayer(lv__oldBuilder, lv__newBuilder);
         gf_UpdateRole(lv__team, lv__oldBuilder, lv__newBuilder);
         gf_UpdateMorphForChangeBuilder(lv__oldBuilder, lv__newBuilder);
         gf_AllowZergMorph(lv__newBuilder);
@@ -3633,6 +3746,7 @@ bool gt_GiveUpBuilderRole_Func (bool testConds, bool runActions) {
     lv__team = gf_GetTeamOfPlayer(lv__oldBuilder);
     lv__newBuilder = gf_RandomFighterExcludeHaveBeenFromTeam(lv__team);
     if ((lv__newBuilder != -1)) {
+        gf_UpdateButtonPlayer(lv__oldBuilder, lv__newBuilder);
         gf_UpdateRole(lv__team, lv__oldBuilder, lv__newBuilder);
         gf_UpdateMorphForChangeBuilder(lv__oldBuilder, lv__newBuilder);
         gf_UpdateFighterMode(lv__team);
@@ -3688,12 +3802,12 @@ bool gt_FighterQuit_Func (bool testConds, bool runActions) {
         PlayerGroupRemove(gv_team1_teamInfo.lv_fighterGroup, lv__player);
         gv_team1_teamInfo.lv_userNum -= 1;
         gv_team1_teamInfo.lv_fighterNum -= 1;
-        if ((gv_team1_teamInfo.lv_fighterNum == 0)) {
-            gf_FighterDefeat(1);
-        }
-
         if ((gv_team1_teamInfo.lv_fighterNum == 1)) {
             gf_ChangeFighterMode(1, ge_FighterMode__1F1B);
+        }
+
+        if ((gv_team1_teamInfo.lv_fighterNum == 0)) {
+            gf_FighterDefeat(1);
         }
 
     }
@@ -3703,12 +3817,12 @@ bool gt_FighterQuit_Func (bool testConds, bool runActions) {
         PlayerGroupRemove(gv_team2_teamInfo.lv_fighterGroup, lv__player);
         gv_team2_teamInfo.lv_userNum -= 1;
         gv_team2_teamInfo.lv_fighterNum -= 1;
-        if ((gv_team2_teamInfo.lv_fighterNum == 0)) {
-            gf_FighterDefeat(2);
-        }
-
         if ((gv_team2_teamInfo.lv_fighterNum == 1)) {
             gf_ChangeFighterMode(2, ge_FighterMode__1F1B);
+        }
+
+        if ((gv_team2_teamInfo.lv_fighterNum == 0)) {
+            gf_FighterDefeat(2);
         }
 
     }

@@ -178,6 +178,7 @@ Variable/Name/DF425615=_unit
 Variable/Name/E34943E6=playerNum
 Variable/Name/E5E8EC39=teamInfo2
 Variable/Name/EBC960A7=_rallyPoint
+Variable/Name/ED092157=_tip
 Variable/Name/F0E7C2C2=fighterGroup2
 Variable/Name/F0F3F76E=tipSensorTowerFlag1
 Variable/Name/F12D7F75=PlayerIndex
