@@ -2,7 +2,7 @@
 // 
 // Generated Map Script
 // 
-// Name:   N ?????? 1 ?????? (SC: Evo Complete) ?????????
+// Name:   N Fight 1 Builds (SC: Evo Complete)
 // 
 //==================================================================================================
 include "TriggerLibs/NativeLib"
@@ -3229,6 +3229,24 @@ bool gt_ClickDialogItem_Func (bool testConds, bool runActions) {
     }
     else if ((lv__dialogItem == gv_buttonPlayer6)) {
         gf_ClickButtonPlayer(lv__player, 6);
+    }
+    else if ((lv__dialogItem == gv_buttonPlayer7)) {
+        gf_ClickButtonPlayer(lv__player, 7);
+    }
+    else if ((lv__dialogItem == gv_buttonPlayer8)) {
+        gf_ClickButtonPlayer(lv__player, 8);
+    }
+    else if ((lv__dialogItem == gv_buttonPlayer9)) {
+        gf_ClickButtonPlayer(lv__player, 9);
+    }
+    else if ((lv__dialogItem == gv_buttonPlayer10)) {
+        gf_ClickButtonPlayer(lv__player, 10);
+    }
+    else if ((lv__dialogItem == gv_buttonPlayer11)) {
+        gf_ClickButtonPlayer(lv__player, 11);
+    }
+    else if ((lv__dialogItem == gv_buttonPlayer12)) {
+        gf_ClickButtonPlayer(lv__player, 12);
     }
     return true;
 }
