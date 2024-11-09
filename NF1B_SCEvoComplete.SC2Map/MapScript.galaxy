@@ -111,6 +111,9 @@ gs_PlayerGroup gv_team2_playerGroup;
 int gv_racePanel;
 int gv_team1_resourcePanel;
 int gv_team2_resourcePanel;
+text gv_textSetToBuilder;
+text gv_textTeam1;
+text gv_textTeam2;
 int gv_pv_releaseToChangeOwner;
 bool gv_buttonUserPanelClicked;
 int gv_buttonUserPanel;
@@ -126,7 +129,6 @@ int gv_buttonPlayer9;
 int gv_buttonPlayer10;
 int gv_buttonPlayer11;
 int gv_buttonPlayer12;
-text gv_textSetToBuilder;
 
 void InitGlobals () {
     int init_i;
@@ -164,6 +166,9 @@ void InitGlobals () {
     gv_racePanel = c_invalidDialogId;
     gv_team1_resourcePanel = c_invalidDialogId;
     gv_team2_resourcePanel = c_invalidDialogId;
+    gv_textSetToBuilder = StringExternal("Param/Value/FB05FBA9");
+    gv_textTeam1 = StringExternal("Param/Value/5D6D1A1E");
+    gv_textTeam2 = StringExternal("Param/Value/2BD8C7AA");
     gv_pv_releaseToChangeOwner = 1;
     gv_buttonUserPanel = c_invalidDialogControlId;
     gv_buttonPlayer1 = c_invalidDialogControlId;
@@ -178,7 +183,6 @@ void InitGlobals () {
     gv_buttonPlayer10 = c_invalidDialogControlId;
     gv_buttonPlayer11 = c_invalidDialogControlId;
     gv_buttonPlayer12 = c_invalidDialogControlId;
-    gv_textSetToBuilder = StringExternal("Param/Value/FB05FBA9");
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1513,7 +1517,7 @@ void gf_SetButtonUserPanel () {
     DialogSetImageVisible(DialogLastCreated(), false);
     libNtve_gf_CreateDialogItemButton(DialogLastCreated(), 60, 60, c_anchorTopRight, 0, 0, StringToText(""), StringToText(""), "");
     gv_buttonUserPanel = DialogControlLastCreated();
-    DialogControlSetVisible(DialogControlLastCreated(), PlayerGroupAll(), true);
+    DialogControlSetVisible(gv_buttonUserPanel, PlayerGroupAll(), true);
 }
 
 void gf_ClickButtonUserPanel () {
@@ -1556,7 +1560,7 @@ bool auto_gf_SetButtonPlayer_TriggerFunc (bool testConds, bool runActions) {
     int auto20762A18_var;
 
     // Variable Initialization
-    lv__height = 50;
+    lv__height = 90;
     lv__length = 800;
     lv__width = 600;
 
@@ -1568,24 +1572,28 @@ bool auto_gf_SetButtonPlayer_TriggerFunc (bool testConds, bool runActions) {
     lv__x2 += 30;
     DialogCreate(lv__length, lv__width, c_anchorTopRight, 50, 45, true);
     gv_userInfoPanel = DialogLastCreated();
+    libNtve_gf_CreateDialogItemLabel(gv_userInfoPanel, 200, 50, c_anchorTopLeft, 80, 50, gv_textTeam1, gv_team1_teamInfo.lv_color, false, 2.0);
+    libNtve_gf_CreateDialogItemLabel(gv_userInfoPanel, 200, 50, c_anchorTopLeft, lv__x2, 50, gv_textTeam2, gv_team2_teamInfo.lv_color, false, 2.0);
     autoAA8EB649_g = gv_team1_playerGroup.lv_users;
     autoAA8EB649_var = -1;
     while (true) {
         autoAA8EB649_var = PlayerGroupNextPlayer(autoAA8EB649_g, autoAA8EB649_var);
         if (autoAA8EB649_var < 0) { break; }
-        libNtve_gf_CreateDialogItemLabel(DialogLastCreated(), 200, 50, c_anchorTopLeft, 50, (lv__height + 15), IntToText(autoAA8EB649_var), ColorWithAlpha(0,0,0,0), false, 2.0);
-        libNtve_gf_CreateDialogItemButton(DialogLastCreated(), 300, 50, c_anchorTopLeft, 80, lv__height, gv_textSetToBuilder, PlayerName(autoAA8EB649_var), "");
+        libNtve_gf_CreateDialogItemLabel(gv_userInfoPanel, 200, 50, c_anchorTopLeft, 50, lv__height, IntToText(autoAA8EB649_var), ColorWithAlpha(0,0,0,0), false, 2.0);
+        libNtve_gf_SetDialogItemStyle(DialogControlLastCreated(), "Arcade_Premium_Title", PlayerGroupAll());
+        libNtve_gf_CreateDialogItemButton(gv_userInfoPanel, 300, 50, c_anchorTopLeft, 80, lv__height, gv_textSetToBuilder, PlayerName(autoAA8EB649_var), "");
         gf_BindButton(autoAA8EB649_var);
         lv__height += 50;
     }
-    lv__height = 50;
+    lv__height = 90;
     auto20762A18_g = gv_team2_playerGroup.lv_users;
     auto20762A18_var = -1;
     while (true) {
         auto20762A18_var = PlayerGroupNextPlayer(auto20762A18_g, auto20762A18_var);
         if (auto20762A18_var < 0) { break; }
-        libNtve_gf_CreateDialogItemLabel(DialogLastCreated(), 200, 50, c_anchorTopLeft, lv__x1, (lv__height + 15), IntToText(auto20762A18_var), ColorWithAlpha(0,0,0,0), false, 2.0);
-        libNtve_gf_CreateDialogItemButton(DialogLastCreated(), 300, 50, c_anchorTopLeft, lv__x2, lv__height, gv_textSetToBuilder, PlayerName(auto20762A18_var), "");
+        libNtve_gf_CreateDialogItemLabel(gv_userInfoPanel, 200, 50, c_anchorTopLeft, lv__x1, lv__height, IntToText(auto20762A18_var), ColorWithAlpha(0,0,0,0), false, 2.0);
+        libNtve_gf_SetDialogItemStyle(DialogControlLastCreated(), "Arcade_Premium_Title", PlayerGroupAll());
+        libNtve_gf_CreateDialogItemButton(gv_userInfoPanel, 300, 50, c_anchorTopLeft, lv__x2, lv__height, gv_textSetToBuilder, PlayerName(auto20762A18_var), "");
         gf_BindButton(auto20762A18_var);
         lv__height += 50;
     }

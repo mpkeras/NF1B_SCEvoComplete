@@ -71,6 +71,7 @@ Param/Value/194069C0=Hotkeys
 Param/Value/1AC85A47=Tip: Press F12 for help
 Param/Value/2266D75E=Warning: Two teams have the same race. One of the teams' builder can change their race by typing "-r <t1 | z1 | p1 | t2 | z2 | p2>" in 12 seconds.
 Param/Value/297E2BE5=350
+Param/Value/2BD8C7AA=<s val="Arcade_Premium_Title">Team 2</s>
 Param/Value/2D322F0D=400
 Param/Value/2ECA9760=Tip: All units that require a second phase mutation can be trained by builders directly.
 Param/Value/3955DDB3=Warning: Team 1 has changed its race!
@@ -80,6 +81,7 @@ Param/Value/47E2A1E9=Tip: If your race is SC2 Zerg, the builder need press the S
 Param/Value/514459C7=400
 Param/Value/53838379=Warning: Team 2 has changed its race!
 Param/Value/56DB4C47=-d: Enable/Disable debug mod<n/><n/>-con: Enable/Disable shared control on other players' units<n/><n/>-gain: Change owner of selected units to current user<n/><n/>-res: Add 10000 of each Resource to the Available Resources<n/><n/>-fog: Disable/Enable Fog of War<n/><n/>-food: Disable/Enable the need for Supplies<n/><n/>-fast: Enable/Enable Fast Builds and Fast Upgrades<n/><n/>test: Equivalent to "-res" + "-fog" + "-food" + "-fast"<n/><n/>-wor: Create workers from all races<n/><n/>-bui: Become builder<n/><n/>-fig: Become Fighter<n/><n/>-nf: Setup "N Fight 1 Builds" mode<n/><n/>-1f: Setup "1 Fights 1 Builds" mode<n/><n/>-rm: Remove all selected units
+Param/Value/5D6D1A1E=<s val="Arcade_Premium_Title">Team 1</s>
 Param/Value/5ED931F6=Commands
 Param/Value/6FD47613=There's only one player left in team 1. Team 2 win.
 Param/Value/738A54F4=There's only one player left in team 2. Team 1 win.
