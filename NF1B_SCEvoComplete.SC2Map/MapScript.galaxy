@@ -19,11 +19,6 @@ void InitLibs () {
 //--------------------------------------------------------------------------------------------------
 // Global Structures
 //--------------------------------------------------------------------------------------------------
-struct gs_UI {
-    int lv_builderIcon;
-    int lv_builderName;
-};
-
 struct gs_TeamMode {
     int lv_fighterMode;
     int lv_ownerForRelease;
@@ -89,9 +84,26 @@ const int ge_Role_Fighter = 1;
 bool gv_debug;
 bool gv_controlDebug;
 bool gv_uiShowed;
+int gv_team1_resourcePanel;
+int gv_team2_resourcePanel;
 int gv_userPanel;
-gs_UI gv_team1_UI;
-gs_UI gv_team2_UI;
+bool gv_buttonUserPanelClicked;
+int gv_buttonUserPanel;
+int gv_team1_raceIcon;
+int gv_team2_raceIcon;
+int gv_buttonPlayer1;
+int gv_buttonPlayer2;
+int gv_buttonPlayer3;
+int gv_buttonPlayer4;
+int gv_buttonPlayer5;
+int gv_buttonPlayer6;
+int gv_buttonPlayer7;
+int gv_buttonPlayer8;
+int gv_buttonPlayer9;
+int gv_buttonPlayer10;
+int gv_buttonPlayer11;
+int gv_buttonPlayer12;
+int gv_dialogUserPanel;
 timer gv_timer;
 bool gv_changeRaceEnabled;
 bool gv_ggFlag;
@@ -108,39 +120,34 @@ gs_TeamInfo gv_team2_teamInfo;
 gs_PlayerProperty[15] gv_playerProperty;
 gs_PlayerGroup gv_team1_playerGroup;
 gs_PlayerGroup gv_team2_playerGroup;
-int gv_racePanel;
-int gv_team1_resourcePanel;
-int gv_team2_resourcePanel;
 text gv_textSetToBuilder;
 text gv_textTeam1;
 text gv_textTeam2;
 int gv_pv_releaseToChangeOwner;
-bool gv_buttonUserPanelClicked;
-int gv_buttonUserPanel;
-int gv_buttonPlayer1;
-int gv_buttonPlayer2;
-int gv_buttonPlayer3;
-int gv_buttonPlayer4;
-int gv_buttonPlayer5;
-int gv_buttonPlayer6;
-int gv_buttonPlayer7;
-int gv_buttonPlayer8;
-int gv_buttonPlayer9;
-int gv_buttonPlayer10;
-int gv_buttonPlayer11;
-int gv_buttonPlayer12;
-int gv_team1_raceIcon;
-int gv_team2_raceIcon;
 
 void InitGlobals () {
     int init_i;
 
     gv_uiShowed = true;
+    gv_team1_resourcePanel = c_invalidDialogId;
+    gv_team2_resourcePanel = c_invalidDialogId;
     gv_userPanel = c_invalidDialogId;
-    gv_team1_UI.lv_builderIcon = c_invalidDialogControlId;
-    gv_team1_UI.lv_builderName = c_invalidDialogControlId;
-    gv_team2_UI.lv_builderIcon = c_invalidDialogControlId;
-    gv_team2_UI.lv_builderName = c_invalidDialogControlId;
+    gv_buttonUserPanel = c_invalidDialogControlId;
+    gv_team1_raceIcon = c_invalidDialogControlId;
+    gv_team2_raceIcon = c_invalidDialogControlId;
+    gv_buttonPlayer1 = c_invalidDialogControlId;
+    gv_buttonPlayer2 = c_invalidDialogControlId;
+    gv_buttonPlayer3 = c_invalidDialogControlId;
+    gv_buttonPlayer4 = c_invalidDialogControlId;
+    gv_buttonPlayer5 = c_invalidDialogControlId;
+    gv_buttonPlayer6 = c_invalidDialogControlId;
+    gv_buttonPlayer7 = c_invalidDialogControlId;
+    gv_buttonPlayer8 = c_invalidDialogControlId;
+    gv_buttonPlayer9 = c_invalidDialogControlId;
+    gv_buttonPlayer10 = c_invalidDialogControlId;
+    gv_buttonPlayer11 = c_invalidDialogControlId;
+    gv_buttonPlayer12 = c_invalidDialogControlId;
+    gv_dialogUserPanel = c_invalidDialogId;
     gv_timer = TimerCreate();
     gv_team1_teamMode.lv_fighterMode = ge_FighterMode_NF1B;
     gv_team2_teamMode.lv_fighterMode = ge_FighterMode_NF1B;
@@ -165,28 +172,10 @@ void InitGlobals () {
     gv_team2_playerGroup.lv_users = PlayerGroupEmpty();
     gv_team2_playerGroup.lv_players = PlayerGroupEmpty();
     gv_team2_playerGroup.lv_fightersWithNeutral = PlayerGroupEmpty();
-    gv_racePanel = c_invalidDialogId;
-    gv_team1_resourcePanel = c_invalidDialogId;
-    gv_team2_resourcePanel = c_invalidDialogId;
     gv_textSetToBuilder = StringExternal("Param/Value/FB05FBA9");
     gv_textTeam1 = StringExternal("Param/Value/5D6D1A1E");
     gv_textTeam2 = StringExternal("Param/Value/2BD8C7AA");
     gv_pv_releaseToChangeOwner = 1;
-    gv_buttonUserPanel = c_invalidDialogControlId;
-    gv_buttonPlayer1 = c_invalidDialogControlId;
-    gv_buttonPlayer2 = c_invalidDialogControlId;
-    gv_buttonPlayer3 = c_invalidDialogControlId;
-    gv_buttonPlayer4 = c_invalidDialogControlId;
-    gv_buttonPlayer5 = c_invalidDialogControlId;
-    gv_buttonPlayer6 = c_invalidDialogControlId;
-    gv_buttonPlayer7 = c_invalidDialogControlId;
-    gv_buttonPlayer8 = c_invalidDialogControlId;
-    gv_buttonPlayer9 = c_invalidDialogControlId;
-    gv_buttonPlayer10 = c_invalidDialogControlId;
-    gv_buttonPlayer11 = c_invalidDialogControlId;
-    gv_buttonPlayer12 = c_invalidDialogControlId;
-    gv_team1_raceIcon = c_invalidDialogControlId;
-    gv_team2_raceIcon = c_invalidDialogControlId;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -232,15 +221,15 @@ void gf_InitNexusGroup ();
 void gf_SetResource ();
 void gf_SetAlliance ();
 void gf_SetSupplyLimit ();
-void gf_SetUserPanel ();
-void gf_SetButtonUserPanel ();
-void gf_ClickButtonUserPanel ();
+void gf_UpdateRaceIcon (int lp_team, string lp_race);
+void gf_SetRaceIcon (int lp_x1, int lp_y1, int lp_x2, int lp_y2);
 void gf_SetButtonPlayer (int lp_length);
 void gf_ClickButtonPlayer (int lp_oldBuilder, int lp_newBuilder);
 void gf_UpdateButtonPlayer (int lp_oldBuilder, int lp_newBuilder);
 void gf_BindButton (int lp_player);
-void gf_SetRaceIcon (int lp_x1, int lp_y1, int lp_x2, int lp_y2);
-void gf_UpdateRaceIcon (int lp_team, string lp_race);
+void gf_SetUserPanel ();
+void gf_SetButtonUserPanel ();
+void gf_ClickButtonUserPanel ();
 void gf_TipSameRace ();
 void gf_OwnershipForChangeBuilder (int lp_oldBuilder, int lp_newBuilder);
 void gf_UpdateMorphForChangeBuilder (int lp_oldBuilder, int lp_newBuilder);
@@ -263,9 +252,6 @@ void gf_EnableAbilityForReleasedMainBase (unit lp_unit);
 void gf_ChangeFighterMode (int lp_team, int lp_mode);
 void gf_UpdateFighterMode (int lp_team);
 void gf_FighterDefeat (int lp_team);
-void gf_UpdateBuilderIcon (int lp_team, string lp_race);
-void gf_UpdateBuilderName (int lp_newBuilder, int lp_team);
-void gf_DisplayBuilderInfo ();
 
 //--------------------------------------------------------------------------------------------------
 // Trigger Variables
@@ -1380,47 +1366,106 @@ bool auto_gf_SetSupplyLimit_TriggerFunc (bool testConds, bool runActions) {
     return true;
 }
 
-void gf_SetUserPanel () {
+void gf_UpdateRaceIcon (int lp_team, string lp_race) {
     // Variable Declarations
-    int lv__length;
-    int lv__width;
+    string lv__image;
 
     // Automatic Variable Declarations
+    string auto960B1BDE_val;
+    int auto3140ACDB_val;
+
     // Variable Initialization
-    lv__length = 800;
-    lv__width = 600;
 
     // Implementation
-    gf_SetButtonUserPanel();
-    DialogCreate(lv__length, lv__width, c_anchorTopRight, 50, 45, true);
-    gv_userPanel = DialogLastCreated();
-    gf_SetButtonPlayer(lv__length);
-}
-
-void gf_SetButtonUserPanel () {
-    // Automatic Variable Declarations
-    // Implementation
-    DialogCreate(60, 60, c_anchorTopRight, 0, 45, true);
-    DialogSetVisible(DialogLastCreated(), PlayerGroupAll(), true);
-    DialogSetImageVisible(DialogLastCreated(), false);
-    libNtve_gf_CreateDialogItemButton(DialogLastCreated(), 60, 60, c_anchorTopRight, 0, 0, StringToText(""), StringToText(""), "");
-    gv_buttonUserPanel = DialogControlLastCreated();
-    DialogControlSetVisible(gv_buttonUserPanel, PlayerGroupAll(), true);
-}
-
-void gf_ClickButtonUserPanel () {
-    // Automatic Variable Declarations
-    // Implementation
-    if ((gv_buttonUserPanelClicked == false)) {
-        DialogSetVisible(gv_userPanel, PlayerGroupAll(), true);
-        DialogControlFadeTransparency(gv_buttonUserPanel, PlayerGroupAll(), 0.0, 50.0);
-        gv_buttonUserPanelClicked = true;
+    auto960B1BDE_val = lp_race;
+    if (auto960B1BDE_val == "Terr") {
+        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_terran.dds";
+    }
+    else if (auto960B1BDE_val == "Zerg") {
+        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_zerg.dds";
+    }
+    else if (auto960B1BDE_val == "Prot") {
+        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_protoss.dds";
+    }
+    else if (auto960B1BDE_val == "BWTe") {
+        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWterran.dds";
+    }
+    else if (auto960B1BDE_val == "BWZe") {
+        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWzerg.dds";
+    }
+    else if (auto960B1BDE_val == "BWPr") {
+        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWprotoss.dds";
     }
     else {
-        DialogSetVisible(gv_userPanel, PlayerGroupAll(), false);
-        DialogControlFadeTransparency(gv_buttonUserPanel, PlayerGroupAll(), 0.0, 0.0);
-        gv_buttonUserPanelClicked = false;
     }
+    auto3140ACDB_val = lp_team;
+    if (auto3140ACDB_val == 1) {
+        libNtve_gf_SetDialogItemImage(gv_team1_raceIcon, lv__image, PlayerGroupAll());
+    }
+    else if (auto3140ACDB_val == 2) {
+        libNtve_gf_SetDialogItemImage(gv_team2_raceIcon, lv__image, PlayerGroupAll());
+    }
+    else {
+    }
+}
+
+void gf_SetRaceIcon (int lp_x1, int lp_y1, int lp_x2, int lp_y2) {
+    // Variable Declarations
+    string lv__image;
+
+    // Automatic Variable Declarations
+    string auto740F3584_val;
+    string autoEBCB5EA1_val;
+
+    // Variable Initialization
+
+    // Implementation
+    auto740F3584_val = gv_team1_teamInfo.lv_race;
+    if (auto740F3584_val == "Terr") {
+        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_terran.dds";
+    }
+    else if (auto740F3584_val == "Zerg") {
+        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_zerg.dds";
+    }
+    else if (auto740F3584_val == "Prot") {
+        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_protoss.dds";
+    }
+    else if (auto740F3584_val == "BWTe") {
+        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWterran.dds";
+    }
+    else if (auto740F3584_val == "BWZe") {
+        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWzerg.dds";
+    }
+    else if (auto740F3584_val == "BWPr") {
+        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWprotoss.dds";
+    }
+    else {
+    }
+    libNtve_gf_CreateDialogItemImage(gv_userPanel, 48, 52, c_anchorTopLeft, lp_x1, lp_y1, StringToText(""), lv__image, c_triggerImageTypeNormal, true, gv_team1_teamInfo.lv_color, c_triggerBlendModeNormal);
+    gv_team1_raceIcon = DialogControlLastCreated();
+    autoEBCB5EA1_val = gv_team2_teamInfo.lv_race;
+    if (autoEBCB5EA1_val == "Terr") {
+        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_terran.dds";
+    }
+    else if (autoEBCB5EA1_val == "Zerg") {
+        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_zerg.dds";
+    }
+    else if (autoEBCB5EA1_val == "Prot") {
+        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_protoss.dds";
+    }
+    else if (autoEBCB5EA1_val == "BWTe") {
+        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWterran.dds";
+    }
+    else if (autoEBCB5EA1_val == "BWZe") {
+        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWzerg.dds";
+    }
+    else if (autoEBCB5EA1_val == "BWPr") {
+        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWprotoss.dds";
+    }
+    else {
+    }
+    libNtve_gf_CreateDialogItemImage(gv_userPanel, 48, 52, c_anchorTopLeft, lp_x2, lp_y2, StringToText(""), lv__image, c_triggerImageTypeNormal, true, gv_team2_teamInfo.lv_color, c_triggerBlendModeNormal);
+    gv_team2_raceIcon = DialogControlLastCreated();
 }
 
 trigger auto_gf_SetButtonPlayer_Trigger = null;
@@ -1584,105 +1629,47 @@ void gf_BindButton (int lp_player) {
 
 }
 
-void gf_SetRaceIcon (int lp_x1, int lp_y1, int lp_x2, int lp_y2) {
+void gf_SetUserPanel () {
     // Variable Declarations
-    string lv__image;
+    int lv__length;
+    int lv__width;
 
     // Automatic Variable Declarations
-    string auto740F3584_val;
-    string autoEBCB5EA1_val;
-
     // Variable Initialization
+    lv__length = 800;
+    lv__width = 600;
 
     // Implementation
-    auto740F3584_val = gv_team1_teamInfo.lv_race;
-    if (auto740F3584_val == "Terr") {
-        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_terran.dds";
-    }
-    else if (auto740F3584_val == "Zerg") {
-        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_zerg.dds";
-    }
-    else if (auto740F3584_val == "Prot") {
-        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_protoss.dds";
-    }
-    else if (auto740F3584_val == "BWTe") {
-        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWterran.dds";
-    }
-    else if (auto740F3584_val == "BWZe") {
-        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWzerg.dds";
-    }
-    else if (auto740F3584_val == "BWPr") {
-        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWprotoss.dds";
-    }
-    else {
-    }
-    libNtve_gf_CreateDialogItemImage(gv_userPanel, 48, 52, c_anchorTopLeft, lp_x1, lp_y1, StringToText(""), lv__image, c_triggerImageTypeNormal, true, gv_team1_teamInfo.lv_color, c_triggerBlendModeNormal);
-    gv_team1_raceIcon = DialogControlLastCreated();
-    autoEBCB5EA1_val = gv_team2_teamInfo.lv_race;
-    if (autoEBCB5EA1_val == "Terr") {
-        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_terran.dds";
-    }
-    else if (autoEBCB5EA1_val == "Zerg") {
-        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_zerg.dds";
-    }
-    else if (autoEBCB5EA1_val == "Prot") {
-        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_protoss.dds";
-    }
-    else if (autoEBCB5EA1_val == "BWTe") {
-        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWterran.dds";
-    }
-    else if (autoEBCB5EA1_val == "BWZe") {
-        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWzerg.dds";
-    }
-    else if (autoEBCB5EA1_val == "BWPr") {
-        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWprotoss.dds";
-    }
-    else {
-    }
-    libNtve_gf_CreateDialogItemImage(gv_userPanel, 48, 52, c_anchorTopLeft, lp_x2, lp_y2, StringToText(""), lv__image, c_triggerImageTypeNormal, true, gv_team2_teamInfo.lv_color, c_triggerBlendModeNormal);
-    gv_team2_raceIcon = DialogControlLastCreated();
+    gf_SetButtonUserPanel();
+    DialogCreate(lv__length, lv__width, c_anchorTopRight, 50, 45, true);
+    gv_userPanel = DialogLastCreated();
+    gf_SetButtonPlayer(lv__length);
 }
 
-void gf_UpdateRaceIcon (int lp_team, string lp_race) {
-    // Variable Declarations
-    string lv__image;
-
+void gf_SetButtonUserPanel () {
     // Automatic Variable Declarations
-    string auto960B1BDE_val;
-    int auto3140ACDB_val;
-
-    // Variable Initialization
-
     // Implementation
-    auto960B1BDE_val = lp_race;
-    if (auto960B1BDE_val == "Terr") {
-        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_terran.dds";
-    }
-    else if (auto960B1BDE_val == "Zerg") {
-        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_zerg.dds";
-    }
-    else if (auto960B1BDE_val == "Prot") {
-        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_protoss.dds";
-    }
-    else if (auto960B1BDE_val == "BWTe") {
-        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWterran.dds";
-    }
-    else if (auto960B1BDE_val == "BWZe") {
-        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWzerg.dds";
-    }
-    else if (auto960B1BDE_val == "BWPr") {
-        lv__image = "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWprotoss.dds";
+    DialogCreate(60, 60, c_anchorTopRight, 0, 45, true);
+    gv_dialogUserPanel = DialogLastCreated();
+    DialogSetVisible(DialogLastCreated(), PlayerGroupAll(), true);
+    DialogSetImageVisible(DialogLastCreated(), false);
+    libNtve_gf_CreateDialogItemButton(DialogLastCreated(), 60, 60, c_anchorTopRight, 0, 0, StringToText(""), StringToText(""), "");
+    gv_buttonUserPanel = DialogControlLastCreated();
+    DialogControlSetVisible(gv_buttonUserPanel, PlayerGroupAll(), true);
+}
+
+void gf_ClickButtonUserPanel () {
+    // Automatic Variable Declarations
+    // Implementation
+    if ((gv_buttonUserPanelClicked == false)) {
+        DialogSetVisible(gv_userPanel, PlayerGroupAll(), true);
+        DialogControlFadeTransparency(gv_buttonUserPanel, PlayerGroupAll(), 0.0, 50.0);
+        gv_buttonUserPanelClicked = true;
     }
     else {
-    }
-    auto3140ACDB_val = lp_team;
-    if (auto3140ACDB_val == 1) {
-        libNtve_gf_SetDialogItemImage(gv_team1_raceIcon, lv__image, PlayerGroupAll());
-    }
-    else if (auto3140ACDB_val == 2) {
-        libNtve_gf_SetDialogItemImage(gv_team2_raceIcon, lv__image, PlayerGroupAll());
-    }
-    else {
+        DialogSetVisible(gv_userPanel, PlayerGroupAll(), false);
+        DialogControlFadeTransparency(gv_buttonUserPanel, PlayerGroupAll(), 0.0, 0.0);
+        gv_buttonUserPanelClicked = false;
     }
 }
 
@@ -2186,71 +2173,6 @@ void gf_FighterDefeat (int lp_team) {
     }
     else {
     }
-}
-
-void gf_UpdateBuilderIcon (int lp_team, string lp_race) {
-    // Variable Declarations
-    int lv__icon;
-
-    // Automatic Variable Declarations
-    string auto2AE6ADA5_val;
-
-    // Variable Initialization
-    lv__icon = c_invalidDialogControlId;
-
-    // Deprecated
-    auto2AE6ADA5_val = lp_race;
-    if (auto2AE6ADA5_val == "Terr") {
-        libNtve_gf_SetDialogItemImage(lv__icon, "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_terran.dds", PlayerGroupAll());
-    }
-    else if (auto2AE6ADA5_val == "Zerg") {
-        libNtve_gf_SetDialogItemImage(lv__icon, "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_zerg.dds", PlayerGroupAll());
-    }
-    else if (auto2AE6ADA5_val == "Prot") {
-        libNtve_gf_SetDialogItemImage(lv__icon, "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_protoss.dds", PlayerGroupAll());
-    }
-    else if (auto2AE6ADA5_val == "BWTe") {
-        libNtve_gf_SetDialogItemImage(lv__icon, "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWterran.dds", PlayerGroupAll());
-    }
-    else if (auto2AE6ADA5_val == "BWZe") {
-        libNtve_gf_SetDialogItemImage(lv__icon, "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWzerg.dds", PlayerGroupAll());
-    }
-    else if (auto2AE6ADA5_val == "BWPr") {
-        libNtve_gf_SetDialogItemImage(lv__icon, "Assets\\Textures\\sc2_ui_loadingscreen_playercard_raceindicator_BWprotoss.dds", PlayerGroupAll());
-    }
-    else {
-    }
-}
-
-void gf_UpdateBuilderName (int lp_newBuilder, int lp_team) {
-    // Automatic Variable Declarations
-    // Deprecated
-    if ((lp_team == 1)) {
-        libNtve_gf_SetDialogItemText(gv_team1_UI.lv_builderName, PlayerName(lp_newBuilder), PlayerGroupAll());
-    }
-    else if ((lp_team == 2)) {
-        libNtve_gf_SetDialogItemText(gv_team2_UI.lv_builderName, PlayerName(lp_newBuilder), PlayerGroupAll());
-    }
-}
-
-trigger auto_gf_DisplayBuilderInfo_Trigger = null;
-
-void gf_DisplayBuilderInfo () {
-    if (auto_gf_DisplayBuilderInfo_Trigger == null) {
-        auto_gf_DisplayBuilderInfo_Trigger = TriggerCreate("auto_gf_DisplayBuilderInfo_TriggerFunc");
-    }
-
-    TriggerExecute(auto_gf_DisplayBuilderInfo_Trigger, false, false);
-}
-
-bool auto_gf_DisplayBuilderInfo_TriggerFunc (bool testConds, bool runActions) {
-    // Automatic Variable Declarations
-    string autoD5E56F5B_val;
-    string autoEB33B166_val;
-
-    // Deprecated
-    gv_team2_UI.lv_builderName = DialogControlLastCreated();
-    return true;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -3030,7 +2952,8 @@ bool gt_ShowHideUI_Func (bool testConds, bool runActions) {
         }
 
         libNtve_gf_HideGameUI(false, lv__playerGroup);
-        DialogSetVisible(gv_racePanel, lv__playerGroup, false);
+        DialogSetVisible(gv_dialogUserPanel, lv__playerGroup, false);
+        DialogSetVisible(gv_userPanel, lv__playerGroup, false);
         DialogSetVisible(gv_team1_resourcePanel, gv_team1_teamInfo.lv_fighterGroup, false);
         DialogSetVisible(gv_team2_resourcePanel, gv_team2_teamInfo.lv_fighterGroup, false);
         gv_uiShowed = false;
@@ -3042,7 +2965,8 @@ bool gt_ShowHideUI_Func (bool testConds, bool runActions) {
         }
 
         libNtve_gf_HideGameUI(true, lv__playerGroup);
-        DialogSetVisible(gv_racePanel, lv__playerGroup, true);
+        DialogSetVisible(gv_dialogUserPanel, lv__playerGroup, true);
+        DialogSetVisible(gv_userPanel, lv__playerGroup, true);
         DialogSetVisible(gv_team1_resourcePanel, gv_team1_teamInfo.lv_fighterGroup, true);
         DialogSetVisible(gv_team2_resourcePanel, gv_team2_teamInfo.lv_fighterGroup, true);
         gv_uiShowed = true;

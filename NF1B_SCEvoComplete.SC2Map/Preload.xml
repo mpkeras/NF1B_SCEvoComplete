@@ -1,15 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Preload>
 <Asset path="assets\textures\ui_emoticons_gas.dds" Type="Image"/>
-<Asset path="assets\textures\sc2_ui_loadingscreen_playercard_raceindicator_bwzerg.dds" Type="Image"/>
 <Asset path="assets\textures\ui_tipicon_campaign_zerus03-yagdratunnel.dds" Type="Image"/>
 <Asset path="assets\textures\ui_tipicon_campaign_space01-repair.dds" Type="Image"/>
-<Asset path="assets\textures\sc2_ui_loadingscreen_playercard_raceindicator_bwprotoss.dds" Type="Image"/>
-<Asset path="assets\textures\sc2_ui_loadingscreen_playercard_raceindicator_protoss.dds" Type="Image"/>
-<Asset path="assets\textures\sc2_ui_loadingscreen_playercard_raceindicator_bwterran.dds" Type="Image"/>
-<Asset path="assets\textures\sc2_ui_loadingscreen_playercard_raceindicator_terran.dds" Type="Image"/>
 <Asset path="assets\textures\ui_btn_aicommand_commandcard_claim.dds" Type="Image"/>
-<Asset path="assets\textures\sc2_ui_loadingscreen_playercard_raceindicator_zerg.dds" Type="Image"/>
 <Asset path="assets\textures\ui_emoticons_minerals.dds" Type="Image"/>
 <Actor id="SYSTEM_ActorConfig"/>
 <Actor id="CharDunesCurtain" Variations="0,1,2,3"/>
