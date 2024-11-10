@@ -87,14 +87,14 @@ Param/Value/6FD47613=There's only one player left in team 1. Team 2 win.
 Param/Value/738A54F4=There's only one player left in team 2. Team 1 win.
 Param/Value/7C2BA5DC=Team 1's builder surrendered. Team 2 win.
 Param/Value/7DDEAD17=Your role is <c val="ffff8a">Fighter</c>, control the units to defeat the enemy on the battlefield.
-Param/Value/8827AB6A=Warning: Now all fighters <c val="ff0000">can not</c> use morph abilities of units under their control.
+Param/Value/99ABA049=Warning: Now all fighters <c val="ff0000">can not</c> use morph abilities of units under their control.
 Param/Value/A283F7C2=Team 2's builder surrendered. Team 1 win.
 Param/Value/AEE0382B=Tip: Check the top left corner for information of Races.
 Param/Value/B63FBAB8=200<n/>
+Param/Value/B84AECE9=Warning: Now all fighters <c val="00ff00">can</c> use morph abilities of units under their control.
 Param/Value/C0AF10B1=0
 Param/Value/C2B87501=Detecting only one human player. Debug mode on.
 Param/Value/CA3F7518=Tip: If defeat is assured, the <c val="ffff8a">Builder</c> can surrender by simply exiting the game or entering "-gg".
-Param/Value/CBBA441F=Warning: Now all fighters <c val="00ff00">can</c> use morph abilities of units under their control.
 Param/Value/CEF41543=0
 Param/Value/DA162D42=Debug Commands
 Param/Value/E33F8417=0

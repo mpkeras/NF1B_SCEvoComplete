@@ -91,13 +91,13 @@ Param/Value/6FD47613=队伍1只剩下一名玩家。队伍2获胜。
 Param/Value/738A54F4=队伍2只剩下一名玩家。队伍1获胜。
 Param/Value/7C2BA5DC=队伍1的运营投降。队伍2获胜。
 Param/Value/7DDEAD17=你的角色是<c val="ffff8a">控兵</c>，控制单位在战场上打赢敌人。
-Param/Value/8827AB6A=警告：所有控兵玩家现在<c val="ff0000">不能</c>使用变异技能。
+Param/Value/99ABA049=警告：所有控兵玩家现在<c val="ff0000">不能</c>使用变异技能。
 Param/Value/A283F7C2=队伍2的运营投降。队伍1获胜。
 Param/Value/AEE0382B=提示: 查看左上角以获得种族信息。
+Param/Value/B84AECE9=警告：所有控兵玩家现在<c val="00ff00">可以</c>使用变异技能。
 Param/Value/C0AF10B1=0
 Param/Value/C2B87501=检测到只有一名人类玩家，开启调试模式。
 Param/Value/CA3F7518=提示: 如果败局已定，运营可以通过直接退出游戏或输入“-gg”来投降。
-Param/Value/CBBA441F=警告：所有控兵玩家现在<c val="00ff00">可以</c>使用变异技能。
 Param/Value/CEF41543=0
 Param/Value/E33F8417=0
 Param/Value/E539788E=0
