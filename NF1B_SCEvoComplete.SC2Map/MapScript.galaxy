@@ -2,7 +2,7 @@
 // 
 // Generated Map Script
 // 
-// Name:   N ?????? 1 ?????? (SC: Evo Complete) ?????????
+// Name:   N Fight 1 Builds (SC: Evo Complete)
 // 
 //==================================================================================================
 include "TriggerLibs/NativeLib"
@@ -132,6 +132,7 @@ text gv_textMorphOff;
 text gv_textMorph;
 text gv_textBuilderPermission;
 text gv_textFighterOnYourTeam;
+text gv_textChangeBuilder;
 int gv_pv_releaseToChangeOwner;
 
 void InitGlobals () {
@@ -197,6 +198,7 @@ void InitGlobals () {
     gv_textMorph = StringExternal("Param/Value/2A6A10AE");
     gv_textBuilderPermission = StringExternal("Param/Value/D2806ADF");
     gv_textFighterOnYourTeam = StringExternal("Param/Value/D2BD1B36");
+    gv_textChangeBuilder = StringExternal("Param/Value/6715A323");
     gv_pv_releaseToChangeOwner = 1;
 }
 
@@ -261,6 +263,7 @@ void gf_SetUserPanel ();
 void gf_SetButtonUserPanel ();
 void gf_ClickButtonUserPanel ();
 void gf_TipSameRace ();
+void gf_ChangeBuilder (int lp_oldBuilder, int lp_newBuilder, int lp_team);
 void gf_OwnershipForChangeBuilder (int lp_oldBuilder, int lp_newBuilder);
 void gf_UpdateMorphForChangeBuilder (int lp_oldBuilder, int lp_newBuilder);
 void gf_UpdateRole (int lp_team, int lp_oldBuilder, int lp_newBuilder);
@@ -316,16 +319,15 @@ trigger gt_AfterRoleSelection;
 trigger gt_ClickDialogItem;
 trigger gt_TipRole;
 trigger gt_TipCommands;
-trigger gt_TipHotkeys;
 trigger gt_TipDebugCommands;
 trigger gt_TipGG;
 trigger gt_TipSensorTower;
 trigger gt_TipRace;
 trigger gt_TipHelp;
 trigger gt_TipZerg;
-trigger gt_ChangeRace;
-trigger gt_ChangeBuilder;
 trigger gt_GiveUpBuilderRole;
+trigger gt_ChangeBuilder;
+trigger gt_ChangeRace;
 trigger gt_FighterQuit;
 trigger gt_Team1_ResourceDisplay;
 trigger gt_Team2_ResourceDisplay;
@@ -1539,15 +1541,7 @@ void gf_ClickButtonPlayer (int lp_oldBuilder, int lp_newBuilder) {
         libNtve_gf_UIErrorMessage(PlayerGroupSingle(lp_oldBuilder), gv_textFighterOnYourTeam, SoundLink("UI_GenericError", -1));
         return ;
     }
-    gf_UpdateButtonPlayer(lp_oldBuilder, lp_newBuilder);
-    gf_UpdateRole(lv__team, lp_oldBuilder, lp_newBuilder);
-    gf_UpdateMorphForChangeBuilder(lp_oldBuilder, lp_newBuilder);
-    gf_AllowZergMorph(lp_newBuilder);
-    gf_DisallowZergMorph(lp_oldBuilder);
-    gf_UpdateFighterMode(lv__team);
-    gf_OwnershipForChangeBuilder(lp_oldBuilder, lp_newBuilder);
-    gf_MaintainSupplyUnchanged(lp_oldBuilder, lp_newBuilder);
-    gf_UpdateResource(lv__team, lp_oldBuilder, lp_newBuilder);
+    gf_ChangeBuilder(lp_oldBuilder, lp_newBuilder, lv__team);
 }
 
 void gf_UpdateButtonPlayer (int lp_oldBuilder, int lp_newBuilder) {
@@ -1926,6 +1920,31 @@ void gf_TipSameRace () {
     // Automatic Variable Declarations
     // Implementation
     UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, StringExternal("Param/Value/2266D75E"));
+}
+
+void gf_ChangeBuilder (int lp_oldBuilder, int lp_newBuilder, int lp_team) {
+    // Automatic Variable Declarations
+    int auto05EF88FD_val;
+
+    // Implementation
+    gf_UpdateButtonPlayer(lp_oldBuilder, lp_newBuilder);
+    gf_UpdateRole(lp_team, lp_oldBuilder, lp_newBuilder);
+    gf_UpdateMorphForChangeBuilder(lp_oldBuilder, lp_newBuilder);
+    gf_AllowZergMorph(lp_newBuilder);
+    gf_DisallowZergMorph(lp_oldBuilder);
+    gf_UpdateFighterMode(lp_team);
+    gf_OwnershipForChangeBuilder(lp_oldBuilder, lp_newBuilder);
+    gf_MaintainSupplyUnchanged(lp_oldBuilder, lp_newBuilder);
+    gf_UpdateResource(lp_team, lp_oldBuilder, lp_newBuilder);
+    auto05EF88FD_val = lp_team;
+    if (auto05EF88FD_val == 1) {
+        UIDisplayMessage(gv_team1_playerGroup.lv_users, c_messageAreaSubtitle, gv_textChangeBuilder);
+    }
+    else if (auto05EF88FD_val == 2) {
+        UIDisplayMessage(gv_team2_playerGroup.lv_users, c_messageAreaSubtitle, gv_textChangeBuilder);
+    }
+    else {
+    }
 }
 
 void gf_OwnershipForChangeBuilder (int lp_oldBuilder, int lp_newBuilder) {
@@ -3016,13 +3035,7 @@ bool gt_BeBuilder_Func (bool testConds, bool runActions) {
         lv__oldBuilder = gv_team2_teamInfo.lv_builder;
     }
     if ((lv__newBuilder != lv__oldBuilder)) {
-        gf_UpdateButtonPlayer(lv__oldBuilder, lv__newBuilder);
-        gf_UpdateRole(lv__team, lv__oldBuilder, lv__newBuilder);
-        gf_UpdateMorphForChangeBuilder(lv__oldBuilder, lv__newBuilder);
-        gf_UpdateFighterMode(lv__team);
-        gf_OwnershipForChangeBuilder(lv__oldBuilder, lv__newBuilder);
-        gf_MaintainSupplyUnchanged(lv__oldBuilder, lv__newBuilder);
-        gf_UpdateResource(lv__team, lv__oldBuilder, lv__newBuilder);
+        gf_ChangeBuilder(lv__oldBuilder, lv__newBuilder, lv__team);
     }
 
     return true;
@@ -3062,13 +3075,7 @@ bool gt_BeFighter_Func (bool testConds, bool runActions) {
     if ((gf_GetRoleOfPlayer(lv__oldBuilder) == ge_Role_Builder)) {
         lv__team = gf_GetTeamOfPlayer(lv__oldBuilder);
         lv__newBuilder = gf_RandomFighterFromTeam(lv__team);
-        gf_UpdateButtonPlayer(lv__oldBuilder, lv__newBuilder);
-        gf_UpdateRole(lv__team, lv__oldBuilder, lv__newBuilder);
-        gf_UpdateMorphForChangeBuilder(lv__oldBuilder, lv__newBuilder);
-        gf_UpdateFighterMode(lv__team);
-        gf_OwnershipForChangeBuilder(lv__oldBuilder, lv__newBuilder);
-        gf_MaintainSupplyUnchanged(lv__oldBuilder, lv__newBuilder);
-        gf_UpdateResource(lv__team, lv__oldBuilder, lv__newBuilder);
+        gf_ChangeBuilder(lv__oldBuilder, lv__newBuilder, lv__team);
     }
 
     return true;
@@ -3520,26 +3527,6 @@ void gt_TipCommands_Init () {
 }
 
 //--------------------------------------------------------------------------------------------------
-// Trigger: TipHotkeys
-//--------------------------------------------------------------------------------------------------
-bool gt_TipHotkeys_Func (bool testConds, bool runActions) {
-    // Automatic Variable Declarations
-    // Actions
-    if (!runActions) {
-        return true;
-    }
-
-    HelpPanelAddTip(PlayerGroupAll(), libNtve_gf_FormatTipTitle(StringExternal("Param/Value/194069C0"), libNtve_ge_TipType_NormalTip), StringExternal("Param/Value/FD733CCC"), StringToText(""), "Assets\\Textures\\ui_tipicon_campaign_zerus03-yagdratunnel.dds");
-    return true;
-}
-
-//--------------------------------------------------------------------------------------------------
-void gt_TipHotkeys_Init () {
-    gt_TipHotkeys = TriggerCreate("gt_TipHotkeys_Func");
-    TriggerAddEventTimeElapsed(gt_TipHotkeys, 0.0, c_timeReal);
-}
-
-//--------------------------------------------------------------------------------------------------
 // Trigger: TipDebugCommands
 //--------------------------------------------------------------------------------------------------
 bool gt_TipDebugCommands_Func (bool testConds, bool runActions) {
@@ -3701,6 +3688,153 @@ void gt_TipZerg_Init () {
 }
 
 //--------------------------------------------------------------------------------------------------
+// Trigger: GiveUpBuilderRole
+//--------------------------------------------------------------------------------------------------
+bool gt_GiveUpBuilderRole_Func (bool testConds, bool runActions) {
+    // Variable Declarations
+    int lv__team;
+    int lv__oldBuilder;
+    int lv__newBuilder;
+
+    // Automatic Variable Declarations
+    // Variable Initialization
+
+    // Conditions
+    if (testConds) {
+        if (!((TimerGetElapsed(gv_timer) <= 60.0))) {
+            return false;
+        }
+
+        if (!(((EventPlayer() == gv_team1_teamInfo.lv_builder) || (EventPlayer() == gv_team2_teamInfo.lv_builder)))) {
+            return false;
+        }
+    }
+
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    lv__oldBuilder = EventPlayer();
+    lv__team = gf_GetTeamOfPlayer(lv__oldBuilder);
+    lv__newBuilder = gf_RandomFighterExcludeHaveBeenFromTeam(lv__team);
+    if ((lv__newBuilder != -1)) {
+        gf_ChangeBuilder(lv__oldBuilder, lv__newBuilder, lv__team);
+    }
+
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void gt_GiveUpBuilderRole_Init () {
+    gt_GiveUpBuilderRole = TriggerCreate("gt_GiveUpBuilderRole_Func");
+    TriggerAddEventChatMessage(gt_GiveUpBuilderRole, c_playerAny, ("-b"), true);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Trigger: ChangeBuilder
+//--------------------------------------------------------------------------------------------------
+bool gt_ChangeBuilder_Func (bool testConds, bool runActions) {
+    // Variable Declarations
+    int lv__team;
+    int lv__oldBuilder;
+    int lv__newBuilder;
+    bool lv__valid;
+
+    // Automatic Variable Declarations
+    string auto60EB1B58_val;
+
+    // Variable Initialization
+
+    // Conditions
+    if (testConds) {
+        if (!((TimerGetElapsed(gv_timer) <= 60.0))) {
+            return false;
+        }
+
+        if (!(((EventPlayer() == gv_team1_teamInfo.lv_builder) || (EventPlayer() == gv_team2_teamInfo.lv_builder)))) {
+            return false;
+        }
+    }
+
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    lv__oldBuilder = EventPlayer();
+    auto60EB1B58_val = EventChatMessage(false);
+    if (auto60EB1B58_val == "-b 1") {
+        lv__newBuilder = 1;
+    }
+    else if (auto60EB1B58_val == "-b 2") {
+        lv__newBuilder = 2;
+    }
+    else if (auto60EB1B58_val == "-b 3") {
+        lv__newBuilder = 3;
+    }
+    else if (auto60EB1B58_val == "-b 4") {
+        lv__newBuilder = 4;
+    }
+    else if (auto60EB1B58_val == "-b 5") {
+        lv__newBuilder = 5;
+    }
+    else if (auto60EB1B58_val == "-b 6") {
+        lv__newBuilder = 6;
+    }
+    else if (auto60EB1B58_val == "-b 7") {
+        lv__newBuilder = 7;
+    }
+    else if (auto60EB1B58_val == "-b 8") {
+        lv__newBuilder = 8;
+    }
+    else if (auto60EB1B58_val == "-b 9") {
+        lv__newBuilder = 9;
+    }
+    else if (auto60EB1B58_val == "-b 10") {
+        lv__newBuilder = 10;
+    }
+    else if (auto60EB1B58_val == "-b 11") {
+        lv__newBuilder = 11;
+    }
+    else if (auto60EB1B58_val == "-b 12") {
+        lv__newBuilder = 12;
+    }
+    else {
+    }
+    if ((lv__oldBuilder == gv_team1_teamInfo.lv_builder) && (PlayerGroupHasPlayer(gv_team1_teamInfo.lv_fighterGroup, lv__newBuilder) == true)) {
+        lv__team = 1;
+        lv__valid = true;
+    }
+    else if ((lv__oldBuilder == gv_team2_teamInfo.lv_builder) && (PlayerGroupHasPlayer(gv_team2_teamInfo.lv_fighterGroup, lv__newBuilder) == true)) {
+        lv__team = 2;
+        lv__valid = true;
+    }
+    if ((lv__valid == true)) {
+        gf_ChangeBuilder(lv__oldBuilder, lv__newBuilder, lv__team);
+    }
+
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void gt_ChangeBuilder_Init () {
+    gt_ChangeBuilder = TriggerCreate("gt_ChangeBuilder_Func");
+    TriggerAddEventChatMessage(gt_ChangeBuilder, c_playerAny, ("-b 1"), true);
+    TriggerAddEventChatMessage(gt_ChangeBuilder, c_playerAny, ("-b 2"), true);
+    TriggerAddEventChatMessage(gt_ChangeBuilder, c_playerAny, ("-b 3"), true);
+    TriggerAddEventChatMessage(gt_ChangeBuilder, c_playerAny, ("-b 4"), true);
+    TriggerAddEventChatMessage(gt_ChangeBuilder, c_playerAny, ("-b 5"), true);
+    TriggerAddEventChatMessage(gt_ChangeBuilder, c_playerAny, ("-b 6"), true);
+    TriggerAddEventChatMessage(gt_ChangeBuilder, c_playerAny, ("-b 7"), true);
+    TriggerAddEventChatMessage(gt_ChangeBuilder, c_playerAny, ("-b 8"), true);
+    TriggerAddEventChatMessage(gt_ChangeBuilder, c_playerAny, ("-b 9"), true);
+    TriggerAddEventChatMessage(gt_ChangeBuilder, c_playerAny, ("-b 10"), true);
+    TriggerAddEventChatMessage(gt_ChangeBuilder, c_playerAny, ("-b 11"), true);
+    TriggerAddEventChatMessage(gt_ChangeBuilder, c_playerAny, ("-b 12"), true);
+}
+
+//--------------------------------------------------------------------------------------------------
 // Trigger: ChangeRace
 //--------------------------------------------------------------------------------------------------
 bool gt_ChangeRace_Func (bool testConds, bool runActions) {
@@ -3829,167 +3963,6 @@ void gt_ChangeRace_Init () {
     TriggerAddEventChatMessage(gt_ChangeRace, c_playerAny, ("-r t1"), true);
     TriggerAddEventChatMessage(gt_ChangeRace, c_playerAny, ("-r z1"), true);
     TriggerAddEventChatMessage(gt_ChangeRace, c_playerAny, ("-r p1"), true);
-}
-
-//--------------------------------------------------------------------------------------------------
-// Trigger: ChangeBuilder
-//--------------------------------------------------------------------------------------------------
-bool gt_ChangeBuilder_Func (bool testConds, bool runActions) {
-    // Variable Declarations
-    int lv__team;
-    int lv__oldBuilder;
-    int lv__newBuilder;
-    bool lv__valid;
-
-    // Automatic Variable Declarations
-    string auto60EB1B58_val;
-
-    // Variable Initialization
-
-    // Conditions
-    if (testConds) {
-        if (!((TimerGetElapsed(gv_timer) <= 60.0))) {
-            return false;
-        }
-
-        if (!(((EventPlayer() == gv_team1_teamInfo.lv_builder) || (EventPlayer() == gv_team2_teamInfo.lv_builder)))) {
-            return false;
-        }
-    }
-
-    // Actions
-    if (!runActions) {
-        return true;
-    }
-
-    lv__oldBuilder = EventPlayer();
-    auto60EB1B58_val = EventChatMessage(false);
-    if (auto60EB1B58_val == "-b 1") {
-        lv__newBuilder = 1;
-    }
-    else if (auto60EB1B58_val == "-b 2") {
-        lv__newBuilder = 2;
-    }
-    else if (auto60EB1B58_val == "-b 3") {
-        lv__newBuilder = 3;
-    }
-    else if (auto60EB1B58_val == "-b 4") {
-        lv__newBuilder = 4;
-    }
-    else if (auto60EB1B58_val == "-b 5") {
-        lv__newBuilder = 5;
-    }
-    else if (auto60EB1B58_val == "-b 6") {
-        lv__newBuilder = 6;
-    }
-    else if (auto60EB1B58_val == "-b 7") {
-        lv__newBuilder = 7;
-    }
-    else if (auto60EB1B58_val == "-b 8") {
-        lv__newBuilder = 8;
-    }
-    else if (auto60EB1B58_val == "-b 9") {
-        lv__newBuilder = 9;
-    }
-    else if (auto60EB1B58_val == "-b 10") {
-        lv__newBuilder = 10;
-    }
-    else if (auto60EB1B58_val == "-b 11") {
-        lv__newBuilder = 11;
-    }
-    else if (auto60EB1B58_val == "-b 12") {
-        lv__newBuilder = 12;
-    }
-    else {
-    }
-    if ((lv__oldBuilder == gv_team1_teamInfo.lv_builder) && (PlayerGroupHasPlayer(gv_team1_teamInfo.lv_fighterGroup, lv__newBuilder) == true)) {
-        lv__team = 1;
-        lv__valid = true;
-    }
-    else if ((lv__oldBuilder == gv_team2_teamInfo.lv_builder) && (PlayerGroupHasPlayer(gv_team2_teamInfo.lv_fighterGroup, lv__newBuilder) == true)) {
-        lv__team = 2;
-        lv__valid = true;
-    }
-    if ((lv__valid == true)) {
-        gf_UpdateButtonPlayer(lv__oldBuilder, lv__newBuilder);
-        gf_UpdateRole(lv__team, lv__oldBuilder, lv__newBuilder);
-        gf_UpdateMorphForChangeBuilder(lv__oldBuilder, lv__newBuilder);
-        gf_AllowZergMorph(lv__newBuilder);
-        gf_DisallowZergMorph(lv__oldBuilder);
-        gf_UpdateFighterMode(lv__team);
-        gf_OwnershipForChangeBuilder(lv__oldBuilder, lv__newBuilder);
-        gf_MaintainSupplyUnchanged(lv__oldBuilder, lv__newBuilder);
-        gf_UpdateResource(lv__team, lv__oldBuilder, lv__newBuilder);
-    }
-
-    return true;
-}
-
-//--------------------------------------------------------------------------------------------------
-void gt_ChangeBuilder_Init () {
-    gt_ChangeBuilder = TriggerCreate("gt_ChangeBuilder_Func");
-    TriggerAddEventChatMessage(gt_ChangeBuilder, c_playerAny, ("-b 1"), true);
-    TriggerAddEventChatMessage(gt_ChangeBuilder, c_playerAny, ("-b 2"), true);
-    TriggerAddEventChatMessage(gt_ChangeBuilder, c_playerAny, ("-b 3"), true);
-    TriggerAddEventChatMessage(gt_ChangeBuilder, c_playerAny, ("-b 4"), true);
-    TriggerAddEventChatMessage(gt_ChangeBuilder, c_playerAny, ("-b 5"), true);
-    TriggerAddEventChatMessage(gt_ChangeBuilder, c_playerAny, ("-b 6"), true);
-    TriggerAddEventChatMessage(gt_ChangeBuilder, c_playerAny, ("-b 7"), true);
-    TriggerAddEventChatMessage(gt_ChangeBuilder, c_playerAny, ("-b 8"), true);
-    TriggerAddEventChatMessage(gt_ChangeBuilder, c_playerAny, ("-b 9"), true);
-    TriggerAddEventChatMessage(gt_ChangeBuilder, c_playerAny, ("-b 10"), true);
-    TriggerAddEventChatMessage(gt_ChangeBuilder, c_playerAny, ("-b 11"), true);
-    TriggerAddEventChatMessage(gt_ChangeBuilder, c_playerAny, ("-b 12"), true);
-}
-
-//--------------------------------------------------------------------------------------------------
-// Trigger: GiveUpBuilderRole
-//--------------------------------------------------------------------------------------------------
-bool gt_GiveUpBuilderRole_Func (bool testConds, bool runActions) {
-    // Variable Declarations
-    int lv__team;
-    int lv__oldBuilder;
-    int lv__newBuilder;
-
-    // Automatic Variable Declarations
-    // Variable Initialization
-
-    // Conditions
-    if (testConds) {
-        if (!((TimerGetElapsed(gv_timer) <= 60.0))) {
-            return false;
-        }
-
-        if (!(((EventPlayer() == gv_team1_teamInfo.lv_builder) || (EventPlayer() == gv_team2_teamInfo.lv_builder)))) {
-            return false;
-        }
-    }
-
-    // Actions
-    if (!runActions) {
-        return true;
-    }
-
-    lv__oldBuilder = EventPlayer();
-    lv__team = gf_GetTeamOfPlayer(lv__oldBuilder);
-    lv__newBuilder = gf_RandomFighterExcludeHaveBeenFromTeam(lv__team);
-    if ((lv__newBuilder != -1)) {
-        gf_UpdateButtonPlayer(lv__oldBuilder, lv__newBuilder);
-        gf_UpdateRole(lv__team, lv__oldBuilder, lv__newBuilder);
-        gf_UpdateMorphForChangeBuilder(lv__oldBuilder, lv__newBuilder);
-        gf_UpdateFighterMode(lv__team);
-        gf_OwnershipForChangeBuilder(lv__oldBuilder, lv__newBuilder);
-        gf_MaintainSupplyUnchanged(lv__oldBuilder, lv__newBuilder);
-        gf_UpdateResource(lv__team, lv__oldBuilder, lv__newBuilder);
-    }
-
-    return true;
-}
-
-//--------------------------------------------------------------------------------------------------
-void gt_GiveUpBuilderRole_Init () {
-    gt_GiveUpBuilderRole = TriggerCreate("gt_GiveUpBuilderRole_Func");
-    TriggerAddEventChatMessage(gt_GiveUpBuilderRole, c_playerAny, ("-b"), true);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -6773,16 +6746,15 @@ void InitTriggers () {
     gt_ClickDialogItem_Init();
     gt_TipRole_Init();
     gt_TipCommands_Init();
-    gt_TipHotkeys_Init();
     gt_TipDebugCommands_Init();
     gt_TipGG_Init();
     gt_TipSensorTower_Init();
     gt_TipRace_Init();
     gt_TipHelp_Init();
     gt_TipZerg_Init();
-    gt_ChangeRace_Init();
-    gt_ChangeBuilder_Init();
     gt_GiveUpBuilderRole_Init();
+    gt_ChangeBuilder_Init();
+    gt_ChangeRace_Init();
     gt_FighterQuit_Init();
     gt_Team1_ResourceDisplay_Init();
     gt_Team2_ResourceDisplay_Init();

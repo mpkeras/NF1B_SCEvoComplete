@@ -94,6 +94,7 @@ Param/Value/53838379=경고: 2팀이 종족을 변경했습니다!
 Param/Value/5698279A=팁: 공급 한도는 400개입니다.
 Param/Value/5D6D1A1E=<s val="Arcade_Premium_Title">팀 1</s>
 Param/Value/5ED931F6=명령
+Param/Value/6715A323=경고: 빌더가 새 플레이어로 변경되었습니다!
 Param/Value/6FD47613=1팀에 남은 플레이어가 한 명뿐입니다. 팀 2 승리.
 Param/Value/738A54F4=2팀에 남은 플레이어가 한 명뿐입니다. 팀 1 승리.
 Param/Value/7C2BA5DC=팀 1의 빌더가 항복했습니다. 2팀이 승리합니다.
@@ -101,7 +102,7 @@ Param/Value/7DDEAD17=당신의 역할은 전장에서 유닛을 조종하여 적
 Param/Value/9445EE5B=<s val="StandardButton">닫기</s>
 Param/Value/99ABA049=경고: 이제 모든 <c val="ff0000">전투원은</c> 돌연변이 기술을 사용할 수 없습니다.
 Param/Value/A283F7C2=팀 2의 빌더가 항복했습니다. 1팀이 승리합니다.
-Param/Value/AEE0382B=팁: 왼쪽 상단에서 레이스에 대한 정보를 확인하세요.
+Param/Value/AEE0382B=팁: 오른쪽 상단에 있는 버튼을 클릭하면 이 매치업에 대한 정보를 볼 수 있습니다.
 Param/Value/B84AECE9=경고: 이제 모든 <c val="00ff00">전투원이</c> 돌연변이 기술을 사용할 수 있습니다.
 Param/Value/BA4EC2BF=LICENSE for SC: Evo Complete
 Param/Value/C0AF10B1=0
