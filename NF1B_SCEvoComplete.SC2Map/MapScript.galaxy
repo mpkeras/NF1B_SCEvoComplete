@@ -4960,6 +4960,7 @@ bool gt_ChangeMorphEnabledByBuilder_Func (bool testConds, bool runActions) {
     }
     else {
     }
+    gf_UpdateButtonMorphForTeam(lv__team);
     return true;
 }
 
