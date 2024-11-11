@@ -99,6 +99,7 @@ Param/Value/C2B87501=Detecting only one human player. Debug mode on.
 Param/Value/CA3F7518=Tip: If defeat is assured, the <c val="ffff8a">Builder</c> can surrender by simply exiting the game or entering "-gg".
 Param/Value/CEF41543=0
 Param/Value/D2806ADF=Only builder can use it
+Param/Value/D2BD1B36=Must choose a fighter on your team
 Param/Value/DA162D42=Debug Commands
 Param/Value/E33F8417=0
 Param/Value/E539788E=0

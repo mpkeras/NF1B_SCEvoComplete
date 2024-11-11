@@ -2,7 +2,7 @@
 // 
 // Generated Map Script
 // 
-// Name:   N Fight 1 Builds (SC: Evo Complete)
+// Name:   N ?????? 1 ?????? (SC: Evo Complete) ?????????
 // 
 //==================================================================================================
 include "TriggerLibs/NativeLib"
@@ -102,10 +102,10 @@ int gv_buttonPlayer11;
 int gv_buttonPlayer12;
 int[2] gv_buttonMorphTeam1;
 int[2] gv_buttonMorphTeam2;
-int gv_userPanel;
+int gv_controlPanel;
 bool gv_buttonUserPanelClicked;
-int gv_buttonUserPanel;
-int gv_dialogButtonUserPanel;
+int gv_buttonControlPanel;
+int gv_dButtonControlPanel;
 timer gv_timer;
 bool gv_changeRaceEnabled;
 bool gv_ggFlag;
@@ -131,6 +131,7 @@ text gv_textMorphOn;
 text gv_textMorphOff;
 text gv_textMorph;
 text gv_textBuilderPermission;
+text gv_textFighterOnYourTeam;
 int gv_pv_releaseToChangeOwner;
 
 void InitGlobals () {
@@ -159,9 +160,9 @@ void InitGlobals () {
     for (init_i = 0; init_i <= 1; init_i += 1) {
         gv_buttonMorphTeam2[init_i] = c_invalidDialogControlId;
     }
-    gv_userPanel = c_invalidDialogId;
-    gv_buttonUserPanel = c_invalidDialogControlId;
-    gv_dialogButtonUserPanel = c_invalidDialogId;
+    gv_controlPanel = c_invalidDialogId;
+    gv_buttonControlPanel = c_invalidDialogControlId;
+    gv_dButtonControlPanel = c_invalidDialogId;
     gv_timer = TimerCreate();
     gv_team1_teamMode.lv_fighterMode = ge_FighterMode_NF1B;
     gv_team2_teamMode.lv_fighterMode = ge_FighterMode_NF1B;
@@ -195,6 +196,7 @@ void InitGlobals () {
     gv_textMorphOff = StringExternal("Param/Value/99ABA049");
     gv_textMorph = StringExternal("Param/Value/2A6A10AE");
     gv_textBuilderPermission = StringExternal("Param/Value/D2806ADF");
+    gv_textFighterOnYourTeam = StringExternal("Param/Value/D2BD1B36");
     gv_pv_releaseToChangeOwner = 1;
 }
 
@@ -211,6 +213,7 @@ bool gf_IsCanReleaseByBuilderUnitType (unit lp_unit);
 int gf_GetTeamOfPlayer (int lp_player);
 int gf_GetRoleOfPlayer (int lp_player);
 int gf_GetButtonOfPlayer (int lp_player);
+int gf_GetPlayerOfButton (int lp_button);
 int gf_GetOwnerForRelease (int lp_team);
 int gf_GetColorForRelease (int lp_team);
 int gf_GetNeutralOfTeam (int lp_team);
@@ -241,6 +244,7 @@ void gf_InitNexusGroup ();
 void gf_SetResource ();
 void gf_SetAlliance ();
 void gf_SetSupplyLimit ();
+bool gf_IsButtonPlayerType (int lp_button);
 void gf_SetButtonPlayer (int lp_length);
 void gf_ClickButtonPlayer (int lp_oldBuilder, int lp_newBuilder);
 void gf_UpdateButtonPlayer (int lp_oldBuilder, int lp_newBuilder);
@@ -563,6 +567,53 @@ int gf_GetButtonOfPlayer (int lp_player) {
     }
     else {
         return c_invalidDialogControlId;
+    }
+}
+
+int gf_GetPlayerOfButton (int lp_button) {
+    // Automatic Variable Declarations
+    int auto8D024C9E_val;
+
+    // Implementation
+    auto8D024C9E_val = lp_button;
+    if (auto8D024C9E_val == gv_buttonPlayer1) {
+        return 1;
+    }
+    else if (auto8D024C9E_val == gv_buttonPlayer2) {
+        return 2;
+    }
+    else if (auto8D024C9E_val == gv_buttonPlayer3) {
+        return 3;
+    }
+    else if (auto8D024C9E_val == gv_buttonPlayer4) {
+        return 4;
+    }
+    else if (auto8D024C9E_val == gv_buttonPlayer5) {
+        return 5;
+    }
+    else if (auto8D024C9E_val == gv_buttonPlayer6) {
+        return 6;
+    }
+    else if (auto8D024C9E_val == gv_buttonPlayer7) {
+        return 7;
+    }
+    else if (auto8D024C9E_val == gv_buttonPlayer8) {
+        return 8;
+    }
+    else if (auto8D024C9E_val == gv_buttonPlayer9) {
+        return 9;
+    }
+    else if (auto8D024C9E_val == gv_buttonPlayer10) {
+        return 10;
+    }
+    else if (auto8D024C9E_val == gv_buttonPlayer11) {
+        return 11;
+    }
+    else if (auto8D024C9E_val == gv_buttonPlayer12) {
+        return 12;
+    }
+    else {
+        return -1;
     }
 }
 
@@ -1392,6 +1443,17 @@ bool auto_gf_SetSupplyLimit_TriggerFunc (bool testConds, bool runActions) {
     return true;
 }
 
+bool gf_IsButtonPlayerType (int lp_button) {
+    // Automatic Variable Declarations
+    // Implementation
+    if (((lp_button == gv_buttonPlayer1) || (lp_button == gv_buttonPlayer2) || (lp_button == gv_buttonPlayer3) || (lp_button == gv_buttonPlayer4) || (lp_button == gv_buttonPlayer5) || (lp_button == gv_buttonPlayer6) || (lp_button == gv_buttonPlayer7) || (lp_button == gv_buttonPlayer8) || (lp_button == gv_buttonPlayer9) || (lp_button == gv_buttonPlayer10) || (lp_button == gv_buttonPlayer11) || (lp_button == gv_buttonPlayer12))) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 trigger auto_gf_SetButtonPlayer_Trigger = null;
 int auto_gf_SetButtonPlayer_lp_length;
 
@@ -1433,16 +1495,16 @@ bool auto_gf_SetButtonPlayer_TriggerFunc (bool testConds, bool runActions) {
     lv__xButton2 = lv__xID2;
     lv__xButton2 += 30;
     gf_SetRaceIcon(lv__xButton1, 35, lv__xButton2, 35);
-    libNtve_gf_CreateDialogItemLabel(gv_userPanel, 200, 50, c_anchorTopLeft, 140, 40, gv_textTeam1, ColorWithAlpha(0,0,0,0), false, 2.0);
-    libNtve_gf_CreateDialogItemLabel(gv_userPanel, 200, 50, c_anchorTopLeft, (lv__xButton2 + 60), 40, gv_textTeam2, ColorWithAlpha(0,0,0,0), false, 2.0);
+    libNtve_gf_CreateDialogItemLabel(gv_controlPanel, 200, 50, c_anchorTopLeft, 140, 40, gv_textTeam1, ColorWithAlpha(0,0,0,0), false, 2.0);
+    libNtve_gf_CreateDialogItemLabel(gv_controlPanel, 200, 50, c_anchorTopLeft, (lv__xButton2 + 60), 40, gv_textTeam2, ColorWithAlpha(0,0,0,0), false, 2.0);
     autoAA8EB649_g = gv_team1_playerGroup.lv_users;
     autoAA8EB649_var = -1;
     while (true) {
         autoAA8EB649_var = PlayerGroupNextPlayer(autoAA8EB649_g, autoAA8EB649_var);
         if (autoAA8EB649_var < 0) { break; }
-        libNtve_gf_CreateDialogItemLabel(gv_userPanel, 200, 50, c_anchorTopLeft, lv__xID1, lv__height, IntToText(autoAA8EB649_var), ColorWithAlpha(0,0,0,0), false, 2.0);
+        libNtve_gf_CreateDialogItemLabel(gv_controlPanel, 200, 50, c_anchorTopLeft, lv__xID1, lv__height, IntToText(autoAA8EB649_var), ColorWithAlpha(0,0,0,0), false, 2.0);
         libNtve_gf_SetDialogItemStyle(DialogControlLastCreated(), "Arcade_Premium_Title", PlayerGroupAll());
-        libNtve_gf_CreateDialogItemButton(gv_userPanel, 300, 50, c_anchorTopLeft, lv__xButton1, lv__height, gv_textSetToBuilder, PlayerName(autoAA8EB649_var), "");
+        libNtve_gf_CreateDialogItemButton(gv_controlPanel, 300, 50, c_anchorTopLeft, lv__xButton1, lv__height, gv_textSetToBuilder, PlayerName(autoAA8EB649_var), "");
         gf_BindButton(autoAA8EB649_var);
         lv__height += 50;
     }
@@ -1452,9 +1514,9 @@ bool auto_gf_SetButtonPlayer_TriggerFunc (bool testConds, bool runActions) {
     while (true) {
         auto20762A18_var = PlayerGroupNextPlayer(auto20762A18_g, auto20762A18_var);
         if (auto20762A18_var < 0) { break; }
-        libNtve_gf_CreateDialogItemLabel(gv_userPanel, 200, 50, c_anchorTopLeft, lv__xID2, lv__height, IntToText(auto20762A18_var), ColorWithAlpha(0,0,0,0), false, 2.0);
+        libNtve_gf_CreateDialogItemLabel(gv_controlPanel, 200, 50, c_anchorTopLeft, lv__xID2, lv__height, IntToText(auto20762A18_var), ColorWithAlpha(0,0,0,0), false, 2.0);
         libNtve_gf_SetDialogItemStyle(DialogControlLastCreated(), "Arcade_Premium_Title", PlayerGroupAll());
-        libNtve_gf_CreateDialogItemButton(gv_userPanel, 300, 50, c_anchorTopLeft, lv__xButton2, lv__height, gv_textSetToBuilder, PlayerName(auto20762A18_var), "");
+        libNtve_gf_CreateDialogItemButton(gv_controlPanel, 300, 50, c_anchorTopLeft, lv__xButton2, lv__height, gv_textSetToBuilder, PlayerName(auto20762A18_var), "");
         gf_BindButton(auto20762A18_var);
         lv__height += 50;
     }
@@ -1470,10 +1532,13 @@ void gf_ClickButtonPlayer (int lp_oldBuilder, int lp_newBuilder) {
 
     // Implementation
     lv__team = gf_GetTeamOfPlayer(lp_newBuilder);
-    if (((gf_GetBuilderOfTeam(lv__team) != lp_oldBuilder) || (lp_oldBuilder == lp_newBuilder))) {
+    if ((gf_ErrorIsBuilder(lp_oldBuilder) == false)) {
         return ;
     }
-
+    else if (((gf_GetTeamOfPlayer(lp_oldBuilder) != lv__team) || (lp_oldBuilder == lp_newBuilder))) {
+        libNtve_gf_UIErrorMessage(PlayerGroupSingle(lp_oldBuilder), gv_textFighterOnYourTeam, SoundLink("UI_GenericError", -1));
+        return ;
+    }
     gf_UpdateButtonPlayer(lp_oldBuilder, lp_newBuilder);
     gf_UpdateRole(lv__team, lp_oldBuilder, lp_newBuilder);
     gf_UpdateMorphForChangeBuilder(lp_oldBuilder, lp_newBuilder);
@@ -1585,7 +1650,7 @@ void gf_SetRaceIcon (int lp_x1, int lp_y1, int lp_x2, int lp_y2) {
     }
     else {
     }
-    libNtve_gf_CreateDialogItemImage(gv_userPanel, 48, 52, c_anchorTopLeft, lp_x1, lp_y1, StringToText(""), lv__image, c_triggerImageTypeNormal, true, gv_team1_teamInfo.lv_color, c_triggerBlendModeNormal);
+    libNtve_gf_CreateDialogItemImage(gv_controlPanel, 48, 52, c_anchorTopLeft, lp_x1, lp_y1, StringToText(""), lv__image, c_triggerImageTypeNormal, true, gv_team1_teamInfo.lv_color, c_triggerBlendModeNormal);
     gv_team1_raceIcon = DialogControlLastCreated();
     autoEBCB5EA1_val = gv_team2_teamInfo.lv_race;
     if (autoEBCB5EA1_val == "Terr") {
@@ -1608,7 +1673,7 @@ void gf_SetRaceIcon (int lp_x1, int lp_y1, int lp_x2, int lp_y2) {
     }
     else {
     }
-    libNtve_gf_CreateDialogItemImage(gv_userPanel, 48, 52, c_anchorTopLeft, lp_x2, lp_y2, StringToText(""), lv__image, c_triggerImageTypeNormal, true, gv_team2_teamInfo.lv_color, c_triggerBlendModeNormal);
+    libNtve_gf_CreateDialogItemImage(gv_controlPanel, 48, 52, c_anchorTopLeft, lp_x2, lp_y2, StringToText(""), lv__image, c_triggerImageTypeNormal, true, gv_team2_teamInfo.lv_color, c_triggerBlendModeNormal);
     gv_team2_raceIcon = DialogControlLastCreated();
 }
 
@@ -1669,7 +1734,7 @@ bool gf_IsButtonMorphType (int lp_button) {
 void gf_SetButtonMorph () {
     // Automatic Variable Declarations
     // Implementation
-    libNtve_gf_CreateDialogItemLabel(gv_userPanel, 400, 50, c_anchorTopLeft, 80, 415, gv_textMorph, ColorWithAlpha(0,0,0,0), false, 2.0);
+    libNtve_gf_CreateDialogItemLabel(gv_controlPanel, 400, 50, c_anchorTopLeft, 80, 415, gv_textMorph, ColorWithAlpha(0,0,0,0), false, 2.0);
     gf_SetButtonMorphForTeam(1);
     gf_SetButtonMorphForTeam(2);
 }
@@ -1689,18 +1754,18 @@ void gf_SetButtonMorphForTeam (int lp_team) {
     // Implementation
     auto57795688_val = lp_team;
     if (auto57795688_val == 1) {
-        libNtve_gf_CreateDialogItemButton(gv_userPanel, 125, 50, c_anchorTopLeft, lv__xButton, lv__yButton, StringToText(""), gv_textOn, "");
+        libNtve_gf_CreateDialogItemButton(gv_controlPanel, 125, 50, c_anchorTopLeft, lv__xButton, lv__yButton, StringToText(""), gv_textOn, "");
         gv_buttonMorphTeam1[0] = DialogControlLastCreated();
-        libNtve_gf_CreateDialogItemButton(gv_userPanel, 125, 50, c_anchorTopLeft, (lv__xButton + 125), lv__yButton, StringToText(""), gv_textOff, "");
+        libNtve_gf_CreateDialogItemButton(gv_controlPanel, 125, 50, c_anchorTopLeft, (lv__xButton + 125), lv__yButton, StringToText(""), gv_textOff, "");
         gv_buttonMorphTeam1[1] = DialogControlLastCreated();
         DialogControlFadeTransparency(gv_buttonMorphTeam1[1], PlayerGroupAll(), 0.0, 50.0);
         DialogControlSetVisible(gv_buttonMorphTeam1[0], gv_team2_playerGroup.lv_users, false);
         DialogControlSetVisible(gv_buttonMorphTeam1[1], gv_team2_playerGroup.lv_users, false);
     }
     else if (auto57795688_val == 2) {
-        libNtve_gf_CreateDialogItemButton(gv_userPanel, 125, 50, c_anchorTopLeft, lv__xButton, lv__yButton, StringToText(""), gv_textOn, "");
+        libNtve_gf_CreateDialogItemButton(gv_controlPanel, 125, 50, c_anchorTopLeft, lv__xButton, lv__yButton, StringToText(""), gv_textOn, "");
         gv_buttonMorphTeam2[0] = DialogControlLastCreated();
-        libNtve_gf_CreateDialogItemButton(gv_userPanel, 125, 50, c_anchorTopLeft, (lv__xButton + 125), lv__yButton, StringToText(""), gv_textOff, "");
+        libNtve_gf_CreateDialogItemButton(gv_controlPanel, 125, 50, c_anchorTopLeft, (lv__xButton + 125), lv__yButton, StringToText(""), gv_textOff, "");
         gv_buttonMorphTeam2[1] = DialogControlLastCreated();
         DialogControlFadeTransparency(gv_buttonMorphTeam2[1], PlayerGroupAll(), 0.0, 50.0);
         DialogControlSetVisible(gv_buttonMorphTeam2[0], gv_team1_playerGroup.lv_users, false);
@@ -1824,7 +1889,7 @@ void gf_SetUserPanel () {
 
     // Implementation
     DialogCreate(lv__length, lv__width, c_anchorTopRight, 60, 45, true);
-    gv_userPanel = DialogLastCreated();
+    gv_controlPanel = DialogLastCreated();
     gf_SetButtonUserPanel();
     gf_SetButtonPlayer(lv__length);
     gf_SetButtonMorph();
@@ -1834,25 +1899,25 @@ void gf_SetButtonUserPanel () {
     // Automatic Variable Declarations
     // Implementation
     DialogCreate(60, 60, c_anchorTopRight, 0, 45, true);
-    gv_dialogButtonUserPanel = DialogLastCreated();
+    gv_dButtonControlPanel = DialogLastCreated();
     DialogSetVisible(DialogLastCreated(), PlayerGroupAll(), true);
     DialogSetImageVisible(DialogLastCreated(), false);
     libNtve_gf_CreateDialogItemButton(DialogLastCreated(), 60, 60, c_anchorTopRight, 0, 0, StringToText(""), StringToText(""), "");
-    gv_buttonUserPanel = DialogControlLastCreated();
-    DialogControlSetVisible(gv_buttonUserPanel, PlayerGroupAll(), true);
+    gv_buttonControlPanel = DialogControlLastCreated();
+    DialogControlSetVisible(gv_buttonControlPanel, PlayerGroupAll(), true);
 }
 
 void gf_ClickButtonUserPanel () {
     // Automatic Variable Declarations
     // Implementation
     if ((gv_buttonUserPanelClicked == false)) {
-        DialogSetVisible(gv_userPanel, PlayerGroupAll(), true);
-        DialogControlFadeTransparency(gv_buttonUserPanel, PlayerGroupAll(), 0.0, 50.0);
+        DialogSetVisible(gv_controlPanel, PlayerGroupAll(), true);
+        DialogControlFadeTransparency(gv_buttonControlPanel, PlayerGroupAll(), 0.0, 50.0);
         gv_buttonUserPanelClicked = true;
     }
     else {
-        DialogSetVisible(gv_userPanel, PlayerGroupAll(), false);
-        DialogControlFadeTransparency(gv_buttonUserPanel, PlayerGroupAll(), 0.0, 0.0);
+        DialogSetVisible(gv_controlPanel, PlayerGroupAll(), false);
+        DialogControlFadeTransparency(gv_buttonControlPanel, PlayerGroupAll(), 0.0, 0.0);
         gv_buttonUserPanelClicked = false;
     }
 }
@@ -3136,8 +3201,8 @@ bool gt_ShowHideUI_Func (bool testConds, bool runActions) {
         }
 
         libNtve_gf_HideGameUI(false, lv__playerGroup);
-        DialogSetVisible(gv_dialogButtonUserPanel, lv__playerGroup, false);
-        DialogSetVisible(gv_userPanel, lv__playerGroup, false);
+        DialogSetVisible(gv_dButtonControlPanel, lv__playerGroup, false);
+        DialogSetVisible(gv_controlPanel, lv__playerGroup, false);
         DialogSetVisible(gv_team1_resourcePanel, gv_team1_teamInfo.lv_fighterGroup, false);
         DialogSetVisible(gv_team2_resourcePanel, gv_team2_teamInfo.lv_fighterGroup, false);
         gv_uiShowed = false;
@@ -3149,8 +3214,8 @@ bool gt_ShowHideUI_Func (bool testConds, bool runActions) {
         }
 
         libNtve_gf_HideGameUI(true, lv__playerGroup);
-        DialogSetVisible(gv_dialogButtonUserPanel, lv__playerGroup, true);
-        DialogSetVisible(gv_userPanel, lv__playerGroup, true);
+        DialogSetVisible(gv_dButtonControlPanel, lv__playerGroup, true);
+        DialogSetVisible(gv_controlPanel, lv__playerGroup, true);
         DialogSetVisible(gv_team1_resourcePanel, gv_team1_teamInfo.lv_fighterGroup, true);
         DialogSetVisible(gv_team2_resourcePanel, gv_team2_teamInfo.lv_fighterGroup, true);
         gv_uiShowed = true;
@@ -3369,6 +3434,7 @@ bool gt_ClickDialogItem_Func (bool testConds, bool runActions) {
     // Variable Declarations
     int lv__dialogItem;
     int lv__player;
+    int lv__playerClicked;
     int lv__team;
 
     // Automatic Variable Declarations
@@ -3383,47 +3449,15 @@ bool gt_ClickDialogItem_Func (bool testConds, bool runActions) {
     lv__dialogItem = EventDialogControl();
     lv__player = EventPlayer();
     lv__team = gf_GetTeamOfPlayer(lv__player);
-    if ((lv__dialogItem == gv_buttonUserPanel)) {
+    if ((lv__dialogItem == gv_buttonControlPanel)) {
         gf_ClickButtonUserPanel();
+    }
+    else if (gf_IsButtonPlayerType(lv__dialogItem)) {
+        lv__playerClicked = gf_GetPlayerOfButton(lv__dialogItem);
+        gf_ClickButtonPlayer(lv__player, lv__playerClicked);
     }
     else if (gf_IsButtonMorphType(lv__dialogItem) && gf_ErrorIsBuilder(lv__player)) {
         gf_ClickButtonMorph(lv__dialogItem, lv__team);
-    }
-    else if ((lv__dialogItem == gv_buttonPlayer1)) {
-        gf_ClickButtonPlayer(lv__player, 1);
-    }
-    else if ((lv__dialogItem == gv_buttonPlayer2)) {
-        gf_ClickButtonPlayer(lv__player, 2);
-    }
-    else if ((lv__dialogItem == gv_buttonPlayer3)) {
-        gf_ClickButtonPlayer(lv__player, 3);
-    }
-    else if ((lv__dialogItem == gv_buttonPlayer4)) {
-        gf_ClickButtonPlayer(lv__player, 4);
-    }
-    else if ((lv__dialogItem == gv_buttonPlayer5)) {
-        gf_ClickButtonPlayer(lv__player, 5);
-    }
-    else if ((lv__dialogItem == gv_buttonPlayer6)) {
-        gf_ClickButtonPlayer(lv__player, 6);
-    }
-    else if ((lv__dialogItem == gv_buttonPlayer7)) {
-        gf_ClickButtonPlayer(lv__player, 7);
-    }
-    else if ((lv__dialogItem == gv_buttonPlayer8)) {
-        gf_ClickButtonPlayer(lv__player, 8);
-    }
-    else if ((lv__dialogItem == gv_buttonPlayer9)) {
-        gf_ClickButtonPlayer(lv__player, 9);
-    }
-    else if ((lv__dialogItem == gv_buttonPlayer10)) {
-        gf_ClickButtonPlayer(lv__player, 10);
-    }
-    else if ((lv__dialogItem == gv_buttonPlayer11)) {
-        gf_ClickButtonPlayer(lv__player, 11);
-    }
-    else if ((lv__dialogItem == gv_buttonPlayer12)) {
-        gf_ClickButtonPlayer(lv__player, 12);
     }
     return true;
 }

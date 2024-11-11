@@ -104,6 +104,7 @@ Param/Value/C2B87501=检测到只有一名人类玩家，开启调试模式。
 Param/Value/CA3F7518=提示: 如果败局已定，运营可以通过直接退出游戏或输入“-gg”来投降。
 Param/Value/CEF41543=0
 Param/Value/D2806ADF=只有运营玩家可以使用
+Param/Value/D2BD1B36=必须选择你自己队伍中的控兵玩家
 Param/Value/E33F8417=0
 Param/Value/E539788E=0
 Param/Value/EB75841A=你的角色是<c val="ffff8a">运营</c>，为控兵训练单位。

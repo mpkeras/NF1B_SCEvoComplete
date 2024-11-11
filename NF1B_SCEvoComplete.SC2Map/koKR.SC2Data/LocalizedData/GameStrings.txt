@@ -108,7 +108,8 @@ Param/Value/C0AF10B1=0
 Param/Value/C2B87501=한 명의 인간 플레이어만 감지. 디버그 모드가 켜져 있습니다.
 Param/Value/CA3F7518=팁: 패배가 확실시되면 <c val=“ffff8a”>빌더</c>는 게임을 종료하거나 “-gg”를 입력하여 항복할 수 있습니다.
 Param/Value/CEF41543=0
-Param/Value/D2806ADF=빌더만 다음을 사용할 수 있습니다.
+Param/Value/D2806ADF=빌더만 다음을 사용할 수 있습니다
+Param/Value/D2BD1B36=자신의 팀에서 타자를 선택해야 합니다
 Param/Value/E33F8417=0
 Param/Value/E539788E=0
 Param/Value/EB75841A=당신의 역할은 <c val="ffff8a">빌더</c>로, 전투기를 훈련시키는 것입니다.

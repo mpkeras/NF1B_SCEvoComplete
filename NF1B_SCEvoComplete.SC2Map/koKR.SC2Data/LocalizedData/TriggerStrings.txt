@@ -165,6 +165,7 @@ Variable/Name/AC97C6DC=banelingNest
 Variable/Name/AE2FAD06=armory
 Variable/Name/AF3C9F8B=fighterGroupAll1
 Variable/Name/B43296B7=sharedUnit1
+Variable/Name/B6987FC7=textFighterOnYourTeam
 Variable/Name/B9AA7CE4=_builderGroup
 Variable/Name/BB5EE27B=fighterGroup
 Variable/Name/BEBA6805=teamInfo1
