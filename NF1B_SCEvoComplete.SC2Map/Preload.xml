@@ -33,7 +33,7 @@
 <Race id="BWTe"/>
 <Race id="BWPr"/>
 <Race id="BWZe"/>
-<Sound id="AC_UI_Error01"/>
+<Sound id="UI_GenericError"/>
 <Terrain id="HybridLabXelNaga"/>
 <Unit id="SCV"/>
 <Unit id="Probe"/>

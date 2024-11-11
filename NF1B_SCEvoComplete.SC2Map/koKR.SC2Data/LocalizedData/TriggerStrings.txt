@@ -11,6 +11,7 @@ Category/Name/66390C83=flag
 Category/Name/7935E4A9=Tips
 Category/Name/7FD27BCD=Global Variable
 Category/Name/84A6C588=NF1B
+Category/Name/888CD49B=Text
 Category/Name/8F7EC820=Initialization
 Category/Name/9E0E03BE=Tech/Unit Share
 Category/Name/AE78A9D3=Used

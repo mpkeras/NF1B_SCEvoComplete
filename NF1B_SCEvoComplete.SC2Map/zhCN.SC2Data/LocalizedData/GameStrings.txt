@@ -80,17 +80,21 @@ MapInfo/Team04/Name=2v2 Bottom
 MapInfo/Team05/Name=2v2 top
 Param/Value/194069C0=热键
 Param/Value/2266D75E=警告：两个队伍的种族相同。其中一个队伍的运营玩家可以在10秒内通过输入"-r <t1 | z1 | p1 | t2 | z2 | p2>"来改变自己的种族。
+Param/Value/2A6A10AE=<s val="StandardButton">允许变异</s>
+Param/Value/2BD8C7AA=<s val="Arcade_Premium_Title">队伍2</s>
 Param/Value/2ECA9760=提示: 所有需要二阶段变异的单位可以由运营玩家直接训练。
 Param/Value/3955DDB3=警告：队伍1改变了种族！
 Param/Value/3E880340=提示: <c val="ffff8a">感应塔</c>拥有<c val="ffff8a">扫描</c>技能且能被控兵直接控制。
 Param/Value/47E2A1E9=提示: 如果你的种族是星际2虫族，运营玩家需要按两次S键（默认为S）来选择需要二阶段变异的单位。
 Param/Value/53838379=警告：队伍2改变了种族！
 Param/Value/5698279A=提示: 补给上限为400。
+Param/Value/5D6D1A1E=<s val="Arcade_Premium_Title">队伍1</s>
 Param/Value/5ED931F6=命令
 Param/Value/6FD47613=队伍1只剩下一名玩家。队伍2获胜。
 Param/Value/738A54F4=队伍2只剩下一名玩家。队伍1获胜。
 Param/Value/7C2BA5DC=队伍1的运营投降。队伍2获胜。
 Param/Value/7DDEAD17=你的角色是<c val="ffff8a">控兵</c>，控制单位在战场上打赢敌人。
+Param/Value/9445EE5B=<s val="StandardButton">关</s>
 Param/Value/99ABA049=警告：所有控兵玩家现在<c val="ff0000">不能</c>使用变异技能。
 Param/Value/A283F7C2=队伍2的运营投降。队伍1获胜。
 Param/Value/AEE0382B=提示: 查看左上角以获得种族信息。
@@ -99,11 +103,13 @@ Param/Value/C0AF10B1=0
 Param/Value/C2B87501=检测到只有一名人类玩家，开启调试模式。
 Param/Value/CA3F7518=提示: 如果败局已定，运营可以通过直接退出游戏或输入“-gg”来投降。
 Param/Value/CEF41543=0
+Param/Value/D2806ADF=只有运营玩家可以使用
 Param/Value/E33F8417=0
 Param/Value/E539788E=0
 Param/Value/EB75841A=你的角色是<c val="ffff8a">运营</c>，为控兵训练单位。
 Param/Value/F4D1DCD3=<c val="ffff8a">-r/-R</c>: 释放单位（运营玩家可以释放星际1王虫、星际1指挥中心和星际2轨道控制中心）<n/><n/><c val="ffff8a">-o</c>: 对运营玩家之前释放的单位重新获取控制（仅限运营玩家使用）<n/><n/><c val="ffff8a">-gg/-GG</c>: 投降（仅限运营玩家使用）<n/><n/><c val="ffff8a">-b <id></c>: 更换运营为指定<id>玩家（仅限运营玩家使用，只能在游戏开始1分钟内使用）<n/><n/><c val="ffff8a">-b</c>: 更换运营为本队伍的随机控兵玩家（仅限运营玩家使用，只能在游戏开始1分钟内使用）<n/><n/><c val="ffff8a">-m</c>: 允许/禁止控兵玩家使用变异技能（仅限运营玩家使用）<n/><n/><c val="ffff8a">-r <t1 | z1 | p1 | t2 | z2 | p2></c>: 改变种族（仅限运营玩家使用，只能在两个队伍的种族相同时使用，只能在游戏开始12秒内使用）
 Param/Value/FB05FBA9=设置为运营
+Param/Value/FB7EBBF7=<s val="StandardButton">开</s>
 Param/Value/FD733CCC=<c val="ffff8a">Ctrl+X</c>: 打开玩家面板
 Variant001/ModeDesc=受执政官模式启发的模式
 Variant001/ModeName=N打1造

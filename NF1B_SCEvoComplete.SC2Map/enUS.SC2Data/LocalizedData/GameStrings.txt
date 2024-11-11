@@ -71,6 +71,7 @@ Param/Value/194069C0=Hotkeys
 Param/Value/1AC85A47=Tip: Press F12 for help
 Param/Value/2266D75E=Warning: Two teams have the same race. One of the teams' builder can change their race by typing "-r <t1 | z1 | p1 | t2 | z2 | p2>" in 12 seconds.
 Param/Value/297E2BE5=350
+Param/Value/2A6A10AE=<s val="StandardButton">Allow morph/mutate</s>
 Param/Value/2BD8C7AA=<s val="Arcade_Premium_Title">Team 2</s>
 Param/Value/2D322F0D=400
 Param/Value/2ECA9760=Tip: All units that require a second phase mutation can be trained by builders directly.
@@ -87,6 +88,7 @@ Param/Value/6FD47613=There's only one player left in team 1. Team 2 win.
 Param/Value/738A54F4=There's only one player left in team 2. Team 1 win.
 Param/Value/7C2BA5DC=Team 1's builder surrendered. Team 2 win.
 Param/Value/7DDEAD17=Your role is <c val="ffff8a">Fighter</c>, control the units to defeat the enemy on the battlefield.
+Param/Value/9445EE5B=<s val="StandardButton">Off</s>
 Param/Value/99ABA049=Warning: Now all fighters <c val="ff0000">can not</c> use morph abilities of units under their control.
 Param/Value/A283F7C2=Team 2's builder surrendered. Team 1 win.
 Param/Value/AEE0382B=Tip: Check the top left corner for information of Races.
@@ -96,12 +98,14 @@ Param/Value/C0AF10B1=0
 Param/Value/C2B87501=Detecting only one human player. Debug mode on.
 Param/Value/CA3F7518=Tip: If defeat is assured, the <c val="ffff8a">Builder</c> can surrender by simply exiting the game or entering "-gg".
 Param/Value/CEF41543=0
+Param/Value/D2806ADF=Only builder can use it
 Param/Value/DA162D42=Debug Commands
 Param/Value/E33F8417=0
 Param/Value/E539788E=0
 Param/Value/EB75841A=Your role is <c val="ffff8a">Builder</c>, train units for the fighters.
 Param/Value/F4D1DCD3=<c val="ffff8a">-r</c>: Release units (Builders can release SCBW Overlord, SCBW Command Center and SC2 Orbital Command)<n/><n/><c val="ffff8a">-o</c>: Gain Control on units which were released by builders previously (For builders use only)<n/><n/><c val="ffff8a">-gg</c>: Surrender (For builders use only)<n/><n/><c val="ffff8a">-b <id></c>: Change builder to player <id> (For builders use only. Can only be used within 1 minute of the start of the game)<n/><n/><c val="ffff8a">-b</c>: Change builder to a random player in fighters (For builders use only. Can only be used within 1 minute of the start of the game)<n/><n/><c val="ffff8a">-m</c>: Allow/Disallow fighters use morph abilities (For builders use only)<n/><n/><c val="ffff8a">-r <t1 | z1 | p1 | t2 | z2 | p2></c>: Change race (For builders use only. Can only be used when two teams have the same race. Can only be used within 12 seconds of the start of the game)
 Param/Value/FB05FBA9=Set to builder
+Param/Value/FB7EBBF7=<s val="StandardButton">On</s>
 Param/Value/FBEE3EC0=250
 Param/Value/FD733CCC=<c val="ffff8a">Ctrl+X</c>: Open/Close User Panel
 Variant001/ModeDesc=A mode inspired by the Archon Mode.
