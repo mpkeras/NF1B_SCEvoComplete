@@ -279,6 +279,7 @@ void gf_SetButtonMorph ();
 void gf_SetButtonMorphForTeam (int lp_team);
 void gf_ClickButtonMorph (int lp_button, int lp_team);
 void gf_UpdateButtonMorphForTeam (int lp_team);
+bool gf_ClickButtonRace (int lp_player, int lp_button);
 void gf_SetButtonRace ();
 bool gf_ErrorIsBuilder (int lp_player);
 void gf_SetUserPanel ();
@@ -1878,6 +1879,80 @@ void gf_UpdateButtonMorphForTeam (int lp_team) {
         }
     }
     else {
+    }
+}
+
+bool gf_ClickButtonRace (int lp_player, int lp_button) {
+    // Variable Declarations
+    int lv__team;
+    string lv__oldRace;
+    string lv__newRace;
+
+    // Automatic Variable Declarations
+    int auto44A7C032_val;
+    int auto1450D695_val;
+    int auto691D6925_val;
+
+    // Variable Initialization
+
+    // Implementation
+    lv__team = gf_GetTeamOfPlayer(lp_player);
+    auto44A7C032_val = lv__team;
+    if (auto44A7C032_val == 1) {
+        lv__oldRace = gv_team1_teamInfo.lv_race;
+        auto1450D695_val = lp_button;
+        if (auto1450D695_val == gv_buttonRaceTeam1[0]) {
+            lv__newRace = "BWTe";
+        }
+        else if (auto1450D695_val == gv_buttonRaceTeam1[1]) {
+            lv__newRace = "BWZe";
+        }
+        else if (auto1450D695_val == gv_buttonRaceTeam1[2]) {
+            lv__newRace = "BWPr";
+        }
+        else if (auto1450D695_val == gv_buttonRaceTeam1[3]) {
+            lv__newRace = "Terr";
+        }
+        else if (auto1450D695_val == gv_buttonRaceTeam1[4]) {
+            lv__newRace = "Zerg";
+        }
+        else if (auto1450D695_val == gv_buttonRaceTeam1[5]) {
+            lv__newRace = "Prot";
+        }
+        else {
+        }
+    }
+    else if (auto44A7C032_val == 2) {
+        lv__oldRace = gv_team2_teamInfo.lv_race;
+        auto691D6925_val = lp_button;
+        if (auto691D6925_val == gv_buttonRaceTeam2[0]) {
+            lv__newRace = "BWTe";
+        }
+        else if (auto691D6925_val == gv_buttonRaceTeam2[1]) {
+            lv__newRace = "BWZe";
+        }
+        else if (auto691D6925_val == gv_buttonRaceTeam2[2]) {
+            lv__newRace = "BWPr";
+        }
+        else if (auto691D6925_val == gv_buttonRaceTeam2[3]) {
+            lv__newRace = "Terr";
+        }
+        else if (auto691D6925_val == gv_buttonRaceTeam2[4]) {
+            lv__newRace = "Zerg";
+        }
+        else if (auto691D6925_val == gv_buttonRaceTeam2[5]) {
+            lv__newRace = "Prot";
+        }
+        else {
+        }
+    }
+    else {
+    }
+    if ((lv__oldRace != lv__newRace)) {
+        return true;
+    }
+    else {
+        return false;
     }
 }
 
@@ -3528,6 +3603,9 @@ bool gt_ClickDialogItem_Func (bool testConds, bool runActions) {
     }
     else if (gf_IsButtonMorphType(lv__dialogItem) && gf_ErrorIsBuilder(lv__player)) {
         gf_ClickButtonMorph(lv__dialogItem, lv__team);
+    }
+    else if (gf_ClickButtonRace(lv__player, lv__dialogItem)) {
+        return true;
     }
     return true;
 }
