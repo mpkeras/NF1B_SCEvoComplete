@@ -142,6 +142,12 @@ text gv_textBWTe;
 text gv_textBWZe;
 text gv_textBWPr;
 text[6] gv_textButtonRace;
+text gv_textChangeRace;
+text gv_textCanNotChangeRace;
+text gv_textOverRaceTime;
+text gv_textMustDiffRace;
+text gv_textWarningRaceTeam1;
+text gv_textWarningRaceTeam2;
 int gv_pv_releaseToChangeOwner;
 
 void InitGlobals () {
@@ -220,6 +226,12 @@ void InitGlobals () {
     gv_textBWTe = StringExternal("Param/Value/1352128F");
     gv_textBWZe = StringExternal("Param/Value/A97CD713");
     gv_textBWPr = StringExternal("Param/Value/4637572E");
+    gv_textChangeRace = StringExternal("Param/Value/F8369F25");
+    gv_textCanNotChangeRace = StringExternal("Param/Value/1EDEE2CD");
+    gv_textOverRaceTime = StringExternal("Param/Value/DCD47818");
+    gv_textMustDiffRace = StringExternal("Param/Value/A9D5813A");
+    gv_textWarningRaceTeam1 = StringExternal("Param/Value/100E4165");
+    gv_textWarningRaceTeam2 = StringExternal("Param/Value/9843BE36");
     gv_pv_releaseToChangeOwner = 1;
 }
 
@@ -1887,15 +1899,34 @@ bool gf_ClickButtonRace (int lp_player, int lp_button) {
     int lv__team;
     string lv__oldRace;
     string lv__newRace;
+    unit lv__unit;
+    point lv__startLocation;
+    int lv__player;
 
     // Automatic Variable Declarations
     int auto44A7C032_val;
     int auto1450D695_val;
     int auto691D6925_val;
+    unitgroup auto30BC15FD_g;
+    int auto30BC15FD_u;
+    playergroup auto0185DA65_g;
+    playergroup autoCAC5C6BA_g;
 
     // Variable Initialization
 
     // Implementation
+    if ((gf_GetRoleOfPlayer(lp_player) != ge_Role_Builder)) {
+        libNtve_gf_UIErrorMessage(PlayerGroupSingle(lp_player), gv_textBuilderPermission, SoundLink("UI_GenericError", -1));
+        return false;
+    }
+    else if ((TimerGetElapsed(gv_timer) >= 12.0)) {
+        libNtve_gf_UIErrorMessage(PlayerGroupSingle(lp_player), gv_textOverRaceTime, SoundLink("UI_GenericError", -1));
+        return false;
+    }
+    else if ((gv_changeRaceEnabled == false)) {
+        libNtve_gf_UIErrorMessage(PlayerGroupSingle(lp_player), gv_textCanNotChangeRace, SoundLink("UI_GenericError", -1));
+        return false;
+    }
     lv__team = gf_GetTeamOfPlayer(lp_player);
     auto44A7C032_val = lv__team;
     if (auto44A7C032_val == 1) {
@@ -1948,11 +1979,52 @@ bool gf_ClickButtonRace (int lp_player, int lp_button) {
     }
     else {
     }
-    if ((lv__oldRace != lv__newRace)) {
-        return true;
+    if ((lv__oldRace == lv__newRace)) {
+        libNtve_gf_UIErrorMessage(PlayerGroupSingle(lp_player), gv_textMustDiffRace, SoundLink("UI_GenericError", -1));
+        return false;
     }
     else {
-        return false;
+        gv_changeRaceEnabled = false;
+        lv__startLocation = gf_GetStartLocationOfTeam(lv__team);
+        auto30BC15FD_g = UnitGroup(null, lp_player, RegionPlayableMap(), UnitFilter(0, 0, 0, 0), 0);
+        auto30BC15FD_u = UnitGroupCount(auto30BC15FD_g, c_unitCountAll);
+        for (;; auto30BC15FD_u -= 1) {
+            lv__unit = UnitGroupUnitFromEnd(auto30BC15FD_g, auto30BC15FD_u);
+            if (lv__unit == null) { break; }
+            UnitRemove(lv__unit);
+        }
+        if (((lv__oldRace == "Zerg") || (lv__oldRace == "BWZe")) && (lv__newRace != "Zerg") && (lv__newRace != "BWZe")) {
+            CreepModify(lv__startLocation, 14.0, false, false);
+        }
+        else if ((lv__oldRace != "Zerg") && (lv__oldRace != "BWZe") && ((lv__newRace == "Zerg") || (lv__newRace == "BWZe"))) {
+            CreepModify(lv__startLocation, 13.0, true, false);
+        }
+        MeleeInitUnitsForPlayer(lp_player, lv__newRace, lv__startLocation);
+        if ((lv__team == 1)) {
+            gv_team1_teamInfo.lv_race = lv__newRace;
+            autoCAC5C6BA_g = gv_team1_playerGroup.lv_players;
+            lv__player = -1;
+            while (true) {
+                lv__player = PlayerGroupNextPlayer(autoCAC5C6BA_g, lv__player);
+                if (lv__player < 0) { break; }
+                PlayerSetRace(lv__player, lv__newRace);
+            }
+            UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, gv_textWarningRaceTeam1);
+        }
+        else {
+            CreepModify(gv_team2_teamInfo.lv_startLocation, 14.0, false, false);
+            gv_team2_teamInfo.lv_race = lv__newRace;
+            auto0185DA65_g = gv_team2_playerGroup.lv_players;
+            lv__player = -1;
+            while (true) {
+                lv__player = PlayerGroupNextPlayer(auto0185DA65_g, lv__player);
+                if (lv__player < 0) { break; }
+                PlayerSetRace(lv__player, lv__newRace);
+            }
+            UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, gv_textWarningRaceTeam2);
+        }
+        gf_UpdateRaceIcon(lv__team, lv__newRace);
+        return true;
     }
 }
 
@@ -1973,6 +2045,7 @@ void gf_SetButtonRace () {
     lv__yButton = 500;
 
     // Implementation
+    libNtve_gf_CreateDialogItemLabel(gv_controlPanel, 200, 50, c_anchorTopLeft, 80, (lv__yButton - 35), gv_textChangeRace, ColorWithAlpha(0,0,0,0), false, 2.0);
     gv_textButtonRace[0] = gv_textBWTe;
     gv_textButtonRace[1] = gv_textBWZe;
     gv_textButtonRace[2] = gv_textBWPr;
@@ -3986,8 +4059,6 @@ bool gt_ChangeRace_Func (bool testConds, bool runActions) {
     string lv__newRace;
     unit lv__unit;
     point lv__startLoacation;
-    text lv__team1_warningText;
-    text lv__team2_warningText;
 
     // Automatic Variable Declarations
     string auto4C934AD9_val;
@@ -3997,8 +4068,6 @@ bool gt_ChangeRace_Func (bool testConds, bool runActions) {
     playergroup autoB01EF66E_g;
 
     // Variable Initialization
-    lv__team1_warningText = StringExternal("Param/Value/3955DDB3");
-    lv__team2_warningText = StringExternal("Param/Value/53838379");
 
     // Conditions
     if (testConds) {
@@ -4027,7 +4096,6 @@ bool gt_ChangeRace_Func (bool testConds, bool runActions) {
     lv__player = EventPlayer();
     lv__team = gf_GetTeamOfPlayer(lv__player);
     lv__oldRace = PlayerRace(lv__player);
-    lv__startLoacation = gf_GetStartLocationOfTeam(lv__team);
     auto4C934AD9_val = EventChatMessage(false);
     if (auto4C934AD9_val == "-r t2") {
         lv__newRace = "Terr";
@@ -4052,6 +4120,7 @@ bool gt_ChangeRace_Func (bool testConds, bool runActions) {
     }
     if ((lv__oldRace != lv__newRace)) {
         gv_changeRaceEnabled = false;
+        lv__startLoacation = gf_GetStartLocationOfTeam(lv__team);
         auto66A73243_g = UnitGroup(null, lv__player, RegionPlayableMap(), UnitFilter(0, 0, 0, 0), 0);
         auto66A73243_u = UnitGroupCount(auto66A73243_g, c_unitCountAll);
         for (;; auto66A73243_u -= 1) {
@@ -4075,7 +4144,7 @@ bool gt_ChangeRace_Func (bool testConds, bool runActions) {
                 if (lv__player < 0) { break; }
                 PlayerSetRace(lv__player, lv__newRace);
             }
-            UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, lv__team1_warningText);
+            UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, gv_textWarningRaceTeam1);
         }
         else {
             CreepModify(gv_team2_teamInfo.lv_startLocation, 14.0, false, false);
@@ -4087,7 +4156,7 @@ bool gt_ChangeRace_Func (bool testConds, bool runActions) {
                 if (lv__player < 0) { break; }
                 PlayerSetRace(lv__player, lv__newRace);
             }
-            UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, lv__team2_warningText);
+            UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, gv_textWarningRaceTeam2);
         }
         gf_UpdateRaceIcon(lv__team, lv__newRace);
     }
