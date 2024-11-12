@@ -78,6 +78,7 @@ Param/Value/2A6A10AE=<s val="StandardButton">Allow morph/mutate</s>
 Param/Value/2BD8C7AA=<s val="Arcade_Premium_Title">Team 2</s>
 Param/Value/2D322F0D=400
 Param/Value/2ECA9760=Tip: All units that require a second phase mutation can be trained by builders directly.
+Param/Value/341BB877=Open/Close the Control Panel
 Param/Value/3E880340=Tip: <c val="ffff8a">Sensor towers</c> have <c val="ffff8a">Scanner Sweep</c> Abilities and can be controlled directly by the fighter.
 Param/Value/45E37495=300
 Param/Value/4637572E=<s val="StandardButton">P1</s>

@@ -496,6 +496,7 @@ Variable/Name/869C765B=_unit
 Variable/Name/87920A18=_upgrade
 Variable/Name/88A7B10E=_newOwner
 Variable/Name/88DA9BCC=_tipZergSC2Text
+Variable/Name/88E96426=textButtonControlPanel
 Variable/Name/8A89F5EF=_unitType
 Variable/Name/8C084E84=_newOwner
 Variable/Name/8C1E22DE=textChangeBuilder

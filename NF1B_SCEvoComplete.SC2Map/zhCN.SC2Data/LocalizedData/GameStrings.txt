@@ -85,6 +85,7 @@ Param/Value/2266D75E=警告：两个队伍的种族相同。其中一个队伍�
 Param/Value/2A6A10AE=<s val="StandardButton">允许变异</s>
 Param/Value/2BD8C7AA=<s val="Arcade_Premium_Title">队伍2</s>
 Param/Value/2ECA9760=提示: 所有需要二阶段变异的单位可以由运营玩家直接训练。
+Param/Value/341BB877=打开/关闭控制面板
 Param/Value/3E880340=提示: <c val="ffff8a">感应塔</c>拥有<c val="ffff8a">扫描</c>技能且能被控兵直接控制。
 Param/Value/47E2A1E9=提示: 如果你的种族是星际2虫族，运营玩家需要按两次S键（默认为S）来选择需要二阶段变异的单位。
 Param/Value/5698279A=提示: 补给上限为400。

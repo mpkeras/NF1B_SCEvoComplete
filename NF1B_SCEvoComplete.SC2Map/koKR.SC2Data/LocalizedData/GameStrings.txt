@@ -89,6 +89,7 @@ Param/Value/2266D75E=경고: 두 팀이 같은 종족입니다. 팀 중 하나�
 Param/Value/2A6A10AE=<s val="StandardButton">변경 권한</s>
 Param/Value/2BD8C7AA=<s val="Arcade_Premium_Title">팀 2</s>
 Param/Value/2ECA9760=팁: 2단계 돌연변이가 필요한 모든 유닛은 빌더가 직접 훈련할 수 있습니다.
+Param/Value/341BB877=제어판 열기/닫기
 Param/Value/3E880340=팁: <c val="ffff8a">센서 타워</c>에는 <c val="ffff8a">스캐너 스윕</c> 능력이 있으며, 전투기가 직접 제어할 수 있습니다.
 Param/Value/47E2A1E9=팁: 종족이 SC2 Zerg 인 경우, 두 번째 단계 돌연변이가 필요한 유닛을 선택하려면 빌더가 S 버튼(기본값은 S)을 두 번 눌러야 합니다.
 Param/Value/5698279A=팁: 공급 한도는 400개입니다.
