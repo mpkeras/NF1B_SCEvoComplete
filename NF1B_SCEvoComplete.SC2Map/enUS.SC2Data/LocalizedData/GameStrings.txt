@@ -67,6 +67,7 @@ MapInfo/Team03/Name=exp1v1 bot
 MapInfo/Team04/Name=2v2 Bottom
 MapInfo/Team05/Name=2v2 top
 Param/Value/0F43ABCC=200<n/>
+Param/Value/1352128F=<s val="StandardButton">T1</s>
 Param/Value/194069C0=Hotkeys
 Param/Value/1AC85A47=Tip: Press F12 for help
 Param/Value/2266D75E=Warning: Two teams have the same race. One of the teams' builder can change their race by typing "-r <t1 | z1 | p1 | t2 | z2 | p2>" in 12 seconds.
@@ -78,6 +79,7 @@ Param/Value/2ECA9760=Tip: All units that require a second phase mutation can be 
 Param/Value/3955DDB3=Warning: Team 1 has changed its race!
 Param/Value/3E880340=Tip: <c val="ffff8a">Sensor towers</c> have <c val="ffff8a">Scanner Sweep</c> Abilities and can be controlled directly by the fighter.
 Param/Value/45E37495=300
+Param/Value/4637572E=<s val="StandardButton">P1</s>
 Param/Value/47E2A1E9=Tip: If your race is SC2 Zerg, the builder need press the S button (default is S) twice to choose units which require a second phase mutation.
 Param/Value/514459C7=400
 Param/Value/53838379=Warning: Team 2 has changed its race!
@@ -92,9 +94,11 @@ Param/Value/7DDEAD17=Your role is <c val="ffff8a">Fighter</c>, control the units
 Param/Value/9445EE5B=<s val="StandardButton">Off</s>
 Param/Value/99ABA049=Warning: Now all fighters <c val="ff0000">can not</c> use morph abilities of units under their control.
 Param/Value/A283F7C2=Team 2's builder surrendered. Team 1 win.
+Param/Value/A97CD713=<s val="StandardButton">Z1</s>
 Param/Value/AEE0382B=Tip: Click the button in the upper right corner to view information about this matchup.
 Param/Value/B63FBAB8=200<n/>
 Param/Value/B84AECE9=Warning: Now all fighters <c val="00ff00">can</c> use morph abilities of units under their control.
+Param/Value/BF0476C2=<s val="StandardButton">Z2</s>
 Param/Value/C0AF10B1=0
 Param/Value/C2B87501=Detecting only one human player. Debug mode on.
 Param/Value/CA3F7518=Tip: If defeat is assured, the <c val="ffff8a">Builder</c> can surrender by simply exiting the game or entering "-gg".
@@ -105,6 +109,8 @@ Param/Value/DA162D42=Debug Commands
 Param/Value/E33F8417=0
 Param/Value/E539788E=0
 Param/Value/EB75841A=Your role is <c val="ffff8a">Builder</c>, train units for the fighters.
+Param/Value/EF2BBF2F=<s val="StandardButton">T2</s>
+Param/Value/F2C29201=<s val="StandardButton">P2</s>
 Param/Value/F4D1DCD3=<c val="ffff8a">-r</c>: Release units (Builders can release SCBW Overlord, SCBW Command Center and SC2 Orbital Command)<n/><n/><c val="ffff8a">-o</c>: Gain Control on units which were released by builders previously (For builders use only)<n/><n/><c val="ffff8a">-gg</c>: Surrender (For builders use only)<n/><n/><c val="ffff8a">-b <id></c>: Change builder to player <id> (For builders use only. Can only be used within 1 minute of the start of the game)<n/><n/><c val="ffff8a">-b</c>: Change builder to a random player in fighters (For builders use only. Can only be used within 1 minute of the start of the game)<n/><n/><c val="ffff8a">-m</c>: Allow/Disallow fighters use morph abilities (For builders use only)<n/><n/><c val="ffff8a">-r <t1 | z1 | p1 | t2 | z2 | p2></c>: Change race (For builders use only. Can only be used when two teams have the same race. Can only be used within 12 seconds of the start of the game)
 Param/Value/FB05FBA9=Set to builder
 Param/Value/FB7EBBF7=<s val="StandardButton">On</s>
