@@ -66,6 +66,7 @@ MapInfo/Team02/Name=exp1v1 top
 MapInfo/Team03/Name=exp1v1 bot
 MapInfo/Team04/Name=2v2 Bottom
 MapInfo/Team05/Name=2v2 top
+Param/Value/0856FA5F=You are the new builder.
 Param/Value/0F43ABCC=200<n/>
 Param/Value/100E4165=Warning: Team 1 has changed its race!
 Param/Value/1352128F=<s val="StandardButton">T1</s>

@@ -78,6 +78,7 @@ MapInfo/Team02/Name=exp1v1 top
 MapInfo/Team03/Name=exp1v1 bot
 MapInfo/Team04/Name=2v2 Bottom
 MapInfo/Team05/Name=2v2 top
+Param/Value/0856FA5F=你是新的运营。
 Param/Value/100E4165=警告：队伍1改变了种族！
 Param/Value/194069C0=热键
 Param/Value/1EDEE2CD=只能被你或你的对手使用一次，且只能在两队种族相同时使用

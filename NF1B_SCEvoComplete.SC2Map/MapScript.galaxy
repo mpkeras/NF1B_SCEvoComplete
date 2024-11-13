@@ -2,7 +2,7 @@
 // 
 // Generated Map Script
 // 
-// Name:   N Fight 1 Builds (SC: Evo Complete)
+// Name:   N ?????? 1 ?????? (SC: Evo Complete) ?????????
 // 
 //==================================================================================================
 include "TriggerLibs/NativeLib"
@@ -151,6 +151,7 @@ text gv_textMustDiffRace;
 text gv_textWarningRaceTeam1;
 text gv_textWarningRaceTeam2;
 text gv_textButtonControlPanel;
+text gv_textNewBuilder;
 int gv_pv_releaseToChangeOwner;
 
 void InitGlobals () {
@@ -237,6 +238,7 @@ void InitGlobals () {
     gv_textWarningRaceTeam1 = StringExternal("Param/Value/100E4165");
     gv_textWarningRaceTeam2 = StringExternal("Param/Value/9843BE36");
     gv_textButtonControlPanel = StringExternal("Param/Value/341BB877");
+    gv_textNewBuilder = StringExternal("Param/Value/0856FA5F");
     gv_pv_releaseToChangeOwner = 1;
 }
 
@@ -2199,6 +2201,7 @@ void gf_ChangeBuilder (int lp_oldBuilder, int lp_newBuilder, int lp_team) {
     }
     else {
     }
+    UIDisplayMessage(PlayerGroupSingle(lp_newBuilder), c_messageAreaSubtitle, gv_textNewBuilder);
 }
 
 void gf_OwnershipForChangeBuilder (int lp_oldBuilder, int lp_newBuilder) {

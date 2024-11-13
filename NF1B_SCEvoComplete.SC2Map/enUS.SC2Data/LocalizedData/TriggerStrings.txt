@@ -353,6 +353,7 @@ Trigger/Name/FD34837D=TipCommands
 Variable/Name/00FC7268=_race
 Variable/Name/024F64EE=users
 Variable/Name/02DD4831=textNewBuilder
+Variable/Name/0348A073=textNewBuilder
 Variable/Name/03FAA497=team2_tipSensorTowerFlag
 Variable/Name/04D19FB9=_team
 Variable/Name/0590F6F4=_player
