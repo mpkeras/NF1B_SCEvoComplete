@@ -85,6 +85,7 @@ const int ge_Role_Fighter = 1;
 bool gv_debug;
 bool gv_controlDebug;
 bool gv_uiShowed;
+string[6] gv_raceMap;
 int gv_team1_resourcePanel;
 int gv_team2_resourcePanel;
 int gv_team1_raceIcon;
@@ -295,7 +296,9 @@ void gf_SetButtonMorphForTeam (int lp_team);
 void gf_ClickButtonMorph (int lp_button, int lp_team);
 void gf_UpdateButtonMorphForTeam (int lp_team);
 bool gf_ClickButtonRace (int lp_player, int lp_button);
+int gf_GetIndexOfRace (string lp_race);
 void gf_SetButtonRace ();
+void gf_UpdateButtonRace (string lp_oldRace, string lp_newRace, int lp_team);
 bool gf_ErrorIsBuilder (int lp_player);
 void gf_SetUserPanel ();
 void gf_SetButtonUserPanel ();
@@ -1993,7 +1996,37 @@ bool gf_ClickButtonRace (int lp_player, int lp_button) {
             UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, gv_textWarningRaceTeam2);
         }
         gf_UpdateRaceIcon(lv__team, lv__newRace);
+        gf_UpdateButtonRace(lv__oldRace, lv__newRace, lv__team);
         return true;
+    }
+}
+
+int gf_GetIndexOfRace (string lp_race) {
+    // Automatic Variable Declarations
+    string autoE8BB2CCC_val;
+
+    // Implementation
+    autoE8BB2CCC_val = lp_race;
+    if (autoE8BB2CCC_val == "BWTe") {
+        return 0;
+    }
+    else if (autoE8BB2CCC_val == "BWZe") {
+        return 1;
+    }
+    else if (autoE8BB2CCC_val == "BWPr") {
+        return 2;
+    }
+    else if (autoE8BB2CCC_val == "Terr") {
+        return 3;
+    }
+    else if (autoE8BB2CCC_val == "Zerg") {
+        return 4;
+    }
+    else if (autoE8BB2CCC_val == "Prot") {
+        return 5;
+    }
+    else {
+        return -1;
     }
 }
 
@@ -2021,11 +2054,21 @@ void gf_SetButtonRace () {
     gv_textButtonRace[3] = gv_textTerr;
     gv_textButtonRace[4] = gv_textZerg;
     gv_textButtonRace[5] = gv_textProt;
+    gv_raceMap[0] = "BWTe";
+    gv_raceMap[1] = "BWZe";
+    gv_raceMap[2] = "BWPr";
+    gv_raceMap[3] = "Terr";
+    gv_raceMap[4] = "Zerg";
+    gv_raceMap[5] = "Prot";
     lv__i = 0;
     for ( ; ( (autoA1586CBC_ai >= 0 && lv__i <= autoA1586CBC_ae) || (autoA1586CBC_ai < 0 && lv__i >= autoA1586CBC_ae) ) ; lv__i += autoA1586CBC_ai ) {
         libNtve_gf_CreateDialogItemButton(gv_controlPanel, 100, 50, c_anchorTopLeft, lv__xButton, lv__yButton, StringToText(""), gv_textButtonRace[lv__i], "");
         gv_buttonRaceTeam1[lv__i] = DialogControlLastCreated();
         DialogControlSetVisible(gv_buttonRaceTeam1[lv__i], gv_team2_playerGroup.lv_users, false);
+        if ((gv_team1_teamInfo.lv_race == gv_raceMap[lv__i])) {
+            DialogControlFadeTransparency(gv_buttonRaceTeam1[lv__i], gv_team1_playerGroup.lv_users, 0.0, 50.0);
+        }
+
         lv__xButton += 100;
     }
     lv__xButton = 50;
@@ -2034,7 +2077,38 @@ void gf_SetButtonRace () {
         libNtve_gf_CreateDialogItemButton(gv_controlPanel, 100, 50, c_anchorTopLeft, lv__xButton, lv__yButton, StringToText(""), gv_textButtonRace[lv__i], "");
         gv_buttonRaceTeam2[lv__i] = DialogControlLastCreated();
         DialogControlSetVisible(gv_buttonRaceTeam2[lv__i], gv_team1_playerGroup.lv_users, false);
+        if ((gv_team2_teamInfo.lv_race == gv_raceMap[lv__i])) {
+            DialogControlFadeTransparency(gv_buttonRaceTeam2[lv__i], gv_team2_playerGroup.lv_users, 0.0, 50.0);
+        }
+
         lv__xButton += 100;
+    }
+}
+
+void gf_UpdateButtonRace (string lp_oldRace, string lp_newRace, int lp_team) {
+    // Variable Declarations
+    string lv__race;
+    int lv__indexOld;
+    int lv__indexNew;
+
+    // Automatic Variable Declarations
+    int auto80189B34_val;
+
+    // Variable Initialization
+
+    // Implementation
+    lv__indexOld = gf_GetIndexOfRace(lp_oldRace);
+    lv__indexNew = gf_GetIndexOfRace(lp_newRace);
+    auto80189B34_val = lp_team;
+    if (auto80189B34_val == 1) {
+        DialogControlFadeTransparency(gv_buttonRaceTeam1[lv__indexOld], gv_team1_playerGroup.lv_users, 0.0, 0.0);
+        DialogControlFadeTransparency(gv_buttonRaceTeam1[lv__indexNew], gv_team1_playerGroup.lv_users, 0.0, 50.0);
+    }
+    else if (auto80189B34_val == 2) {
+        DialogControlFadeTransparency(gv_buttonRaceTeam2[lv__indexOld], gv_team2_playerGroup.lv_users, 0.0, 0.0);
+        DialogControlFadeTransparency(gv_buttonRaceTeam2[lv__indexNew], gv_team2_playerGroup.lv_users, 0.0, 50.0);
+    }
+    else {
     }
 }
 
@@ -3058,6 +3132,7 @@ bool gt_ChangeRaceForDebug_Func (bool testConds, bool runActions) {
             }
         }
         gf_UpdateRaceIcon(lv__team, lv__newRace);
+        gf_UpdateButtonRace(lv__oldRace, lv__newRace, lv__team);
     }
 
     return true;
@@ -4128,6 +4203,7 @@ bool gt_ChangeRace_Func (bool testConds, bool runActions) {
             UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, gv_textWarningRaceTeam2);
         }
         gf_UpdateRaceIcon(lv__team, lv__newRace);
+        gf_UpdateButtonRace(lv__oldRace, lv__newRace, lv__team);
     }
 
     return true;
