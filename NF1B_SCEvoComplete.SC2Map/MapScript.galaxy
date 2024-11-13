@@ -1125,6 +1125,8 @@ void gf_SetStartingUnit () {
     while (true) {
         lv__player = PlayerGroupNextPlayer(autoDFB74190_g, lv__player);
         if (lv__player < 0) { break; }
+        libNtve_gf_CreateUnitsWithDefaultFacing(1, "Marine", 0, lv__player, gv_team1_teamInfo.lv_startLocation);
+        libNtve_gf_ShowHideUnit(UnitLastCreated(), false);
         PlayerSetRace(lv__player, gv_team1_teamInfo.lv_race);
         PlayerSetColorIndex(lv__player, gv_team1_teamInfo.lv_playerColor, true);
         CameraPan(lv__player, gv_team1_teamInfo.lv_startLocation, 0.0, -1, 10.0, false);
@@ -1139,6 +1141,8 @@ void gf_SetStartingUnit () {
     while (true) {
         lv__player = PlayerGroupNextPlayer(autoF4337112_g, lv__player);
         if (lv__player < 0) { break; }
+        libNtve_gf_CreateUnitsWithDefaultFacing(1, "Marine", 0, lv__player, gv_team2_teamInfo.lv_startLocation);
+        libNtve_gf_ShowHideUnit(UnitLastCreated(), false);
         PlayerSetRace(lv__player, gv_team2_teamInfo.lv_race);
         PlayerSetColorIndex(lv__player, gv_team2_teamInfo.lv_playerColor, true);
         CameraPan(lv__player, gv_team2_teamInfo.lv_startLocation, 0.0, -1, 10.0, false);
@@ -1238,34 +1242,26 @@ void gf_SetMeleeOptions () {
 }
 
 bool auto_gf_SetMeleeOptions_TriggerFunc (bool testConds, bool runActions) {
+    // Variable Declarations
+    int lv__player;
+
     // Automatic Variable Declarations
-    playergroup auto7451005D_g;
-    int auto7451005D_var;
-    playergroup auto02CD5321_g;
-    int auto02CD5321_var;
+    playergroup autoF0FCBD7F_g;
+
+    // Variable Initialization
 
     // Implementation
     if ((gv_debug == false)) {
-        MeleeSetOption(gv_team1_teamInfo.lv_builder, c_meleeOptionVictory, true);
-        MeleeSetOption(gv_team1_teamInfo.lv_builder, c_meleeOptionDefeat, true);
+        autoF0FCBD7F_g = PlayerGroupAll();
+        lv__player = -1;
+        while (true) {
+            lv__player = PlayerGroupNextPlayer(autoF0FCBD7F_g, lv__player);
+            if (lv__player < 0) { break; }
+            MeleeSetOption(lv__player, c_meleeOptionVictory, true);
+            MeleeSetOption(lv__player, c_meleeOptionDefeat, true);
+        }
         MeleeSetOption(gv_team1_teamInfo.lv_builder, c_meleeOptionReveal, true);
-        auto7451005D_g = gv_team1_teamInfo.lv_fighterGroup;
-        auto7451005D_var = -1;
-        while (true) {
-            auto7451005D_var = PlayerGroupNextPlayer(auto7451005D_g, auto7451005D_var);
-            if (auto7451005D_var < 0) { break; }
-            MeleeSetOption(auto7451005D_var, c_meleeOptionVictory, true);
-        }
-        MeleeSetOption(gv_team2_teamInfo.lv_builder, c_meleeOptionVictory, true);
-        MeleeSetOption(gv_team2_teamInfo.lv_builder, c_meleeOptionDefeat, true);
         MeleeSetOption(gv_team2_teamInfo.lv_builder, c_meleeOptionReveal, true);
-        auto02CD5321_g = gv_team2_teamInfo.lv_fighterGroup;
-        auto02CD5321_var = -1;
-        while (true) {
-            auto02CD5321_var = PlayerGroupNextPlayer(auto02CD5321_g, auto02CD5321_var);
-            if (auto02CD5321_var < 0) { break; }
-            MeleeSetOption(auto02CD5321_var, c_meleeOptionVictory, true);
-        }
     }
 
     return true;

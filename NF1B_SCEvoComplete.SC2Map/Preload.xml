@@ -35,6 +35,7 @@
 <Sound id="UI_GenericError"/>
 <Terrain id="HybridLabXelNaga"/>
 <Unit id="SCV"/>
+<Unit id="Marine"/>
 <Unit id="Probe"/>
 <Unit id="Drone"/>
 <Unit id="RichVespeneGeyser"/>
