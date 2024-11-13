@@ -4179,6 +4179,7 @@ bool gt_FighterQuit_Func (bool testConds, bool runActions) {
     }
 
     lv__player = EventPlayer();
+    DialogControlSetVisible(gv_playerProperty[lv__player].lv_button, PlayerGroupAll(), false);
     if ((PlayerGroupHasPlayer(gv_team1_playerGroup.lv_users, lv__player) == true)) {
         PlayerGroupRemove(gv_team1_playerGroup.lv_users, lv__player);
         PlayerGroupRemove(gv_team1_playerGroup.lv_fightersWithNeutral, lv__player);
