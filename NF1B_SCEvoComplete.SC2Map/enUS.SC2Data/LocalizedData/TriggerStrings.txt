@@ -1,5 +1,4 @@
-﻿Category/Name/12055FBF=Role
-Category/Name/15C54F52=Options
+﻿Category/Name/15C54F52=Options
 Category/Name/18BCB24B=Builder Info Panel
 Category/Name/19035D44=Team/Player Info
 Category/Name/2538C42C=Before Role Selection

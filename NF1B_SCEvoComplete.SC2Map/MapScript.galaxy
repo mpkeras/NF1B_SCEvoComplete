@@ -553,14 +553,7 @@ int gf_GetRoleOfPlayer (int lp_player) {
     // Variable Initialization
 
     // Implementation
-    lv__team = gf_GetTeamOfPlayer(lp_player);
-    if ((lv__team == 1)) {
-        lv__builder = gv_team1_teamInfo.lv_builder;
-    }
-    else {
-        lv__builder = gv_team2_teamInfo.lv_builder;
-    }
-    if ((lp_player == lv__builder)) {
+    if ((gv_playerProperty[lp_player].lv_role == ge_Role_Builder)) {
         return ge_Role_Builder;
     }
     else {
