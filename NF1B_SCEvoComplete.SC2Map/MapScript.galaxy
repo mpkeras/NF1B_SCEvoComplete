@@ -6844,7 +6844,7 @@ bool gt_GetByBuillder_Func (bool testConds, bool runActions) {
     for (;; auto7DCA46F6_u -= 1) {
         lv__unit = UnitGroupUnitFromEnd(auto7DCA46F6_g, auto7DCA46F6_u);
         if (lv__unit == null) { break; }
-        if (gf_IsCanReleaseByBuilderUnitType(lv__unit)) {
+        if ((UnitGetOwner(lv__unit) == lv__neutral) && gf_IsCanReleaseByBuilderUnitType(lv__unit)) {
             UnitSetOwner(lv__unit, lv__builder, true);
             gf_EnableAbilityForReleasedMainBase(lv__unit);
         }
@@ -6868,14 +6868,15 @@ bool gt_GetByFighterSelect_Func (bool testConds, bool runActions) {
     // Variable Declarations
     unit lv__unit;
     int lv__fighter;
-    int lv__oldOwner;
+    int lv__team;
+    int lv__neutral;
 
     // Automatic Variable Declarations
     // Variable Initialization
 
     // Conditions
     if (testConds) {
-        if (!((((PlayerGroupHasPlayer(gv_team1_teamInfo.lv_fighterGroup, EventPlayer()) == true) && (UnitGetOwner(EventUnit()) == 13)) || ((PlayerGroupHasPlayer(gv_team2_teamInfo.lv_fighterGroup, EventPlayer()) == true) && (UnitGetOwner(EventUnit()) == 14))))) {
+        if (!((gf_GetRoleOfPlayer(EventPlayer()) == ge_Role_Fighter))) {
             return false;
         }
 
@@ -6895,9 +6896,13 @@ bool gt_GetByFighterSelect_Func (bool testConds, bool runActions) {
 
     lv__unit = EventUnit();
     lv__fighter = EventPlayer();
-    lv__oldOwner = UnitGetOwner(lv__unit);
-    gf_ChangeOwnershipAfterSelect(lv__unit, lv__fighter);
-    gf_MaintainSupplyUnchanged(lv__oldOwner, lv__fighter);
+    lv__team = gf_GetTeamOfPlayer(lv__fighter);
+    lv__neutral = gf_GetNeutralOfTeam(lv__team);
+    if ((UnitGetOwner(lv__unit) == lv__neutral)) {
+        gf_ChangeOwnershipAfterSelect(lv__unit, lv__fighter);
+        gf_MaintainSupplyUnchanged(lv__neutral, lv__fighter);
+    }
+
     return true;
 }
 
