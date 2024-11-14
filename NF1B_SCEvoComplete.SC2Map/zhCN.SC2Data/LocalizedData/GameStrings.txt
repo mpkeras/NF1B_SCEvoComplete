@@ -114,10 +114,10 @@ Param/Value/DCD47818=只能在开局12秒内使用
 Param/Value/E33F8417=0
 Param/Value/E539788E=0
 Param/Value/EB75841A=你的角色是<c val="ffff8a">运营</c>，为控兵训练单位。
-Param/Value/F4D1DCD3=<c val="ffff8a">-r/-R</c>: 释放单位（运营玩家可以释放星际1王虫、星际1指挥中心和星际2轨道控制中心）<n/><n/><c val="ffff8a">-o</c>: 对运营玩家之前释放的单位重新获取控制（仅限运营玩家使用）<n/><n/><c val="ffff8a">-gg/-GG</c>: 投降（仅限运营玩家使用）<n/><n/><c val="ffff8a">-b <id></c>: 更换运营为指定<id>玩家（仅限运营玩家使用，只能在游戏开始1分钟内使用）<n/><n/><c val="ffff8a">-b</c>: 更换运营为本队伍的随机控兵玩家（仅限运营玩家使用，只能在游戏开始1分钟内使用）<n/><n/><c val="ffff8a">-m</c>: 允许/禁止控兵玩家使用变异技能（仅限运营玩家使用）<n/><n/><c val="ffff8a">-r <t1 | z1 | p1 | t2 | z2 | p2></c>: 改变种族（仅限运营玩家使用，只能在两个队伍的种族相同时使用，只能在游戏开始12秒内使用）
+Param/Value/F4D1DCD3=<c val="ffff8a">-r</c>: 释放单位（运营玩家可以释放星际1王虫、星际1指挥中心和星际2轨道控制中心）<n/><n/><c val="ffff8a">-o</c>: 对运营玩家之前释放的单位重新获取控制（仅限运营玩家使用）<n/><n/><c val="ffff8a">-gg</c>: 投降（仅限运营玩家使用）<n/><n/><c val="ffff8a">-b <id></c>: 更换运营为指定<id>玩家（仅限运营玩家使用，只能在游戏开始1分钟内使用）<n/><n/><c val="ffff8a">-b</c>: 更换运营为本队伍的随机控兵玩家（仅限运营玩家使用，只能在游戏开始1分钟内使用）<n/><n/><c val="ffff8a">-m</c>: 允许/禁止控兵玩家使用变异技能（仅限运营玩家使用）<n/><n/><c val="ffff8a">-race <t1 | z1 | p1 | t2 | z2 | p2></c>: 改变种族（仅限运营玩家使用，只能在两个队伍的种族相同时使用，只能在游戏开始12秒内使用）
 Param/Value/F8369F25=<s val="StandardButton">改变种族</s>
 Param/Value/FB05FBA9=设置为运营
 Param/Value/FB7EBBF7=<s val="StandardButton">开</s>
-Param/Value/FD733CCC=<c val="ffff8a">Ctrl+X</c>: 打开玩家面板
+Param/Value/FD733CCC=<c val="ffff8a">Ctrl+R</c>: 释放单位（运营玩家可以释放星际1王虫、星际1指挥中心和星际2轨道控制中心）<n/><n/><c val="ffff8a">Ctrl+G</c>: 对运营玩家之前释放的单位重新获取控制（仅限运营玩家使用）
 Variant001/ModeDesc=受执政官模式启发的模式
 Variant001/ModeName=N打1造

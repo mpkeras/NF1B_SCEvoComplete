@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Preload>
 <Asset path="assets\textures\ui_emoticons_gas.dds" Type="Image"/>
+<Asset path="assets\textures\btn-tips-hotkeys.dds" Type="Image"/>
 <Asset path="assets\textures\ui_tipicon_campaign_space01-repair.dds" Type="Image"/>
 <Asset path="assets\textures\ui_btn_aicommand_commandcard_claim.dds" Type="Image"/>
 <Asset path="assets\textures\ui_emoticons_minerals.dds" Type="Image"/>

@@ -275,12 +275,12 @@ void gf_SetStartLocation ();
 void gf_SetRoleForTeam1 ();
 void gf_SetRoleForTeam2 ();
 void gf_SetStartingUnit ();
+void gf_SetPlayerProperty ();
 void gf_SetChangeRaceFlag ();
 void gf_SetTechRestrictions (int lp_team);
 void gf_SetUI ();
 void gf_SetFighterMode ();
 void gf_SetMeleeOptions ();
-void gf_SetPlayerProperty ();
 void gf_InitNexusGroup ();
 void gf_SetResource ();
 void gf_SetAlliance ();
@@ -361,7 +361,7 @@ trigger gt_DuringRoleSelection;
 trigger gt_AfterRoleSelection;
 trigger gt_ClickDialogItem;
 trigger gt_TipRole;
-trigger gt_TipCommands;
+trigger gt_TipStart;
 trigger gt_TipDebugCommands;
 trigger gt_TipGG;
 trigger gt_TipSensorTower;
@@ -1147,6 +1147,15 @@ void gf_SetStartingUnit () {
     }
 }
 
+void gf_SetPlayerProperty () {
+    // Automatic Variable Declarations
+    // Implementation
+    gv_playerProperty[gv_team1_teamInfo.lv_builder].lv_role = ge_Role_Builder;
+    gv_playerProperty[gv_team1_teamInfo.lv_builder].lv_haveBeenBuilder = true;
+    gv_playerProperty[gv_team2_teamInfo.lv_builder].lv_role = ge_Role_Builder;
+    gv_playerProperty[gv_team2_teamInfo.lv_builder].lv_haveBeenBuilder = true;
+}
+
 void gf_SetChangeRaceFlag () {
     // Automatic Variable Declarations
     // Implementation
@@ -1263,15 +1272,6 @@ bool auto_gf_SetMeleeOptions_TriggerFunc (bool testConds, bool runActions) {
     }
 
     return true;
-}
-
-void gf_SetPlayerProperty () {
-    // Automatic Variable Declarations
-    // Implementation
-    gv_playerProperty[gv_team1_teamInfo.lv_builder].lv_role = ge_Role_Builder;
-    gv_playerProperty[gv_team1_teamInfo.lv_builder].lv_haveBeenBuilder = true;
-    gv_playerProperty[gv_team2_teamInfo.lv_builder].lv_role = ge_Role_Builder;
-    gv_playerProperty[gv_team2_teamInfo.lv_builder].lv_haveBeenBuilder = true;
 }
 
 trigger auto_gf_InitNexusGroup_Trigger = null;
@@ -3761,23 +3761,24 @@ void gt_TipRole_Init () {
 }
 
 //--------------------------------------------------------------------------------------------------
-// Trigger: TipCommands
+// Trigger: TipStart
 //--------------------------------------------------------------------------------------------------
-bool gt_TipCommands_Func (bool testConds, bool runActions) {
+bool gt_TipStart_Func (bool testConds, bool runActions) {
     // Automatic Variable Declarations
     // Actions
     if (!runActions) {
         return true;
     }
 
+    HelpPanelAddTip(PlayerGroupAll(), libNtve_gf_FormatTipTitle(StringExternal("Param/Value/194069C0"), libNtve_ge_TipType_NormalTip), StringExternal("Param/Value/FD733CCC"), StringToText(""), "Assets\\Textures\\btn-tips-hotkeys.dds");
     HelpPanelAddTip(PlayerGroupAll(), libNtve_gf_FormatTipTitle(StringExternal("Param/Value/5ED931F6"), libNtve_ge_TipType_NormalTip), StringExternal("Param/Value/F4D1DCD3"), StringToText(""), "Assets\\Textures\\ui_btn_aicommand_commandcard_claim.dds");
     return true;
 }
 
 //--------------------------------------------------------------------------------------------------
-void gt_TipCommands_Init () {
-    gt_TipCommands = TriggerCreate("gt_TipCommands_Func");
-    TriggerAddEventTimeElapsed(gt_TipCommands, 0.0, c_timeReal);
+void gt_TipStart_Init () {
+    gt_TipStart = TriggerCreate("gt_TipStart_Func");
+    TriggerAddEventTimeElapsed(gt_TipStart, 0.0, c_timeReal);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -7004,7 +7005,7 @@ void InitTriggers () {
     gt_AfterRoleSelection_Init();
     gt_ClickDialogItem_Init();
     gt_TipRole_Init();
-    gt_TipCommands_Init();
+    gt_TipStart_Init();
     gt_TipDebugCommands_Init();
     gt_TipGG_Init();
     gt_TipSensorTower_Init();
