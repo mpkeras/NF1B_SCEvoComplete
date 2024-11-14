@@ -13469,25 +13469,28 @@
         <Item Type="FunctionDef" Id="A416251A"/>
         <Item Type="FunctionDef" Id="973EF062"/>
         <Item Type="FunctionDef" Id="013B9762"/>
-        <Item Type="FunctionDef" Id="F39C975D"/>
         <Item Type="FunctionDef" Id="657197EE"/>
         <Item Type="FunctionDef" Id="7BD3AD0C"/>
         <Item Type="FunctionDef" Id="24B46FE4"/>
         <Item Type="FunctionDef" Id="1E902F81"/>
         <Item Type="FunctionDef" Id="0384B1EC"/>
         <Item Type="FunctionDef" Id="48676169"/>
+        <Item Type="FunctionDef" Id="F39C975D"/>
     </Element>
     <Element Type="Trigger" Id="DD10349D">
+        <Action Type="FunctionCall" Id="5DA5B97D"/>
         <Action Type="FunctionCall" Id="27183FDB"/>
         <Action Type="FunctionCall" Id="4CD6E166"/>
-        <Action Type="FunctionCall" Id="5DA9AD79"/>
         <Action Type="FunctionCall" Id="13A25561"/>
         <Action Type="FunctionCall" Id="342B7049"/>
-        <Action Type="FunctionCall" Id="5DA5B97D"/>
         <Action Type="FunctionCall" Id="0300D4DA"/>
         <Action Type="FunctionCall" Id="70EFE190"/>
         <Action Type="FunctionCall" Id="0DA7E9B7"/>
         <Action Type="FunctionCall" Id="7FA713FC"/>
+        <Action Type="FunctionCall" Id="5DA9AD79"/>
+    </Element>
+    <Element Type="FunctionCall" Id="5DA5B97D">
+        <FunctionDef Type="FunctionDef" Id="A416251A"/>
     </Element>
     <Element Type="FunctionCall" Id="27183FDB">
         <FunctionDef Type="FunctionDef" Id="973EF062"/>
@@ -13501,17 +13504,11 @@
         <Value>1</Value>
         <ValueType Type="int"/>
     </Element>
-    <Element Type="FunctionCall" Id="5DA9AD79">
-        <FunctionDef Type="FunctionDef" Id="F39C975D"/>
-    </Element>
     <Element Type="FunctionCall" Id="13A25561">
         <FunctionDef Type="FunctionDef" Id="657197EE"/>
     </Element>
     <Element Type="FunctionCall" Id="342B7049">
         <FunctionDef Type="FunctionDef" Id="7BD3AD0C"/>
-    </Element>
-    <Element Type="FunctionCall" Id="5DA5B97D">
-        <FunctionDef Type="FunctionDef" Id="A416251A"/>
     </Element>
     <Element Type="FunctionCall" Id="0300D4DA">
         <FunctionDef Type="FunctionDef" Id="24B46FE4"/>
@@ -13524,6 +13521,9 @@
     </Element>
     <Element Type="FunctionCall" Id="7FA713FC">
         <FunctionDef Type="FunctionDef" Id="48676169"/>
+    </Element>
+    <Element Type="FunctionCall" Id="5DA9AD79">
+        <FunctionDef Type="FunctionDef" Id="F39C975D"/>
     </Element>
     <Element Type="FunctionDef" Id="A416251A">
         <FlagAction/>
@@ -13771,14 +13771,6 @@
     <Element Type="Param" Id="D7586DBA">
         <ParameterDef Type="ParamDef" Id="90097B36"/>
         <Variable Type="Variable" Id="178A7A95"/>
-    </Element>
-    <Element Type="FunctionDef" Id="F39C975D">
-        <FlagAction/>
-        <FlagCreateThread/>
-        <FunctionCall Type="FunctionCall" Id="94C2E6DA"/>
-    </Element>
-    <Element Type="FunctionCall" Id="94C2E6DA">
-        <FunctionDef Type="FunctionDef" Id="8046A950"/>
     </Element>
     <Element Type="FunctionDef" Id="657197EE">
         <FlagAction/>
@@ -14887,6 +14879,14 @@
     <Element Type="Param" Id="E7B9E18E">
         <ParameterDef Type="ParamDef" Library="Ntve" Id="EEF303AC"/>
         <Variable Type="Variable" Id="0BE9D4CC"/>
+    </Element>
+    <Element Type="FunctionDef" Id="F39C975D">
+        <FlagAction/>
+        <FlagCreateThread/>
+        <FunctionCall Type="FunctionCall" Id="94C2E6DA"/>
+    </Element>
+    <Element Type="FunctionCall" Id="94C2E6DA">
+        <FunctionDef Type="FunctionDef" Id="8046A950"/>
     </Element>
     <Element Type="Category" Id="BC4798E9">
         <Item Type="Category" Id="581B2F2B"/>

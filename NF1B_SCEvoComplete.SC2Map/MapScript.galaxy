@@ -278,13 +278,13 @@ void gf_SetStartingUnit ();
 void gf_SetPlayerProperty ();
 void gf_SetChangeRaceFlag ();
 void gf_SetTechRestrictions (int lp_team);
-void gf_SetUI ();
 void gf_SetFighterMode ();
 void gf_SetMeleeOptions ();
 void gf_InitNexusGroup ();
 void gf_SetResource ();
 void gf_SetAlliance ();
 void gf_SetSupplyLimit ();
+void gf_SetUI ();
 bool gf_IsButtonPlayerType (int lp_button);
 void gf_SetButtonPlayer (int lp_length);
 void gf_ClickButtonPlayer (int lp_oldBuilder, int lp_newBuilder);
@@ -1193,23 +1193,6 @@ void gf_SetTechRestrictions (int lp_team) {
     }
 }
 
-trigger auto_gf_SetUI_Trigger = null;
-
-void gf_SetUI () {
-    if (auto_gf_SetUI_Trigger == null) {
-        auto_gf_SetUI_Trigger = TriggerCreate("auto_gf_SetUI_TriggerFunc");
-    }
-
-    TriggerExecute(auto_gf_SetUI_Trigger, false, false);
-}
-
-bool auto_gf_SetUI_TriggerFunc (bool testConds, bool runActions) {
-    // Automatic Variable Declarations
-    // Implementation
-    gf_SetUserPanel();
-    return true;
-}
-
 trigger auto_gf_SetFighterMode_Trigger = null;
 
 void gf_SetFighterMode () {
@@ -1427,6 +1410,23 @@ bool auto_gf_SetSupplyLimit_TriggerFunc (bool testConds, bool runActions) {
         if (auto2F5433F5_var < 0) { break; }
         PlayerModifyPropertyInt(auto2F5433F5_var, c_playerPropSuppliesLimit, c_playerPropOperSetTo, lv__supplyLimit);
     }
+    return true;
+}
+
+trigger auto_gf_SetUI_Trigger = null;
+
+void gf_SetUI () {
+    if (auto_gf_SetUI_Trigger == null) {
+        auto_gf_SetUI_Trigger = TriggerCreate("auto_gf_SetUI_TriggerFunc");
+    }
+
+    TriggerExecute(auto_gf_SetUI_Trigger, false, false);
+}
+
+bool auto_gf_SetUI_TriggerFunc (bool testConds, bool runActions) {
+    // Automatic Variable Declarations
+    // Implementation
+    gf_SetUserPanel();
     return true;
 }
 
@@ -3667,16 +3667,16 @@ bool gt_AfterRoleSelection_Func (bool testConds, bool runActions) {
         return true;
     }
 
+    gf_SetPlayerProperty();
     gf_SetChangeRaceFlag();
     gf_SetTechRestrictions(1);
-    gf_SetUI();
     gf_SetFighterMode();
     gf_SetMeleeOptions();
-    gf_SetPlayerProperty();
     gf_InitNexusGroup();
     gf_SetResource();
     gf_SetAlliance();
     gf_SetSupplyLimit();
+    gf_SetUI();
     return true;
 }
 
