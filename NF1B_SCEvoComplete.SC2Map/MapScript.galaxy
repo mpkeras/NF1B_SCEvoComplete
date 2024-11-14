@@ -416,12 +416,12 @@ trigger gt_UseNukeBW;
 trigger gt_BuildNexusComplete;
 trigger gt_AddMothership;
 trigger gt_DecMothership;
-trigger gt_ReleaseByBuilderCommand;
-trigger gt_ReleaseByFighterCommand;
+trigger gt_ReleaseByBuilder;
+trigger gt_ReleaseByFighter;
 trigger gt_ReleaseAfterTrain;
 trigger gt_ReleaseAfterMorph;
 trigger gt_ReleaseAfterWarp;
-trigger gt_GetByBuillderCommand;
+trigger gt_GetByBuillder;
 trigger gt_GetByFighterSelect;
 trigger gt_BuilderDefeat;
 
@@ -6582,9 +6582,9 @@ void gt_DecMothership_Init () {
 }
 
 //--------------------------------------------------------------------------------------------------
-// Trigger: ReleaseByBuilderCommand
+// Trigger: ReleaseByBuilder
 //--------------------------------------------------------------------------------------------------
-bool gt_ReleaseByBuilderCommand_Func (bool testConds, bool runActions) {
+bool gt_ReleaseByBuilder_Func (bool testConds, bool runActions) {
     // Variable Declarations
     int lv__player;
     unit lv__unit;
@@ -6600,7 +6600,7 @@ bool gt_ReleaseByBuilderCommand_Func (bool testConds, bool runActions) {
 
     // Conditions
     if (testConds) {
-        if (!(((EventPlayer() == gv_team1_teamInfo.lv_builder) || (EventPlayer() == gv_team2_teamInfo.lv_builder)))) {
+        if (!((gf_GetRoleOfPlayer(EventPlayer()) == ge_Role_Builder))) {
             return false;
         }
     }
@@ -6637,16 +6637,16 @@ bool gt_ReleaseByBuilderCommand_Func (bool testConds, bool runActions) {
 }
 
 //--------------------------------------------------------------------------------------------------
-void gt_ReleaseByBuilderCommand_Init () {
-    gt_ReleaseByBuilderCommand = TriggerCreate("gt_ReleaseByBuilderCommand_Func");
-    TriggerAddEventChatMessage(gt_ReleaseByBuilderCommand, c_playerAny, ("-r"), true);
-    TriggerAddEventChatMessage(gt_ReleaseByBuilderCommand, c_playerAny, ("-R"), true);
+void gt_ReleaseByBuilder_Init () {
+    gt_ReleaseByBuilder = TriggerCreate("gt_ReleaseByBuilder_Func");
+    TriggerAddEventKeyPressed(gt_ReleaseByBuilder, c_playerAny, c_keyR, true, c_keyModifierStateIgnore, c_keyModifierStateRequire, c_keyModifierStateIgnore);
+    TriggerAddEventChatMessage(gt_ReleaseByBuilder, c_playerAny, ("-r"), true);
 }
 
 //--------------------------------------------------------------------------------------------------
-// Trigger: ReleaseByFighterCommand
+// Trigger: ReleaseByFighter
 //--------------------------------------------------------------------------------------------------
-bool gt_ReleaseByFighterCommand_Func (bool testConds, bool runActions) {
+bool gt_ReleaseByFighter_Func (bool testConds, bool runActions) {
     // Variable Declarations
     int lv__player;
     unit lv__unit;
@@ -6662,7 +6662,7 @@ bool gt_ReleaseByFighterCommand_Func (bool testConds, bool runActions) {
 
     // Conditions
     if (testConds) {
-        if (!(((PlayerGroupHasPlayer(gv_team1_teamInfo.lv_fighterGroup, EventPlayer()) == true) || (PlayerGroupHasPlayer(gv_team2_teamInfo.lv_fighterGroup, EventPlayer()) == true)))) {
+        if (!((gf_GetRoleOfPlayer(EventPlayer()) == ge_Role_Fighter))) {
             return false;
         }
     }
@@ -6693,10 +6693,10 @@ bool gt_ReleaseByFighterCommand_Func (bool testConds, bool runActions) {
 }
 
 //--------------------------------------------------------------------------------------------------
-void gt_ReleaseByFighterCommand_Init () {
-    gt_ReleaseByFighterCommand = TriggerCreate("gt_ReleaseByFighterCommand_Func");
-    TriggerAddEventChatMessage(gt_ReleaseByFighterCommand, c_playerAny, ("-r"), true);
-    TriggerAddEventChatMessage(gt_ReleaseByFighterCommand, c_playerAny, ("-R"), true);
+void gt_ReleaseByFighter_Init () {
+    gt_ReleaseByFighter = TriggerCreate("gt_ReleaseByFighter_Func");
+    TriggerAddEventKeyPressed(gt_ReleaseByFighter, c_playerAny, c_keyR, true, c_keyModifierStateIgnore, c_keyModifierStateRequire, c_keyModifierStateIgnore);
+    TriggerAddEventChatMessage(gt_ReleaseByFighter, c_playerAny, ("-r"), true);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -6808,9 +6808,9 @@ void gt_ReleaseAfterWarp_Init () {
 }
 
 //--------------------------------------------------------------------------------------------------
-// Trigger: GetByBuillderCommand
+// Trigger: GetByBuillder
 //--------------------------------------------------------------------------------------------------
-bool gt_GetByBuillderCommand_Func (bool testConds, bool runActions) {
+bool gt_GetByBuillder_Func (bool testConds, bool runActions) {
     // Variable Declarations
     unit lv__unit;
     int lv__builder;
@@ -6825,7 +6825,7 @@ bool gt_GetByBuillderCommand_Func (bool testConds, bool runActions) {
 
     // Conditions
     if (testConds) {
-        if (!(((EventPlayer() == gv_team1_teamInfo.lv_builder) || (EventPlayer() == gv_team2_teamInfo.lv_builder)))) {
+        if (!((gf_GetRoleOfPlayer(EventPlayer()) == ge_Role_Builder))) {
             return false;
         }
     }
@@ -6855,9 +6855,10 @@ bool gt_GetByBuillderCommand_Func (bool testConds, bool runActions) {
 }
 
 //--------------------------------------------------------------------------------------------------
-void gt_GetByBuillderCommand_Init () {
-    gt_GetByBuillderCommand = TriggerCreate("gt_GetByBuillderCommand_Func");
-    TriggerAddEventChatMessage(gt_GetByBuillderCommand, c_playerAny, ("-o"), true);
+void gt_GetByBuillder_Init () {
+    gt_GetByBuillder = TriggerCreate("gt_GetByBuillder_Func");
+    TriggerAddEventKeyPressed(gt_GetByBuillder, c_playerAny, c_keyG, true, c_keyModifierStateIgnore, c_keyModifierStateRequire, c_keyModifierStateIgnore);
+    TriggerAddEventChatMessage(gt_GetByBuillder, c_playerAny, ("-o"), true);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -7060,12 +7061,12 @@ void InitTriggers () {
     gt_BuildNexusComplete_Init();
     gt_AddMothership_Init();
     gt_DecMothership_Init();
-    gt_ReleaseByBuilderCommand_Init();
-    gt_ReleaseByFighterCommand_Init();
+    gt_ReleaseByBuilder_Init();
+    gt_ReleaseByFighter_Init();
     gt_ReleaseAfterTrain_Init();
     gt_ReleaseAfterMorph_Init();
     gt_ReleaseAfterWarp_Init();
-    gt_GetByBuillderCommand_Init();
+    gt_GetByBuillder_Init();
     gt_GetByFighterSelect_Init();
     gt_BuilderDefeat_Init();
 }
