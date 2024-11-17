@@ -351,6 +351,7 @@ trigger gt_NF;
 trigger gt__1F;
 trigger gt_GG;
 trigger gt_ShowHideUI;
+trigger gt_Rain;
 trigger gt_DisableExperimental;
 trigger gt_EnableExperimental;
 trigger gt_unlock_pv_releaseToChangeOwner;
@@ -3488,6 +3489,45 @@ void gt_ShowHideUI_Init () {
 }
 
 //--------------------------------------------------------------------------------------------------
+// Trigger: Rain
+//--------------------------------------------------------------------------------------------------
+bool gt_Rain_Func (bool testConds, bool runActions) {
+    // Variable Declarations
+    fixed lv_x;
+    fixed lv_y;
+
+    // Automatic Variable Declarations
+    fixed autoC2CB0D45_ae;
+    const fixed autoC2CB0D45_ai = 5.0;
+    fixed auto305DD24E_ae;
+    const fixed auto305DD24E_ai = 5.0;
+
+    // Variable Initialization
+
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    SoundPlayForPlayer(SoundLink("Ambience_rain2_quad_loop", -1), c_maxPlayers, PlayerGroupAll(), 100.0, 0.0);
+    autoC2CB0D45_ae = libNtve_gf_WidthOfRegion(RegionEntireMap());
+    lv_x = 0.0;
+    for ( ; ( (autoC2CB0D45_ai >= 0 && lv_x <= autoC2CB0D45_ae) || (autoC2CB0D45_ai < 0 && lv_x >= autoC2CB0D45_ae) ) ; lv_x += autoC2CB0D45_ai ) {
+        auto305DD24E_ae = libNtve_gf_WidthOfRegion(RegionEntireMap());
+        lv_y = 0.0;
+        for ( ; ( (auto305DD24E_ai >= 0 && lv_y <= auto305DD24E_ae) || (auto305DD24E_ai < 0 && lv_y >= auto305DD24E_ae) ) ; lv_y += auto305DD24E_ai ) {
+            libNtve_gf_CreateActorAtPoint("RainSprinkle", Point(lv_x, lv_y));
+        }
+    }
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void gt_Rain_Init () {
+    gt_Rain = TriggerCreate("gt_Rain_Func");
+}
+
+//--------------------------------------------------------------------------------------------------
 // Trigger: DisableExperimental
 //--------------------------------------------------------------------------------------------------
 bool gt_DisableExperimental_Func (bool testConds, bool runActions) {
@@ -3512,6 +3552,12 @@ bool gt_EnableExperimental_Func (bool testConds, bool runActions) {
         }
     }
 
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    TriggerExecute(gt_Rain, true, false);
     return true;
 }
 
@@ -6995,6 +7041,7 @@ void InitTriggers () {
     gt__1F_Init();
     gt_GG_Init();
     gt_ShowHideUI_Init();
+    gt_Rain_Init();
     gt_DisableExperimental_Init();
     gt_EnableExperimental_Init();
     gt_unlock_pv_releaseToChangeOwner_Init();
