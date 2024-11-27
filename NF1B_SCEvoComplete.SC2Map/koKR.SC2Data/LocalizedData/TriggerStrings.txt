@@ -22,6 +22,7 @@ Category/Name/CDC1FFB7=teamInfo
 Category/Name/D3F50B9D=semaphore
 Category/Name/D56B517B=Supply Share
 Category/Name/E2F3E4B4=playerGroup
+FunctionDef/Name/05841513=ChangeBuilder
 FunctionDef/Name/3AF64BBE=SetPlayerRaceToSC2
 FunctionDef/Name/CCD09CFB=SetPlayerRaceToBW
 FunctionDef/Name/E91B4FB9=wait

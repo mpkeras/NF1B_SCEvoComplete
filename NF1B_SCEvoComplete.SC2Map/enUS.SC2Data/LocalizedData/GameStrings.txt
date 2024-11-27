@@ -1,4 +1,4 @@
-﻿DocInfo/DescLong=A map inspired by the Archon Mode and the SC: Evo Complete mod. The code triggers of this map has been completely rewritten and does not use code from other similar maps.<n/><n/>Thanks to the SC: Evo Complete mod authors for their hard work.
+﻿DocInfo/DescLong=A map inspired by the Archon Mode and the SC: Evo Complete mod.<n/><n/>Thanks to the SC: Evo Complete mod authors for their hard work.
 DocInfo/DescShort=12
 DocInfo/HowToPlayBasic00=All players are divided into two teams, each with one builder and multiple fighters
 DocInfo/HowToPlayBasic01=If you are a builder, train units for the fighters
@@ -61,7 +61,7 @@ Effect/Name/GhostSCBWNuclearStrike@CalldownNF1B=Calldown NF1B
 Effect/Name/GhostSCBWNuclearStrike@CalldownSwitchNF1B=Calldown Switch NF1B
 Effect/Name/NukeNF1B=Nuke NF1B
 Effect/Name/NukeNF1BPersistent=Nuke NF1B
-LoadingScreen/TextBody=A map inspired by the Archon Mode and the SC: Evo Complete mod. The code triggers of this map has been completely rewritten and does not use code from other similar maps.<n/><n/>Thanks to the SC: Evo Complete mod authors for their hard work.
+LoadingScreen/TextBody=A map inspired by the Archon Mode and the SC: Evo Complete mod.<n/><n/>Thanks to the SC: Evo Complete mod authors for their hard work.
 LoadingScreen/Title=N Fight 1 Builds (SC: Evo Complete)
 MapInfo/Player00/Name=Neutral
 MapInfo/Player01/Name=Player 1

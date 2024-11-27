@@ -992,12 +992,12 @@ void gf_SetStartLocation () {
     // Implementation
     lv__random = RandomInt(1, 2);
     if ((lv__random == 1)) {
-        gv_team1_teamInfo.lv_startLocation = PointFromId(2007263747);
-        gv_team2_teamInfo.lv_startLocation = PointFromId(760164555);
+        gv_team1_teamInfo.lv_startLocation = PointFromId(1898664998);
+        gv_team2_teamInfo.lv_startLocation = PointFromId(27059994);
     }
     else {
-        gv_team1_teamInfo.lv_startLocation = PointFromId(760164555);
-        gv_team2_teamInfo.lv_startLocation = PointFromId(2007263747);
+        gv_team1_teamInfo.lv_startLocation = PointFromId(1898664998);
+        gv_team2_teamInfo.lv_startLocation = PointFromId(27059994);
     }
 }
 
@@ -1124,7 +1124,7 @@ void gf_SetStartingUnit () {
     while (true) {
         lv__player = PlayerGroupNextPlayer(autoDFB74190_g, lv__player);
         if (lv__player < 0) { break; }
-        libNtve_gf_CreateUnitsWithDefaultFacing(1, "Marine", 0, lv__player, gv_team1_teamInfo.lv_startLocation);
+        libNtve_gf_CreateUnitsWithDefaultFacing(1, "CreepTumor", 0, lv__player, gv_team1_teamInfo.lv_startLocation);
         libNtve_gf_ShowHideUnit(UnitLastCreated(), false);
         PlayerSetRace(lv__player, gv_team1_teamInfo.lv_race);
         PlayerSetColorIndex(lv__player, gv_team1_teamInfo.lv_playerColor, true);
@@ -1140,7 +1140,7 @@ void gf_SetStartingUnit () {
     while (true) {
         lv__player = PlayerGroupNextPlayer(autoF4337112_g, lv__player);
         if (lv__player < 0) { break; }
-        libNtve_gf_CreateUnitsWithDefaultFacing(1, "Marine", 0, lv__player, gv_team2_teamInfo.lv_startLocation);
+        libNtve_gf_CreateUnitsWithDefaultFacing(1, "CreepTumor", 0, lv__player, gv_team2_teamInfo.lv_startLocation);
         libNtve_gf_ShowHideUnit(UnitLastCreated(), false);
         PlayerSetRace(lv__player, gv_team2_teamInfo.lv_race);
         PlayerSetColorIndex(lv__player, gv_team2_teamInfo.lv_playerColor, true);
@@ -3498,9 +3498,9 @@ bool gt_Rain_Func (bool testConds, bool runActions) {
 
     // Automatic Variable Declarations
     fixed autoC2CB0D45_ae;
-    const fixed autoC2CB0D45_ai = 5.0;
+    const fixed autoC2CB0D45_ai = 10.0;
     fixed auto305DD24E_ae;
-    const fixed auto305DD24E_ai = 5.0;
+    const fixed auto305DD24E_ai = 10.0;
 
     // Variable Initialization
 
