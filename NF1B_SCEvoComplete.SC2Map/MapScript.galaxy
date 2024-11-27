@@ -2497,7 +2497,6 @@ void gf_MaintainSupplyUnchanged (int lp_oldOwner, int lp_newOwner) {
 void gf_AllowZergMorph (int lp_player) {
     // Automatic Variable Declarations
     // Implementation
-    TechTreeRestrictionsEnable(lp_player, false);
     gf_ZergMorph(lp_player, true);
     gf_ZergBWMorph(lp_player, true);
 }
@@ -2505,7 +2504,6 @@ void gf_AllowZergMorph (int lp_player) {
 void gf_DisallowZergMorph (int lp_player) {
     // Automatic Variable Declarations
     // Implementation
-    TechTreeRestrictionsEnable(lp_player, true);
     gf_ZergMorph(lp_player, false);
     gf_ZergBWMorph(lp_player, false);
 }

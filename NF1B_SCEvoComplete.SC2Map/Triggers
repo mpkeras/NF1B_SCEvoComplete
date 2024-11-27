@@ -38065,7 +38065,6 @@
     <Element Type="FunctionDef" Id="B1B14653">
         <FlagAction/>
         <Parameter Type="ParamDef" Id="0DA14417"/>
-        <FunctionCall Type="FunctionCall" Id="F0CE09C5"/>
         <FunctionCall Type="FunctionCall" Id="23A05D32"/>
         <FunctionCall Type="FunctionCall" Id="51D54433"/>
     </Element>
@@ -38078,19 +38077,6 @@
     <Element Type="Param" Id="EBD7D6B7">
         <Value>0</Value>
         <ValueType Type="int"/>
-    </Element>
-    <Element Type="FunctionCall" Id="F0CE09C5">
-        <FunctionDef Type="FunctionDef" Library="Ntve" Id="12A2BFA8"/>
-        <Parameter Type="Param" Id="6FDDCD25"/>
-        <Parameter Type="Param" Id="9DD6682D"/>
-    </Element>
-    <Element Type="Param" Id="6FDDCD25">
-        <ParameterDef Type="ParamDef" Library="Ntve" Id="A52841FC"/>
-        <Parameter Type="ParamDef" Id="0DA14417"/>
-    </Element>
-    <Element Type="Param" Id="9DD6682D">
-        <ParameterDef Type="ParamDef" Library="Ntve" Id="3ED9959A"/>
-        <Preset Type="PresetValue" Library="Ntve" Id="00000064"/>
     </Element>
     <Element Type="FunctionCall" Id="23A05D32">
         <FunctionDef Type="FunctionDef" Id="CFB555DB"/>
@@ -38121,7 +38107,6 @@
     <Element Type="FunctionDef" Id="A4923340">
         <FlagAction/>
         <Parameter Type="ParamDef" Id="90097B36"/>
-        <FunctionCall Type="FunctionCall" Id="226309C7"/>
         <FunctionCall Type="FunctionCall" Id="99568C38"/>
         <FunctionCall Type="FunctionCall" Id="AC097858"/>
     </Element>
@@ -38134,19 +38119,6 @@
     <Element Type="Param" Id="F5E939FA">
         <Value>0</Value>
         <ValueType Type="int"/>
-    </Element>
-    <Element Type="FunctionCall" Id="226309C7">
-        <FunctionDef Type="FunctionDef" Library="Ntve" Id="12A2BFA8"/>
-        <Parameter Type="Param" Id="703D61BE"/>
-        <Parameter Type="Param" Id="FC456067"/>
-    </Element>
-    <Element Type="Param" Id="703D61BE">
-        <ParameterDef Type="ParamDef" Library="Ntve" Id="A52841FC"/>
-        <Parameter Type="ParamDef" Id="90097B36"/>
-    </Element>
-    <Element Type="Param" Id="FC456067">
-        <ParameterDef Type="ParamDef" Library="Ntve" Id="3ED9959A"/>
-        <Preset Type="PresetValue" Library="Ntve" Id="00000063"/>
     </Element>
     <Element Type="FunctionCall" Id="99568C38">
         <FunctionDef Type="FunctionDef" Id="CFB555DB"/>
