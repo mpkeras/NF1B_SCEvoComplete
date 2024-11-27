@@ -81,5 +81,6 @@
 <Unit id="DestructibleCityDebrisHugeDiagonalBLUR"/>
 <Unit id="DroneSCBW"/>
 <Unit id="ProbeSCBW"/>
+<Unit id="CommandCenterSCBW"/>
 <Unit id="SCVSCBW"/>
 </Preload>
