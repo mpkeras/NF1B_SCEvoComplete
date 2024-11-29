@@ -7,7 +7,6 @@
 **/Attributes linguist-language=XML
 **/DocumentInfo linguist-language=XML
 NF1B_SCEvoMulti.SC2Mod/Base.SC2Data/GameData/*.xml linguist-detectable
-**/MapInfo filter=lfs diff=lfs merge=lfs -text
 **/Minimap.tga filter=lfs diff=lfs merge=lfs -text
 **/t3* filter=lfs diff=lfs merge=lfs -text
 **/*.xml !filter
