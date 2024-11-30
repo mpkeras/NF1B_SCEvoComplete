@@ -3690,8 +3690,14 @@ bool gt_DuringRoleSelection_Func (bool testConds, bool runActions) {
         return true;
     }
 
-    gf_SetRoleForTeam1();
-    gf_SetRoleForTeam2();
+    if ((PlayerGroupCount(GameAttributePlayersForTeam(1)) >= 1)) {
+        gf_SetRoleForTeam1();
+    }
+
+    if ((PlayerGroupCount(GameAttributePlayersForTeam(2)) >= 1)) {
+        gf_SetRoleForTeam2();
+    }
+
     gf_SetStartingUnit();
     return true;
 }
