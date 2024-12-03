@@ -3,6 +3,9 @@
     <CAbilTransport id="BunkerTransport">
         <TargetFilters value="Biological,Visible;Neutral,Enemy,Dead,Hidden"/>
     </CAbilTransport>
+    <CAbilEffectTarget id="EnergyRecharge">
+        <TargetFilters index="0" value="CanHaveEnergy;Neutral,Enemy,Missile,Stasis,Dead,Hidden,Hallucination,Invulnerable"/>
+    </CAbilEffectTarget>
     <CAbilTrain id="LarvaTrain">
         <InfoArray index="Train25" Time="33.5">
             <Button DefaultButtonFace="MorphtoOverlordTransport" Requirements="HaveLair"/>
