@@ -1919,18 +1919,6 @@ bool gf_ClickButtonRace (int lp_player, int lp_button) {
     // Variable Initialization
 
     // Implementation
-    if ((gf_GetRoleOfPlayer(lp_player) != ge_Role_Builder)) {
-        libNtve_gf_UIErrorMessage(PlayerGroupSingle(lp_player), gv_textBuilderPermission, SoundLink("UI_GenericError", -1));
-        return false;
-    }
-    else if ((TimerGetElapsed(gv_timer) >= 12.0)) {
-        libNtve_gf_UIErrorMessage(PlayerGroupSingle(lp_player), gv_textOverRaceTime, SoundLink("UI_GenericError", -1));
-        return false;
-    }
-    else if ((gv_changeRaceEnabled == false)) {
-        libNtve_gf_UIErrorMessage(PlayerGroupSingle(lp_player), gv_textCanNotChangeRace, SoundLink("UI_GenericError", -1));
-        return false;
-    }
     lv__team = gf_GetTeamOfPlayer(lp_player);
     auto44A7C032_val = lv__team;
     if (auto44A7C032_val == 1) {
@@ -1955,6 +1943,7 @@ bool gf_ClickButtonRace (int lp_player, int lp_button) {
             lv__newRace = "Prot";
         }
         else {
+            return false;
         }
     }
     else if (auto44A7C032_val == 2) {
@@ -1979,13 +1968,27 @@ bool gf_ClickButtonRace (int lp_player, int lp_button) {
             lv__newRace = "Prot";
         }
         else {
+            return false;
         }
     }
     else {
+        return false;
+    }
+    if ((gf_GetRoleOfPlayer(lp_player) != ge_Role_Builder)) {
+        libNtve_gf_UIErrorMessage(PlayerGroupSingle(lp_player), gv_textBuilderPermission, SoundLink("UI_GenericError", -1));
+        return true;
+    }
+    else if ((TimerGetElapsed(gv_timer) >= 12.0)) {
+        libNtve_gf_UIErrorMessage(PlayerGroupSingle(lp_player), gv_textOverRaceTime, SoundLink("UI_GenericError", -1));
+        return true;
+    }
+    else if ((gv_changeRaceEnabled == false)) {
+        libNtve_gf_UIErrorMessage(PlayerGroupSingle(lp_player), gv_textCanNotChangeRace, SoundLink("UI_GenericError", -1));
+        return true;
     }
     if ((lv__oldRace == lv__newRace)) {
         libNtve_gf_UIErrorMessage(PlayerGroupSingle(lp_player), gv_textMustDiffRace, SoundLink("UI_GenericError", -1));
-        return false;
+        return true;
     }
     else {
         gv_changeRaceEnabled = false;
