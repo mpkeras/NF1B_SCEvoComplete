@@ -537,12 +537,7 @@ bool gf_IsCanReleaseByBuilderUnitType (unit lp_unit) {
 int gf_GetTeamOfPlayer (int lp_player) {
     // Automatic Variable Declarations
     // Implementation
-    if ((PlayerGroupHasPlayer(gv_team1_playerGroup.lv_players, lp_player) == true)) {
-        return 1;
-    }
-    else {
-        return 2;
-    }
+    return gv_playerProperty[lp_player].lv_team;
 }
 
 int gf_GetRoleOfPlayer (int lp_player) {
