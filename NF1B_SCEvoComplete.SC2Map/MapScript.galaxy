@@ -304,8 +304,8 @@ void gf_SetButtonRace ();
 void gf_UpdateButtonRace (string lp_oldRace, string lp_newRace, int lp_team);
 bool gf_ErrorIsBuilder (int lp_player);
 void gf_SetControlPanel ();
-void gf_SetButtonUserPanel ();
-void gf_ClickButtonUserPanel ();
+void gf_SetButtonControlPanel ();
+void gf_ClickButtonControlPanel ();
 void gf_TipSameRace ();
 void gf_ChangeBuilder (int lp_oldBuilder, int lp_newBuilder, int lp_team);
 void gf_OwnershipForChangeBuilder (int lp_oldBuilder, int lp_newBuilder);
@@ -2155,13 +2155,13 @@ void gf_SetControlPanel () {
     // Implementation
     DialogCreate(lv__length, lv__width, c_anchorTopRight, 60, 45, true);
     gv_controlPanel = DialogLastCreated();
-    gf_SetButtonUserPanel();
+    gf_SetButtonControlPanel();
     gf_SetButtonPlayer(lv__length);
     gf_SetButtonMorph();
     gf_SetButtonRace();
 }
 
-void gf_SetButtonUserPanel () {
+void gf_SetButtonControlPanel () {
     // Automatic Variable Declarations
     // Implementation
     DialogCreate(60, 60, c_anchorTopRight, 0, 45, true);
@@ -2173,7 +2173,7 @@ void gf_SetButtonUserPanel () {
     DialogControlSetVisible(gv_buttonControlPanel, PlayerGroupAll(), true);
 }
 
-void gf_ClickButtonUserPanel () {
+void gf_ClickButtonControlPanel () {
     // Automatic Variable Declarations
     // Implementation
     if ((gv_buttonUserPanelClicked == false)) {
@@ -3736,7 +3736,7 @@ bool gt_ClickDialogItem_Func (bool testConds, bool runActions) {
     lv__player = EventPlayer();
     lv__team = gf_GetTeamOfPlayer(lv__player);
     if ((lv__dialogItem == gv_buttonControlPanel)) {
-        gf_ClickButtonUserPanel();
+        gf_ClickButtonControlPanel();
     }
     else if (gf_IsButtonPlayerType(lv__dialogItem)) {
         lv__playerClicked = gf_GetPlayerOfButton(lv__dialogItem);
