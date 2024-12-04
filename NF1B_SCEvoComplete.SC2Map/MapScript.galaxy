@@ -303,7 +303,7 @@ int gf_GetIndexOfRace (string lp_race);
 void gf_SetButtonRace ();
 void gf_UpdateButtonRace (string lp_oldRace, string lp_newRace, int lp_team);
 bool gf_ErrorIsBuilder (int lp_player);
-void gf_SetUserPanel ();
+void gf_SetControlPanel ();
 void gf_SetButtonUserPanel ();
 void gf_ClickButtonUserPanel ();
 void gf_TipSameRace ();
@@ -1422,7 +1422,7 @@ void gf_SetUI () {
 bool auto_gf_SetUI_TriggerFunc (bool testConds, bool runActions) {
     // Automatic Variable Declarations
     // Implementation
-    gf_SetUserPanel();
+    gf_SetControlPanel();
     return true;
 }
 
@@ -2142,7 +2142,7 @@ bool gf_ErrorIsBuilder (int lp_player) {
     }
 }
 
-void gf_SetUserPanel () {
+void gf_SetControlPanel () {
     // Variable Declarations
     int lv__length;
     int lv__width;
