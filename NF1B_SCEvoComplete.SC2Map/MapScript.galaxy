@@ -293,10 +293,9 @@ void gf_UpdateButtonPlayer (int lp_oldBuilder, int lp_newBuilder);
 void gf_BindButton (int lp_player);
 void gf_SetRaceIcon (int lp_x1, int lp_y1, int lp_x2, int lp_y2);
 void gf_UpdateRaceIcon (int lp_team, string lp_race);
-bool gf_IsButtonMorphType (int lp_button);
+bool gf_ClickButtonMorph (int lp_player, int lp_button);
 void gf_SetButtonMorph ();
 void gf_SetButtonMorphForTeam (int lp_team);
-void gf_ClickButtonMorph (int lp_button, int lp_team);
 void gf_UpdateButtonMorphForTeam (int lp_team);
 bool gf_ClickButtonRace (int lp_player, int lp_button);
 int gf_GetIndexOfRace (string lp_race);
@@ -1739,10 +1738,85 @@ void gf_UpdateRaceIcon (int lp_team, string lp_race) {
     }
 }
 
-bool gf_IsButtonMorphType (int lp_button) {
+bool gf_ClickButtonMorph (int lp_player, int lp_button) {
+    // Variable Declarations
+    int lv__team;
+    int lv__fighter;
+
     // Automatic Variable Declarations
+    int autoDAC6FC0A_val;
+    playergroup auto846000EB_g;
+    playergroup auto9B884340_g;
+    playergroup autoEEA75B98_g;
+    playergroup auto68172231_g;
+
+    // Variable Initialization
+
     // Implementation
-    if (((lp_button == gv_buttonMorphTeam1[0]) || (lp_button == gv_buttonMorphTeam1[1]) || (lp_button == gv_buttonMorphTeam2[0]) || (lp_button == gv_buttonMorphTeam2[1]))) {
+    lv__team = gf_GetTeamOfPlayer(lp_player);
+    autoDAC6FC0A_val = lp_button;
+    if (autoDAC6FC0A_val == gv_buttonMorphTeam1[0]) {
+        if ((lv__team == 1) && gf_ErrorIsBuilder(lp_player)) {
+            auto846000EB_g = gv_team1_playerGroup.lv_fightersWithNeutral;
+            lv__fighter = -1;
+            while (true) {
+                lv__fighter = PlayerGroupNextPlayer(auto846000EB_g, lv__fighter);
+                if (lv__fighter < 0) { break; }
+                gf_AllowZergMorph(lv__fighter);
+            }
+            gv_team1_teamMode.lv_morphEnabled = true;
+            UIDisplayMessage(gv_team1_playerGroup.lv_users, c_messageAreaSubtitle, gv_textMorphOn);
+            gf_UpdateButtonMorphForTeam(lv__team);
+        }
+
+        return true;
+    }
+    else if (autoDAC6FC0A_val == gv_buttonMorphTeam1[1]) {
+        if ((lv__team == 1) && gf_ErrorIsBuilder(lp_player)) {
+            auto9B884340_g = gv_team1_playerGroup.lv_fightersWithNeutral;
+            lv__fighter = -1;
+            while (true) {
+                lv__fighter = PlayerGroupNextPlayer(auto9B884340_g, lv__fighter);
+                if (lv__fighter < 0) { break; }
+                gf_DisallowZergMorph(lv__fighter);
+            }
+            gv_team1_teamMode.lv_morphEnabled = false;
+            UIDisplayMessage(gv_team1_playerGroup.lv_users, c_messageAreaSubtitle, gv_textMorphOff);
+            gf_UpdateButtonMorphForTeam(lv__team);
+        }
+
+        return true;
+    }
+    else if (autoDAC6FC0A_val == gv_buttonMorphTeam2[0]) {
+        if ((lv__team == 2) && gf_ErrorIsBuilder(lp_player)) {
+            autoEEA75B98_g = gv_team2_playerGroup.lv_fightersWithNeutral;
+            lv__fighter = -1;
+            while (true) {
+                lv__fighter = PlayerGroupNextPlayer(autoEEA75B98_g, lv__fighter);
+                if (lv__fighter < 0) { break; }
+                gf_AllowZergMorph(lv__fighter);
+            }
+            gv_team2_teamMode.lv_morphEnabled = true;
+            UIDisplayMessage(gv_team2_playerGroup.lv_users, c_messageAreaSubtitle, gv_textMorphOn);
+            gf_UpdateButtonMorphForTeam(lv__team);
+        }
+
+        return true;
+    }
+    else if (autoDAC6FC0A_val == gv_buttonMorphTeam2[1]) {
+        if ((lv__team == 2) && gf_ErrorIsBuilder(lp_player)) {
+            auto68172231_g = gv_team2_playerGroup.lv_fightersWithNeutral;
+            lv__fighter = -1;
+            while (true) {
+                lv__fighter = PlayerGroupNextPlayer(auto68172231_g, lv__fighter);
+                if (lv__fighter < 0) { break; }
+                gf_DisallowZergMorph(lv__fighter);
+            }
+            gv_team2_teamMode.lv_morphEnabled = false;
+            UIDisplayMessage(gv_team2_playerGroup.lv_users, c_messageAreaSubtitle, gv_textMorphOff);
+            gf_UpdateButtonMorphForTeam(lv__team);
+        }
+
         return true;
     }
     else {
@@ -1792,66 +1866,6 @@ void gf_SetButtonMorphForTeam (int lp_team) {
     }
     else {
     }
-}
-
-void gf_ClickButtonMorph (int lp_button, int lp_team) {
-    // Variable Declarations
-    int lv__fighter;
-
-    // Automatic Variable Declarations
-    playergroup auto846000EB_g;
-    playergroup auto9B884340_g;
-    playergroup autoEEA75B98_g;
-    playergroup auto68172231_g;
-
-    // Variable Initialization
-
-    // Implementation
-    if ((lp_button == gv_buttonMorphTeam1[0]) && (lp_team == 1)) {
-        auto846000EB_g = gv_team1_playerGroup.lv_fightersWithNeutral;
-        lv__fighter = -1;
-        while (true) {
-            lv__fighter = PlayerGroupNextPlayer(auto846000EB_g, lv__fighter);
-            if (lv__fighter < 0) { break; }
-            gf_AllowZergMorph(lv__fighter);
-        }
-        gv_team1_teamMode.lv_morphEnabled = true;
-        UIDisplayMessage(gv_team1_playerGroup.lv_users, c_messageAreaSubtitle, gv_textMorphOn);
-    }
-    else if ((lp_button == gv_buttonMorphTeam1[1]) && (lp_team == 1)) {
-        auto9B884340_g = gv_team1_playerGroup.lv_fightersWithNeutral;
-        lv__fighter = -1;
-        while (true) {
-            lv__fighter = PlayerGroupNextPlayer(auto9B884340_g, lv__fighter);
-            if (lv__fighter < 0) { break; }
-            gf_DisallowZergMorph(lv__fighter);
-        }
-        gv_team1_teamMode.lv_morphEnabled = false;
-        UIDisplayMessage(gv_team1_playerGroup.lv_users, c_messageAreaSubtitle, gv_textMorphOff);
-    }
-    else if ((lp_button == gv_buttonMorphTeam2[0]) && (lp_team == 2)) {
-        autoEEA75B98_g = gv_team2_playerGroup.lv_fightersWithNeutral;
-        lv__fighter = -1;
-        while (true) {
-            lv__fighter = PlayerGroupNextPlayer(autoEEA75B98_g, lv__fighter);
-            if (lv__fighter < 0) { break; }
-            gf_AllowZergMorph(lv__fighter);
-        }
-        gv_team2_teamMode.lv_morphEnabled = true;
-        UIDisplayMessage(gv_team2_playerGroup.lv_users, c_messageAreaSubtitle, gv_textMorphOn);
-    }
-    else if ((lp_button == gv_buttonMorphTeam2[1]) && (lp_team == 2)) {
-        auto68172231_g = gv_team2_playerGroup.lv_fightersWithNeutral;
-        lv__fighter = -1;
-        while (true) {
-            lv__fighter = PlayerGroupNextPlayer(auto68172231_g, lv__fighter);
-            if (lv__fighter < 0) { break; }
-            gf_DisallowZergMorph(lv__fighter);
-        }
-        gv_team2_teamMode.lv_morphEnabled = false;
-        UIDisplayMessage(gv_team2_playerGroup.lv_users, c_messageAreaSubtitle, gv_textMorphOff);
-    }
-    gf_UpdateButtonMorphForTeam(lp_team);
 }
 
 void gf_UpdateButtonMorphForTeam (int lp_team) {
@@ -3742,8 +3756,8 @@ bool gt_ClickDialogItem_Func (bool testConds, bool runActions) {
         lv__playerClicked = gf_GetPlayerOfButton(lv__dialogItem);
         gf_ClickButtonPlayer(lv__player, lv__playerClicked);
     }
-    else if (gf_IsButtonMorphType(lv__dialogItem) && gf_ErrorIsBuilder(lv__player)) {
-        gf_ClickButtonMorph(lv__dialogItem, lv__team);
+    else if (gf_ClickButtonMorph(lv__player, lv__dialogItem)) {
+        return true;
     }
     else if (gf_ClickButtonRace(lv__player, lv__dialogItem)) {
         return true;
