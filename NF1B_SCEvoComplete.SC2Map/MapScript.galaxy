@@ -286,9 +286,8 @@ void gf_SetAlliance ();
 void gf_SetSupplyLimit ();
 void gf_SetUI ();
 void gf_SetWeather ();
-bool gf_IsButtonPlayerType (int lp_button);
+bool gf_ClickButtonPlayer (int lp_player, int lp_button);
 void gf_SetButtonPlayer (int lp_length);
-void gf_ClickButtonPlayer (int lp_oldBuilder, int lp_newBuilder);
 void gf_UpdateButtonPlayer (int lp_oldBuilder, int lp_newBuilder);
 void gf_BindButton (int lp_player);
 void gf_SetRaceIcon (int lp_x1, int lp_y1, int lp_x2, int lp_y2);
@@ -1452,15 +1451,68 @@ void gf_SetWeather () {
     }
 }
 
-bool gf_IsButtonPlayerType (int lp_button) {
+bool gf_ClickButtonPlayer (int lp_player, int lp_button) {
+    // Variable Declarations
+    int lv__newBuilder;
+    int lv__team;
+
     // Automatic Variable Declarations
+    int auto0D8083D8_val;
+
+    // Variable Initialization
+
     // Implementation
-    if (((lp_button == gv_buttonPlayer1) || (lp_button == gv_buttonPlayer2) || (lp_button == gv_buttonPlayer3) || (lp_button == gv_buttonPlayer4) || (lp_button == gv_buttonPlayer5) || (lp_button == gv_buttonPlayer6) || (lp_button == gv_buttonPlayer7) || (lp_button == gv_buttonPlayer8) || (lp_button == gv_buttonPlayer9) || (lp_button == gv_buttonPlayer10) || (lp_button == gv_buttonPlayer11) || (lp_button == gv_buttonPlayer12))) {
-        return true;
+    auto0D8083D8_val = lp_button;
+    if (auto0D8083D8_val == gv_buttonPlayer1) {
+        lv__newBuilder = 1;
+    }
+    else if (auto0D8083D8_val == gv_buttonPlayer2) {
+        lv__newBuilder = 2;
+    }
+    else if (auto0D8083D8_val == gv_buttonPlayer3) {
+        lv__newBuilder = 3;
+    }
+    else if (auto0D8083D8_val == gv_buttonPlayer4) {
+        lv__newBuilder = 4;
+    }
+    else if (auto0D8083D8_val == gv_buttonPlayer5) {
+        lv__newBuilder = 5;
+    }
+    else if (auto0D8083D8_val == gv_buttonPlayer6) {
+        lv__newBuilder = 6;
+    }
+    else if (auto0D8083D8_val == gv_buttonPlayer7) {
+        lv__newBuilder = 7;
+    }
+    else if (auto0D8083D8_val == gv_buttonPlayer8) {
+        lv__newBuilder = 8;
+    }
+    else if (auto0D8083D8_val == gv_buttonPlayer9) {
+        lv__newBuilder = 9;
+    }
+    else if (auto0D8083D8_val == gv_buttonPlayer10) {
+        lv__newBuilder = 10;
+    }
+    else if (auto0D8083D8_val == gv_buttonPlayer11) {
+        lv__newBuilder = 11;
+    }
+    else if (auto0D8083D8_val == gv_buttonPlayer12) {
+        lv__newBuilder = 12;
     }
     else {
         return false;
     }
+    lv__team = gf_GetTeamOfPlayer(lp_player);
+    if ((gf_GetRoleOfPlayer(lp_player) != ge_Role_Builder)) {
+        libNtve_gf_UIErrorMessage(PlayerGroupSingle(lp_player), gv_textBuilderPermission, SoundLink("UI_GenericError", -1));
+        return true;
+    }
+    else if (((gf_GetTeamOfPlayer(lv__newBuilder) != lv__team) || (lp_player == lv__newBuilder))) {
+        libNtve_gf_UIErrorMessage(PlayerGroupSingle(lp_player), gv_textValidFighter, SoundLink("UI_GenericError", -1));
+        return true;
+    }
+    gf_ChangeBuilder(lp_player, lv__newBuilder, lv__team);
+    return true;
 }
 
 trigger auto_gf_SetButtonPlayer_Trigger = null;
@@ -1534,25 +1586,6 @@ bool auto_gf_SetButtonPlayer_TriggerFunc (bool testConds, bool runActions) {
         lv__i += 1;
     }
     return true;
-}
-
-void gf_ClickButtonPlayer (int lp_oldBuilder, int lp_newBuilder) {
-    // Variable Declarations
-    int lv__team;
-
-    // Automatic Variable Declarations
-    // Variable Initialization
-
-    // Implementation
-    lv__team = gf_GetTeamOfPlayer(lp_newBuilder);
-    if ((gf_ErrorIsBuilder(lp_oldBuilder) == false)) {
-        return ;
-    }
-    else if (((gf_GetTeamOfPlayer(lp_oldBuilder) != lv__team) || (lp_oldBuilder == lp_newBuilder))) {
-        libNtve_gf_UIErrorMessage(PlayerGroupSingle(lp_oldBuilder), gv_textValidFighter, SoundLink("UI_GenericError", -1));
-        return ;
-    }
-    gf_ChangeBuilder(lp_oldBuilder, lp_newBuilder, lv__team);
 }
 
 void gf_UpdateButtonPlayer (int lp_oldBuilder, int lp_newBuilder) {
@@ -3755,9 +3788,8 @@ bool gt_ClickDialogItem_Func (bool testConds, bool runActions) {
     if ((lv__dialogItem == gv_buttonControlPanel)) {
         gf_ClickButtonControlPanel();
     }
-    else if (gf_IsButtonPlayerType(lv__dialogItem)) {
-        lv__playerClicked = gf_GetPlayerOfButton(lv__dialogItem);
-        gf_ClickButtonPlayer(lv__player, lv__playerClicked);
+    else if (gf_ClickButtonPlayer(lv__player, lv__dialogItem)) {
+        return true;
     }
     else if (gf_ClickButtonMorph(lv__player, lv__dialogItem)) {
         return true;
