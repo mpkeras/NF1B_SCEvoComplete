@@ -107,7 +107,7 @@ int[2] gv_buttonMorphTeam2;
 int[6] gv_buttonRaceTeam1;
 int[6] gv_buttonRaceTeam2;
 int gv_controlPanel;
-bool gv_buttonUserPanelClicked;
+bool[13] gv_buttonControlPanelClicked;
 int gv_buttonControlPanel;
 int gv_dButtonControlPanel;
 timer gv_timer;
@@ -300,10 +300,10 @@ bool gf_ClickButtonRace (int lp_player, int lp_button);
 int gf_GetIndexOfRace (string lp_race);
 void gf_SetButtonRace ();
 void gf_UpdateButtonRace (string lp_oldRace, string lp_newRace, int lp_team);
+bool gf_ClickButtonControlPanel (int lp_player, int lp_button);
 bool gf_ErrorIsBuilder (int lp_player);
 void gf_SetControlPanel ();
 void gf_SetButtonControlPanel ();
-void gf_ClickButtonControlPanel ();
 void gf_TipSameRace ();
 void gf_ChangeBuilder (int lp_oldBuilder, int lp_newBuilder, int lp_team);
 void gf_OwnershipForChangeBuilder (int lp_oldBuilder, int lp_newBuilder);
@@ -2180,6 +2180,27 @@ void gf_UpdateButtonRace (string lp_oldRace, string lp_newRace, int lp_team) {
     }
 }
 
+bool gf_ClickButtonControlPanel (int lp_player, int lp_button) {
+    // Automatic Variable Declarations
+    // Implementation
+    if ((lp_button == gv_buttonControlPanel)) {
+        if ((gv_buttonControlPanelClicked[lp_player] == false)) {
+            DialogSetVisible(gv_controlPanel, PlayerGroupSingle(lp_player), true);
+            DialogControlFadeTransparency(gv_buttonControlPanel, PlayerGroupSingle(lp_player), 0.0, 50.0);
+            gv_buttonControlPanelClicked[lp_player] = true;
+        }
+        else {
+            DialogSetVisible(gv_controlPanel, PlayerGroupSingle(lp_player), false);
+            DialogControlFadeTransparency(gv_buttonControlPanel, PlayerGroupSingle(lp_player), 0.0, 0.0);
+            gv_buttonControlPanelClicked[lp_player] = false;
+        }
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 bool gf_ErrorIsBuilder (int lp_player) {
     // Automatic Variable Declarations
     // Implementation
@@ -2221,21 +2242,6 @@ void gf_SetButtonControlPanel () {
     libNtve_gf_CreateDialogItemButton(DialogLastCreated(), 60, 60, c_anchorTopRight, 0, 0, gv_textButtonControlPanel, StringToText(""), "");
     gv_buttonControlPanel = DialogControlLastCreated();
     DialogControlSetVisible(gv_buttonControlPanel, PlayerGroupAll(), true);
-}
-
-void gf_ClickButtonControlPanel () {
-    // Automatic Variable Declarations
-    // Implementation
-    if ((gv_buttonUserPanelClicked == false)) {
-        DialogSetVisible(gv_controlPanel, PlayerGroupAll(), true);
-        DialogControlFadeTransparency(gv_buttonControlPanel, PlayerGroupAll(), 0.0, 50.0);
-        gv_buttonUserPanelClicked = true;
-    }
-    else {
-        DialogSetVisible(gv_controlPanel, PlayerGroupAll(), false);
-        DialogControlFadeTransparency(gv_buttonControlPanel, PlayerGroupAll(), 0.0, 0.0);
-        gv_buttonUserPanelClicked = false;
-    }
 }
 
 void gf_TipSameRace () {
@@ -3782,8 +3788,8 @@ bool gt_ClickDialogItem_Func (bool testConds, bool runActions) {
 
     lv__player = EventPlayer();
     lv__dialogItem = EventDialogControl();
-    if ((lv__dialogItem == gv_buttonControlPanel)) {
-        gf_ClickButtonControlPanel();
+    if (gf_ClickButtonControlPanel(lv__player, lv__dialogItem)) {
+        return true;
     }
     else if (gf_ClickButtonPlayer(lv__player, lv__dialogItem)) {
         return true;
