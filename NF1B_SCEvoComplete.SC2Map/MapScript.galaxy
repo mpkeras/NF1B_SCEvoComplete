@@ -3768,10 +3768,8 @@ void gt_AfterRoleSelection_Init () {
 //--------------------------------------------------------------------------------------------------
 bool gt_ClickDialogItem_Func (bool testConds, bool runActions) {
     // Variable Declarations
-    int lv__dialogItem;
     int lv__player;
-    int lv__playerClicked;
-    int lv__team;
+    int lv__dialogItem;
 
     // Automatic Variable Declarations
     // Variable Initialization
@@ -3782,9 +3780,8 @@ bool gt_ClickDialogItem_Func (bool testConds, bool runActions) {
         return true;
     }
 
-    lv__dialogItem = EventDialogControl();
     lv__player = EventPlayer();
-    lv__team = gf_GetTeamOfPlayer(lv__player);
+    lv__dialogItem = EventDialogControl();
     if ((lv__dialogItem == gv_buttonControlPanel)) {
         gf_ClickButtonControlPanel();
     }
