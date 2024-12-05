@@ -1756,7 +1756,7 @@ bool gf_ClickButtonMorph (int lp_player, int lp_button) {
     lv__team = gf_GetTeamOfPlayer(lp_player);
     autoDAC6FC0A_val = lp_button;
     if (autoDAC6FC0A_val == gv_buttonMorphTeam1[0]) {
-        if (gf_ErrorIsBuilder(lp_player)) {
+        if (gf_ErrorIsBuilder(lp_player) && (gv_team1_teamMode.lv_morphEnabled == false)) {
             auto846000EB_g = gv_team1_playerGroup.lv_fightersWithNeutral;
             lv__fighter = -1;
             while (true) {
@@ -1772,7 +1772,7 @@ bool gf_ClickButtonMorph (int lp_player, int lp_button) {
         return true;
     }
     else if (autoDAC6FC0A_val == gv_buttonMorphTeam1[1]) {
-        if (gf_ErrorIsBuilder(lp_player)) {
+        if (gf_ErrorIsBuilder(lp_player) && (gv_team1_teamMode.lv_morphEnabled == true)) {
             auto9B884340_g = gv_team1_playerGroup.lv_fightersWithNeutral;
             lv__fighter = -1;
             while (true) {
@@ -1788,7 +1788,7 @@ bool gf_ClickButtonMorph (int lp_player, int lp_button) {
         return true;
     }
     else if (autoDAC6FC0A_val == gv_buttonMorphTeam2[0]) {
-        if (gf_ErrorIsBuilder(lp_player)) {
+        if (gf_ErrorIsBuilder(lp_player) && (gv_team2_teamMode.lv_morphEnabled == false)) {
             autoEEA75B98_g = gv_team2_playerGroup.lv_fightersWithNeutral;
             lv__fighter = -1;
             while (true) {
@@ -1804,7 +1804,7 @@ bool gf_ClickButtonMorph (int lp_player, int lp_button) {
         return true;
     }
     else if (autoDAC6FC0A_val == gv_buttonMorphTeam2[1]) {
-        if (gf_ErrorIsBuilder(lp_player)) {
+        if (gf_ErrorIsBuilder(lp_player) && (gv_team2_teamMode.lv_morphEnabled == true)) {
             auto68172231_g = gv_team2_playerGroup.lv_fightersWithNeutral;
             lv__fighter = -1;
             while (true) {
