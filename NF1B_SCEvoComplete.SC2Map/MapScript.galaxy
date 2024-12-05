@@ -1909,22 +1909,22 @@ void gf_UpdateButtonMorphForTeam (int lp_team) {
     auto5919097E_val = lp_team;
     if (auto5919097E_val == 1) {
         if ((gv_team1_teamMode.lv_morphEnabled == true)) {
-            DialogControlFadeTransparency(gv_buttonMorphTeam1[0], PlayerGroupAll(), 0.0, 50.0);
-            DialogControlFadeTransparency(gv_buttonMorphTeam1[1], PlayerGroupAll(), 0.0, 0.0);
+            DialogControlFadeTransparency(gv_buttonMorphTeam1[0], gv_team1_playerGroup.lv_users, 0.0, 50.0);
+            DialogControlFadeTransparency(gv_buttonMorphTeam1[1], gv_team1_playerGroup.lv_users, 0.0, 0.0);
         }
         else {
-            DialogControlFadeTransparency(gv_buttonMorphTeam1[0], PlayerGroupAll(), 0.0, 0.0);
-            DialogControlFadeTransparency(gv_buttonMorphTeam1[1], PlayerGroupAll(), 0.0, 50.0);
+            DialogControlFadeTransparency(gv_buttonMorphTeam1[0], gv_team1_playerGroup.lv_users, 0.0, 0.0);
+            DialogControlFadeTransparency(gv_buttonMorphTeam1[1], gv_team1_playerGroup.lv_users, 0.0, 50.0);
         }
     }
     else if (auto5919097E_val == 2) {
         if ((gv_team2_teamMode.lv_morphEnabled == true)) {
-            DialogControlFadeTransparency(gv_buttonMorphTeam2[0], PlayerGroupAll(), 0.0, 50.0);
-            DialogControlFadeTransparency(gv_buttonMorphTeam2[1], PlayerGroupAll(), 0.0, 0.0);
+            DialogControlFadeTransparency(gv_buttonMorphTeam2[0], gv_team2_playerGroup.lv_users, 0.0, 50.0);
+            DialogControlFadeTransparency(gv_buttonMorphTeam2[1], gv_team2_playerGroup.lv_users, 0.0, 0.0);
         }
         else {
-            DialogControlFadeTransparency(gv_buttonMorphTeam2[0], PlayerGroupAll(), 0.0, 0.0);
-            DialogControlFadeTransparency(gv_buttonMorphTeam2[1], PlayerGroupAll(), 0.0, 50.0);
+            DialogControlFadeTransparency(gv_buttonMorphTeam2[0], gv_team2_playerGroup.lv_users, 0.0, 0.0);
+            DialogControlFadeTransparency(gv_buttonMorphTeam2[1], gv_team2_playerGroup.lv_users, 0.0, 50.0);
         }
     }
     else {
