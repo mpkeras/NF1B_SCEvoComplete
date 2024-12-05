@@ -252,6 +252,7 @@ bool gf_IsWorkerUnitType (unit lp_unit);
 bool gf_IsMainBaseUnitType (unit lp_unit);
 bool gf_IsSharedGroupedUnitType (unit lp_unit);
 bool gf_IsCanReleaseByBuilderUnitType (unit lp_unit);
+bool gf_ErrorIsBuilder (int lp_player);
 int gf_GetTeamOfPlayer (int lp_player);
 int gf_GetRoleOfPlayer (int lp_player);
 int gf_GetOwnerForRelease (int lp_team);
@@ -300,7 +301,6 @@ int gf_GetIndexOfRace (string lp_race);
 void gf_SetButtonRace ();
 void gf_UpdateButtonRace (string lp_oldRace, string lp_newRace, int lp_team);
 bool gf_ClickButtonControlPanel (int lp_player, int lp_button);
-bool gf_ErrorIsBuilder (int lp_player);
 void gf_SetControlPanel ();
 void gf_SetButtonControlPanel ();
 void gf_TipSameRace ();
@@ -527,6 +527,18 @@ bool gf_IsCanReleaseByBuilderUnitType (unit lp_unit) {
         return true;
     }
     else {
+        return false;
+    }
+}
+
+bool gf_ErrorIsBuilder (int lp_player) {
+    // Automatic Variable Declarations
+    // Implementation
+    if ((gf_GetRoleOfPlayer(lp_player) == ge_Role_Builder)) {
+        return true;
+    }
+    else {
+        libNtve_gf_UIErrorMessage(PlayerGroupSingle(lp_player), gv_textBuilderPermission, SoundLink("UI_GenericError", -1));
         return false;
     }
 }
@@ -2149,18 +2161,6 @@ bool gf_ClickButtonControlPanel (int lp_player, int lp_button) {
         return true;
     }
     else {
-        return false;
-    }
-}
-
-bool gf_ErrorIsBuilder (int lp_player) {
-    // Automatic Variable Declarations
-    // Implementation
-    if ((gf_GetRoleOfPlayer(lp_player) == ge_Role_Builder)) {
-        return true;
-    }
-    else {
-        libNtve_gf_UIErrorMessage(PlayerGroupSingle(lp_player), gv_textBuilderPermission, SoundLink("UI_GenericError", -1));
         return false;
     }
 }
